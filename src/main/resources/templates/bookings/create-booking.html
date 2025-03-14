@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Booking</title>
+</head>
+<body>
+    <h2>Book <span th:text="${booking.worker.name}"></span> for <span th:text="${skillName}"></span></h2>
+
+    <form th:action="@{/bookings/create}" th:object="${booking}" method="post">
+        <input type="hidden" th:field="*{worker.id}" />
+        <input type="hidden" th:field="*{requester.id}" />
+
+        <label>Start Time:</label>
+        <input type="datetime-local" name="startTime" required/><br/>
+
+        <label>End Time:</label>
+        <input type="datetime-local" name="endTime" required/><br/>
+
+        <button type="submit">Confirm Booking</button>
+    </form>
+</body>
+</html>

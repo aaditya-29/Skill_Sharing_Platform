@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Your Bookings</title>
+</head>
+<body>
+    <h2>Your Bookings</h2>
+
+    <table border="1">
+        <tr>
+            <th>Requester Name</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        <tr th:each="booking : ${bookings}">
+            <td th:text="${booking.requester != null ? booking.requester.name : 'N/A'}"></td>
+            <td th:text="${#dates.format(booking.startTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${#dates.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${booking.status}"></td>
+            <td>
+                <form th:action="@{/bookings/accept}" method="post">
+                    <input type="hidden" name="bookingId" th:value="${booking.id}" />
+                    <button type="submit" th:if="${booking.status == 'PENDING'}">Accept</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+    <p th:if="${#lists.isEmpty(bookings)}">No bookings available.</p>
+</body>
+</html>

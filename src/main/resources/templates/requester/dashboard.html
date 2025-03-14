@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Requester Dashboard</title>
+</head>
+<body>
+    <h2>Welcome, Requester!</h2>
+    <a href="/skills">Search for Skills</a> |
+    <a href="/requester/bookings">View Bookings</a> |
+    <a href="/reviews">Leave a Review</a> |
+    <a href="/logout">Logout</a>
+
+    <h3>Book a Service</h3>
+    <form th:action="@{/skills/search}" method="get">
+        <input type="text" name="category" placeholder="Search by skill" />
+        <button type="submit">Search</button>
+    </form>
+
+    <h3>Your Bookings</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Worker</th>
+                <th>Skill</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="booking : ${bookings}">
+                <td th:text="${booking.worker != null ? booking.worker.name : 'N/A'}"></td>
+                <td th:text="${booking.skill != null ? booking.skill.skillName : 'N/A'}"></td>
+                <td th:text="${#dates.format(booking.startTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${#dates.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${booking.status}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

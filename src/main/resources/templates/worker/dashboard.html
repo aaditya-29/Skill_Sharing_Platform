@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Worker Dashboard</title>
+</head>
+<body>
+    <h2>Welcome to Your Dashboard!</h2>
+
+    <a href="/skills/add">Add New Skill</a>
+
+    <h3>Your Skills:</h3>
+    <ul>
+        <li th:each="skill : ${skills}">
+            <span th:text="${skill.skillName}"></span> — 
+            <span th:text="${skill.category}"></span> — 
+            <span th:text="${skill.location}"></span> — 
+            ₹<span th:text="${skill.price}"></span> per hour
+        </li>
+    </ul>
+
+    <hr>
+
+    <h3>Your Bookings:</h3>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Requester</th>
+                <th>Skill</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="booking : ${bookings}">
+                <td th:text="${booking.id}"></td>
+                <td th:text="${booking.requester != null ? booking.requester.name : 'N/A'}"></td>
+                <td th:text="${booking.skill != null ? booking.skill.skillName : 'N/A'}"></td>
+                <td th:text="${#dates.format(booking.startTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${#dates.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${booking.status}"></td>
+                <td>
+                    <form th:action="@{/bookings/update-status}" method="post">
+                        <input type="hidden" name="bookingId" th:value="${booking.id}" />
+                        <select name="status">
+                            <option value="PENDING" th:selected="${booking.status == 'PENDING'}">Pending</option>
+                            <option value="ACCEPTED" th:selected="${booking.status == 'ACCEPTED'}">Accepted</option>
+                            <option value="IN_PROGRESS" th:selected="${booking.status == 'IN_PROGRESS'}">In Progress</option>
+                            <option value="COMPLETED" th:selected="${booking.status == 'COMPLETED'}">Completed</option>
+                        </select>
+                        <button type="submit">Update Status</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

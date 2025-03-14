@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search Workers</title>
+</head>
+<body>
+    <h2>Search for Workers by Skill</h2>
+
+    <!-- Search Form -->
+    <form th:action="@{/skills/search}" method="get">
+        <input type="text" name="skill" placeholder="Enter skill (e.g., plumber)" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <hr>
+
+    <!-- Search Results -->
+    <h3>Search Results</h3>
+    <ul>
+        <li th:each="skill : ${skills}">
+            <span th:text="${skill.worker.name}">Worker Name</span> -
+            <span th:text="${skill.skillName}">Skill</span> -
+            <span th:text="${skill.category}">Category</span> -
+            <span th:text="${skill.location}">Location</span> -
+            ₹<span th:text="${skill.price}">Price</span>
+            
+                        
+              <!-- Book Now Button -->
+            
+            
+            <form th:action="@{/bookings/create}" method="get" style="display:inline;">
+                <input type="hidden" name="workerId" th:value="${skill.worker.id}" />
+                <input type="hidden" name="skillName" th:value="${skill.skillName}" />
+                <button type="submit">Book Now</button>
+            </form>
+        </li>
+    </ul>
+
+    <!-- No results message -->
+    <p th:if="${#lists.isEmpty(skills)}">No workers found with that skill.</p>
+</body>
+</html>

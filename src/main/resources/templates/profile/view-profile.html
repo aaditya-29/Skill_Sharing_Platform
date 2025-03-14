@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+</head>
+<body>
+    <h2 th:text="${user.name}"></h2>
+    <h3>Feedback and Reviews</h3>
+    <ul>
+        <li th:each="feedback : ${feedbacks}">
+            Rating: <span th:text="${feedback.rating}"></span> | 
+            Comment: <span th:text="${feedback.comment}"></span>
+        </li>
+    </ul>
+</body>
+</html>

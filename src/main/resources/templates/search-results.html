@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+    <h2>Search Results</h2>
+
+    <div th:if="${skills.isEmpty()}">
+        <p>No workers found with that skill.</p>
+    </div>
+
+    <div th:each="skill : ${skills}">
+        <h3 th:text="${skill.skillName}"></h3>
+        <p>Category: <span th:text="${skill.category}"></span></p>
+        <p>Location: <span th:text="${skill.location}"></span></p>
+        <p>Price: ₹<span th:text="${skill.price}"></span></p>
+        <p>Worker: <span th:text="${skill.worker.name}"></span></p>
+    </div>
+</body>
+</html>

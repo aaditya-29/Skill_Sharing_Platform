@@ -1,21 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Worker Dashboard</title>
+    <title>Skills</title>
 </head>
 <body>
-	<h2>Welcome to Your Dashboard!</h2>
+    <div th:insert="fragments/navbar :: body"></div>
 
-	<!-- Include Navbar -->
-	<div th:insert="fragments/workerNavbar :: body"></div>
-
-
-	<br>
-	<br>
-
-
-
-	<h3>Your Skills:</h3>
+    <h2>Available Skills</h2>
+    <h3>Your Skills:</h3>
 	<ul>
 		<li th:each="skill : ${skills}"><span
 			th:text="${skill.skillName}"></span> — <span
@@ -25,6 +17,5 @@
 	</ul>
 
 	<hr>
-
 </body>
 </html>

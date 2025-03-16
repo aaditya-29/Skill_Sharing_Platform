@@ -28,4 +28,10 @@ public class SkillListingService {
     public List<SkillListing> findBySkillNameContaining(String skill) {
         return skillListingRepository.findBySkillNameContainingIgnoreCase(skill);
     }
+
+
+    public SkillListing getSkillById(Long skillId) {
+        return skillListingRepository.findById(skillId)
+                .orElse(null);  // Return null if no skill is found
+    }
 }

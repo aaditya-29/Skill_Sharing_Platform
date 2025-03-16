@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Bookings</title>
+</head>
+<body>
+    <div th:insert="fragments/navbar :: body"></div>
+
+    <h2>Your Bookings</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Worker</th>
+                <th>Skill</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="booking : ${bookings}">
+                <td th:text="${booking.worker != null ? booking.worker.name : 'N/A'}"></td>
+                <td th:text="${booking.skillListing != null ? booking.skillListing.skillName : 'N/A'}"></td>
+                <td th:text="${#temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${#temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${booking.status}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <p th:if="${#lists.isEmpty(bookings)}">No bookings available.</p>
+</body>
+</html>

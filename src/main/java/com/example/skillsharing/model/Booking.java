@@ -1,92 +1,88 @@
 package com.example.skillsharing.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Booking {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "worker_id")
-    private User worker;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "worker_id")
+	private User worker;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "requester_id")
-    private User requester;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "requester_id")
+	private User requester;
 
+	@ManyToOne(fetch = FetchType.EAGER) // ✅ Link Booking to SkillListing
+	@JoinColumn(name = "skill_id")
+	private SkillListing skillListing; // ✅ Update to SkillListing
 
-    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
-    private InspectionReport inspectionReport;
+	private LocalDateTime startTime;
+	private LocalDateTime endTime;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+	@Enumerated(EnumType.STRING)
+	private BookingStatus status;
 
-    @Enumerated(EnumType.STRING)
-    private BookingStatus status;
+	// ✅ Getters and Setters for SkillListing
+	public SkillListing getSkillListing() {
+		return skillListing;
+	}
 
-    // Explicit Getters and Setters
-    public Long getId() {
-        return id;
-    }
+	public void setSkillListing(SkillListing skillListing) {
+		this.skillListing = skillListing;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	// ✅ Other Getters and Setters
+	public Long getId() {
+		return id;
+	}
 
-    public User getWorker() {
-        return worker;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setWorker(User worker) {
-        this.worker = worker;
-    }
+	public User getWorker() {
+		return worker;
+	}
 
-    public User getRequester() {
-        return requester;
-    }
+	public void setWorker(User worker) {
+		this.worker = worker;
+	}
 
-    public void setRequester(User requester) {
-        this.requester = requester;
-    }
+	public User getRequester() {
+		return requester;
+	}
 
-    public InspectionReport getInspectionReport() {
-        return inspectionReport;
-    }
+	public void setRequester(User requester) {
+		this.requester = requester;
+	}
 
-    public void setInspectionReport(InspectionReport inspectionReport) {
-        this.inspectionReport = inspectionReport;
-    }
+	public LocalDateTime getStartTime() {
+		return startTime;
+	}
 
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
+	public void setStartTime(LocalDateTime startTime) {
+		this.startTime = startTime;
+	}
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
+	public LocalDateTime getEndTime() {
+		return endTime;
+	}
 
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
+	public void setEndTime(LocalDateTime endTime) {
+		this.endTime = endTime;
+	}
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
+	public BookingStatus getStatus() {
+		return status;
+	}
 
-    public BookingStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(BookingStatus status) {
-        this.status = status;
-    }
+	public void setStatus(BookingStatus status) {
+		this.status = status;
+	}
 }

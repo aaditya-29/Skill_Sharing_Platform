@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Inspection Report</title>
+    <title>Submit Inspection Report</title>
 </head>
 <body>
     <h2>Submit Inspection Report</h2>
-    <form th:action="@{/inspection/{bookingId}(bookingId=${bookingId})}" th:object="${report}" method="post">
+    <form th:action="@{/inspection/submit/{bookingId}(bookingId=${bookingId})}" th:object="${report}" method="post">
         <label>Initial Inspection:</label>
         <textarea th:field="*{initialInspection}" required></textarea><br/>
 

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Leave Feedback</title>
+</head>
+<body>
+	<h2>Leave Feedback</h2>
+
+	<p th:if="${completedBookings.isEmpty()}">No completed bookings
+		available for review.</p>
+
+<form th:if="${!completedBookings.isEmpty()}"
+      th:action="@{/feedback/submit}" 
+      method="post"
+      onsubmit="return validateForm()">
+
+    <label>Select User to Review:</label>
+    <select name="bookingId" id="bookingId" required>
+        <option value="" disabled selected>Select a user</option>
+        <option th:each="booking : ${completedBookings}"
+                th:value="${booking.id}"
+                th:text="${booking.requester.id == currentUser.id ? booking.worker.name : booking.requester.name}">
+        </option>
+    </select>
+    <br />
+
+    <label>Rating (1-5):</label>
+    <input type="number" name="rating" id="rating" min="1" max="5" required /><br />
+
+    <label>Comment:</label>
+    <textarea name="comment" id="comment" required></textarea>
+    <br />
+
+    <button type="submit">Submit Feedback</button>
+
+</form>
+
+<script>
+    function validateForm() {
+        let bookingId = document.getElementById("bookingId").value;
+        let rating = document.getElementById("rating").value;
+        let comment = document.getElementById("comment").value;
+
+        if (!bookingId) {
+            alert("Please select a booking!");
+            return false;
+        }
+
+        console.log("Submitting feedback for Booking ID:", bookingId);
+        return true;
+    }
+</script>
+
+
+	<h3>Debugging: Completed Bookings</h3>
+	<ul>
+		<li th:each="booking : ${completedBookings}">Booking ID: <span
+			th:text="${booking.id}"></span> | Requester: <span
+			th:text="${booking.requester != null ? booking.requester.name : 'N/A'}"></span>
+			| Worker: <span
+			th:text="${booking.worker != null ? booking.worker.name : 'N/A'}"></span>
+		</li>
+	</ul>
+
+</body>
+</html>

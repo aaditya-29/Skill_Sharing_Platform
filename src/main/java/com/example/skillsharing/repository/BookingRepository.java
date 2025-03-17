@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -20,7 +21,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	List<Booking> getBookingsByRequester(@Param("requesterId") Long requesterId);
 
 	List<Booking> findByWorker(User worker);
-	
-	
+
+	@Query("SELECT b FROM Booking b WHERE b.status = 'COMPLETED' AND (b.requester.id = :userId OR b.worker.id = :userId)")
+	List<Booking> findCompletedBookingsByUser(@Param("userId") Long userId);
+
+//	@Query("SELECT b FROM Booking b WHERE b.id = :bookingId")
+//	Booking findById(@Param("bookingId") Long bookingId);
+
+	Optional<Booking> findById(Long id); // This is the correct method
 
 }

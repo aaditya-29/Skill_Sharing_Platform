@@ -25,6 +25,18 @@ public class Booking {
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 
+	@OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+	private InspectionReport inspectionReport;
+
+	// Getter & Setter
+	public InspectionReport getInspectionReport() {
+		return inspectionReport;
+	}
+
+	public void setInspectionReport(InspectionReport inspectionReport) {
+		this.inspectionReport = inspectionReport;
+	}
+
 	@Enumerated(EnumType.STRING)
 	private BookingStatus status;
 

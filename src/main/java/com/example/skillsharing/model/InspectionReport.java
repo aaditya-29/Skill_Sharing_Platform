@@ -6,65 +6,70 @@ import java.time.LocalDateTime;
 @Entity
 public class InspectionReport {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
+	@OneToOne
+	@JoinColumn(name = "booking_id", nullable = false)
+	private Booking booking;
 
-    private String initialInspection;
-    private String requiredWork;
-    private double estimatedCost;
-    private LocalDateTime inspectionTime;
+	@Column(columnDefinition = "TEXT")
+	private String initialInspection;
 
-    // Explicit Getters and Setters
-    public Long getId() {
-        return id;
-    }
+	@Column(columnDefinition = "TEXT")
+	private String requiredWork;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	private Double estimatedCost;
 
-    public Booking getBooking() {
-        return booking;
-    }
+	private LocalDateTime inspectionTime;
 
-    public void setBooking(Booking booking) {
-        this.booking = booking;
-    }
+	// ✅ Getters and Setters
+	public Long getId() {
+		return id;
+	}
 
-    public String getInitialInspection() {
-        return initialInspection;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setInitialInspection(String initialInspection) {
-        this.initialInspection = initialInspection;
-    }
+	public Booking getBooking() {
+		return booking;
+	}
 
-    public String getRequiredWork() {
-        return requiredWork;
-    }
+	public void setBooking(Booking booking) {
+		this.booking = booking;
+	}
 
-    public void setRequiredWork(String requiredWork) {
-        this.requiredWork = requiredWork;
-    }
+	public String getInitialInspection() {
+		return initialInspection;
+	}
 
-    public double getEstimatedCost() {
-        return estimatedCost;
-    }
+	public void setInitialInspection(String initialInspection) {
+		this.initialInspection = initialInspection;
+	}
 
-    public void setEstimatedCost(double estimatedCost) {
-        this.estimatedCost = estimatedCost;
-    }
+	public String getRequiredWork() {
+		return requiredWork;
+	}
 
-    public LocalDateTime getInspectionTime() {
-        return inspectionTime;
-    }
+	public void setRequiredWork(String requiredWork) {
+		this.requiredWork = requiredWork;
+	}
 
-    public void setInspectionTime(LocalDateTime inspectionTime) {
-        this.inspectionTime = inspectionTime;
-    }
+	public Double getEstimatedCost() {
+		return estimatedCost;
+	}
+
+	public void setEstimatedCost(Double estimatedCost) {
+		this.estimatedCost = estimatedCost;
+	}
+
+	public LocalDateTime getInspectionTime() {
+		return inspectionTime;
+	}
+
+	public void setInspectionTime(LocalDateTime inspectionTime) {
+		this.inspectionTime = inspectionTime;
+	}
 }

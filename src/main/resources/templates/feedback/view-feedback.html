@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Feedback Report</title>
+</head>
+<body>
+    <h2>Feedback Report</h2>
+
+    <div th:if="${feedback}">
+        <p><strong>Booking ID:</strong> <span th:text="${feedback.booking.id}"></span></p>
+        <p><strong>Reviewer:</strong> <span th:text="${feedback.reviewer.name}"></span></p>
+        <p><strong>Reviewee:</strong> <span th:text="${feedback.reviewee.name}"></span></p>
+        <p><strong>Rating:</strong> <span th:text="${feedback.rating}"></span>/5</p>
+        <p><strong>Comment:</strong> <span th:text="${feedback.comment}"></span></p>
+        <p><strong>Submitted At:</strong> <span th:text="${#temporals.format(feedback.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+    </div>
+
+    <div th:if="${errorMessage}">
+        <p th:text="${errorMessage}" style="color: red;"></p>
+    </div>
+
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>

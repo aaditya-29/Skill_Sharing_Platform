@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Inspection Report</title>
+</head>
+<body>
+    <h2>Inspection Report</h2>
+
+    <p><strong>Initial Inspection:</strong></p>
+    <p th:text="${report.initialInspection}"></p>
+
+    <p><strong>Required Work:</strong></p>
+    <p th:text="${report.requiredWork}"></p>
+
+    <p><strong>Estimated Cost:</strong> $<span th:text="${report.estimatedCost}"></span></p>
+
+    <p><strong>Inspection Time:</strong> <span th:text="${#temporals.format(report.inspectionTime, 'yyyy-MM-dd HH:mm')}"></span></p>
+
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>

@@ -15,7 +15,7 @@ public class InspectionReportService {
         inspectionReportRepository.save(report);
     }
 
-    public InspectionReport getReportById(Long id) {
-        return inspectionReportRepository.findById(id).orElse(null);
+    public InspectionReport getReportByBookingId(Long bookingId) {
+        return inspectionReportRepository.findByBookingId(bookingId);
     }
 }

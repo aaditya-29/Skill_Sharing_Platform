@@ -34,9 +34,15 @@ public class BookingService {
 	}
 
 	public Booking getBookingById(Long id) {
-		// ✅ Ensure Optional is properly handled
-		Optional<Booking> optionalBooking = bookingRepository.findById(id);
-		return optionalBooking.orElse(null);
+		Optional<Booking> booking = bookingRepository.findById(id);
+
+		if (booking.isPresent()) {
+			System.out.println("📌 Booking found: ID=" + id + ", Status=" + booking.get().getStatus());
+			return booking.get();
+		} else {
+			System.out.println("❌ ERROR: Booking ID " + id + " not found in the database.");
+			return null;
+		}
 	}
 
 	public List<Booking> getAllBookings() {
@@ -54,4 +60,9 @@ public class BookingService {
 		User worker = optionalWorker.get();
 		return bookingRepository.findByWorker(worker);
 	}
+
+	public List<Booking> findCompletedBookingsForUser(Long userId) {
+		return bookingRepository.findCompletedBookingsByUser(userId);
+	}
+
 }

@@ -1,44 +1,76 @@
 package com.example.skillsharing.controller;
 
 import com.example.skillsharing.model.Booking;
-import com.example.skillsharing.model.InspectionReport;
 import com.example.skillsharing.model.BookingStatus;
+import com.example.skillsharing.model.InspectionReport;
 import com.example.skillsharing.service.BookingService;
 import com.example.skillsharing.service.InspectionReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.time.LocalDateTime;
 
 @Controller
+@RequestMapping("/inspection")
 public class InspectionController {
 
-    @Autowired
-    private BookingService bookingService;
+	@Autowired
+	private BookingService bookingService;
 
-    @Autowired
-    private InspectionReportService inspectionReportService;
+	@Autowired
+	private InspectionReportService inspectionReportService;
 
-    @GetMapping("/inspection/{bookingId}")
-    public String showInspectionForm(@PathVariable Long bookingId, Model model) {
-        model.addAttribute("report", new InspectionReport());
-        model.addAttribute("bookingId", bookingId);
-        return "inspection/inspection-form";
-    }
+	// Show Inspection Report Form
+	@GetMapping("/submit/{bookingId}")
+	public String showInspectionForm(@PathVariable Long bookingId, Model model) {
+		model.addAttribute("bookingId", bookingId);
+		model.addAttribute("report", new InspectionReport());
+		return "inspection/inspection-form";
+	}
 
-    @PostMapping("/inspection/{bookingId}")
-    public String submitInspection(@PathVariable Long bookingId, @ModelAttribute InspectionReport report) {
-        Booking booking = bookingService.getBookingById(bookingId);
-        report.setBooking(booking);
-        report.setInspectionTime(java.time.LocalDateTime.now());
-        inspectionReportService.saveReport(report);
+	// Handle Inspection Report Submission
+	@PostMapping("/submit/{bookingId}")
+	public String submitInspectionReport(@PathVariable Long bookingId, @ModelAttribute InspectionReport report,
+			Principal principal) {
+		Booking booking = bookingService.getBookingById(bookingId);
 
-        booking.setStatus(BookingStatus.INSPECTION_DONE);
-        bookingService.saveBooking(booking);
+		// Ensure booking exists and is assigned to the logged-in worker
+		if (booking == null || !booking.getWorker().getEmail().equals(principal.getName())) {
+			return "error"; // Prevent unauthorized access
+		}
 
-        return "redirect:/worker/dashboard";
-    }
+		// Save Inspection Report
+		report.setBooking(booking);
+		report.setInspectionTime(LocalDateTime.now());
+		inspectionReportService.saveReport(report);
+
+		// Update booking status
+		booking.setStatus(BookingStatus.INSPECTION_DONE);
+		bookingService.saveBooking(booking);
+
+		return "redirect:/worker/bookings";
+	}
+
+	// View Inspection Report
+	@GetMapping("/view/{bookingId}")
+	public String viewInspectionReport(@PathVariable Long bookingId, Model model, Principal principal) {
+		Booking booking = bookingService.getBookingById(bookingId);
+
+		// Prevent unauthorized access
+		if (booking == null || (!booking.getRequester().getEmail().equals(principal.getName())
+				&& !booking.getWorker().getEmail().equals(principal.getName()))) {
+			return "error";
+		}
+
+		InspectionReport report = inspectionReportService.getReportByBookingId(bookingId);
+		if (report == null) {
+			return "error"; // Handle if no report exists
+		}
+
+		model.addAttribute("report", report);
+		return "inspection/inspection-report";
+	}
 }

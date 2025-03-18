@@ -32,15 +32,13 @@
 					th:text="${#temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></td>
 				<td th:text="${booking.status}"></td>
 
-				<!-- View inspection Report Link -->
+				<!-- View Inspection Report Link -->
 				<td><a
-					th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}">
-						View Report </a></td>
+					th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}">View
+						Report</a></td>
 
-				<!-- Feedback Report Link (Only if booking is COMPLETED) -->
-				<td><span
-					th:if="${feedbackService.getFeedbackByBookingId(booking.id).isPresent()}">
-						<a
+				<!-- Feedback Report Link (Only if feedback exists) -->
+				<td><span th:if="${feedbackMap[booking.id]}"> <a
 						th:href="@{/feedback/view/{bookingId}(bookingId=${booking.id})}">View
 							Feedback</a>
 				</span></td>

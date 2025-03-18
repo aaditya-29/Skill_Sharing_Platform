@@ -22,7 +22,12 @@ public class FeedbackService {
 		return feedbackRepository.findByRevieweeId(userId);
 	}
 
-	public Optional<Feedback> getFeedbackByBookingId(Long bookingId) {
-		return feedbackRepository.findByBookingId(bookingId);
+	public Optional<Feedback> getFeedbackByBookingAndReviewer(Long bookingId, Long reviewerId) {
+		return feedbackRepository.findByBookingIdAndReviewerId(bookingId, reviewerId);
 	}
+
+	public List<Feedback> getAllFeedbackForBooking(Long bookingId) {
+		return feedbackRepository.findAllByBookingId(bookingId);
+	}
+
 }

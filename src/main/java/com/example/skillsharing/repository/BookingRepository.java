@@ -28,6 +28,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 //	@Query("SELECT b FROM Booking b WHERE b.id = :bookingId")
 //	Booking findById(@Param("bookingId") Long bookingId);
 
-	Optional<Booking> findById(Long id); // This is the correct method
+	Optional<Booking> findById(Long id);
 
 }

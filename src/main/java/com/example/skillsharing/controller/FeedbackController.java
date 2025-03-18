@@ -29,58 +29,38 @@ public class FeedbackController {
 	@Autowired
 	private UserService userService;
 
-	/**
-	 * Show feedback page where user can review completed bookings.
-	 */
 	@GetMapping("/leave-review")
 	public String showFeedbackPage(Model model) {
 		User currentUser = getCurrentUser();
 
-		// Fetch only COMPLETED bookings where the user was involved
 		List<Booking> completedBookings = bookingService.findCompletedBookingsForUser(currentUser.getId());
-
-		// Debugging Output
-		System.out.println("Current logged-in user: " + currentUser.getName() + " (ID: " + currentUser.getId() + ")");
-		System.out.println("Completed bookings available for feedback:");
-		completedBookings.forEach(b -> System.out.println("Booking ID: " + b.getId() + ", Requester: "
-				+ b.getRequester().getName() + ", Worker: " + b.getWorker().getName()));
 
 		model.addAttribute("completedBookings", completedBookings);
 		model.addAttribute("currentUser", currentUser);
 		return "feedback/leave-feedback";
 	}
 
-	/**
-	 * Submit feedback for a completed booking.
-	 */
 	@PostMapping("/submit")
 	public String submitFeedback(@RequestParam Long bookingId, @RequestParam int rating, @RequestParam String comment) {
 		User currentUser = getCurrentUser();
-
-		System.out.println("🔎 Submitting feedback for Booking ID: " + bookingId);
-
 		Booking booking = bookingService.getBookingById(bookingId);
 
-		if (booking == null) {
-			System.out.println("❌ ERROR: Booking not found for ID: " + bookingId);
+		if (booking == null || !"COMPLETED".equals(booking.getStatus().name())) {
 			return "redirect:/feedback/leave-review?error=invalid_booking";
 		}
 
-		// **FIX: Convert Enum to String before checking**
-		String bookingStatus = booking.getStatus().name(); // Convert Enum to String
-
-		System.out.println("📌 Booking ID: " + bookingId + " - Status Retrieved: " + bookingStatus);
-
-		if (!"COMPLETED".equals(bookingStatus)) {
-			System.out.println("❌ ERROR: Booking " + bookingId + " is not completed.");
-			return "redirect:/feedback/leave-review?error=invalid_booking";
-		}
-
+		// Ensure only involved users can leave feedback
 		if (!booking.getRequester().getId().equals(currentUser.getId())
 				&& !booking.getWorker().getId().equals(currentUser.getId())) {
-			System.out.println(
-					"❌ ERROR: User " + currentUser.getId() + " is not authorized to review booking " + bookingId);
 			return "redirect:/feedback/leave-review?error=unauthorized";
+		}
+
+		// Check if feedback already exists for this booking from the user
+		Optional<Feedback> existingFeedback = feedbackService.getFeedbackByBookingAndReviewer(bookingId,
+				currentUser.getId());
+
+		if (existingFeedback.isPresent()) {
+			return "redirect:/feedback/leave-review?error=already_reviewed";
 		}
 
 		Feedback feedback = new Feedback();
@@ -88,18 +68,31 @@ public class FeedbackController {
 		feedback.setReviewer(currentUser);
 		feedback.setRating(rating);
 		feedback.setComment(comment);
-		feedback.setReviewee(booking.getRequester().getId().equals(currentUser.getId()) ? booking.getWorker()
-				: booking.getRequester());
+
+		// Determine reviewee based on who is giving feedback
+		boolean isRequester = booking.getRequester().getId().equals(currentUser.getId());
+		feedback.setReviewee(isRequester ? booking.getWorker() : booking.getRequester());
 
 		feedbackService.saveFeedback(feedback);
 
-		System.out.println("✅ Feedback submitted successfully for Booking ID: " + bookingId);
-		return "redirect:/requester/bookings?success=feedback_submitted";
+		// ✅ Redirect to the correct booking page
+		return isRequester ? "redirect:/requester/bookings?success=feedback_submitted"
+				: "redirect:/worker/bookings?success=feedback_submitted";
 	}
 
-	/**
-	 * Fetch the currently logged-in user.
-	 */
+	@GetMapping("/view/{bookingId}")
+	public String viewFeedback(@PathVariable Long bookingId, Model model) {
+		List<Feedback> feedbackList = feedbackService.getAllFeedbackForBooking(bookingId);
+
+		if (!feedbackList.isEmpty()) {
+			model.addAttribute("feedbackList", feedbackList);
+			return "feedback/view-feedback";
+		} else {
+			model.addAttribute("errorMessage", "No feedback found for this booking.");
+			return "feedback/view-feedback";
+		}
+	}
+
 	private User getCurrentUser() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String email;
@@ -108,22 +101,6 @@ public class FeedbackController {
 		} else {
 			email = principal.toString();
 		}
-
-		User user = userService.findByEmail(email);
-		System.out.println("Current logged-in user: " + user.getName() + " (ID: " + user.getId() + ")");
-		return user;
-	}
-
-	@GetMapping("/view/{bookingId}")
-	public String viewFeedback(@PathVariable Long bookingId, Model model) {
-		Optional<Feedback> feedback = feedbackService.getFeedbackByBookingId(bookingId);
-
-		if (feedback.isPresent()) {
-			model.addAttribute("feedback", feedback.get());
-			return "feedback/view-feedback";
-		} else {
-			model.addAttribute("errorMessage", "No feedback found for this booking.");
-			return "feedback/view-feedback";
-		}
+		return userService.findByEmail(email);
 	}
 }

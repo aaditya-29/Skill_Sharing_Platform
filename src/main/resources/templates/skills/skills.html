@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Skills</title>
+<title>All Skills</title>
 </head>
 <body>
-    <div th:insert="fragments/navbar :: body"></div>
+	<h2>All Available Skills</h2>
 
-    <h2>Available Skills</h2>
-    <h3>Your Skills:</h3>
-	<ul>
-		<li th:each="skill : ${skills}"><span
-			th:text="${skill.skillName}"></span> — <span
-			th:text="${skill.category}"></span> — <span
-			th:text="${skill.location}"></span> — ₹<span th:text="${skill.price}"></span>
-			per hour</li>
-	</ul>
+	<!-- Include Navbar -->
+	<div th:insert="fragments/navbar :: body"></div>
 
-	<hr>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>Skill Name</th>
+				<th>Category</th>
+				<th>Location</th>
+				<th>Price (per hour)</th>
+				<th>Worker Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="skill : ${skills}">
+				<td th:text="${skill.skillName}"></td>
+				<td th:text="${skill.category}"></td>
+				<td th:text="${skill.location}"></td>
+				<td>₹<span th:text="${skill.price}"></span></td>
+				<td th:text="${skill.worker != null ? skill.worker.name : 'N/A'}"></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p th:if="${#lists.isEmpty(skills)}">No skills available.</p>
 </body>
 </html>

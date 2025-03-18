@@ -10,28 +10,41 @@ import java.util.List;
 @Service
 public class SkillListingService {
 
-    @Autowired
-    private SkillListingRepository skillListingRepository;
+	@Autowired
+	private SkillListingRepository skillListingRepository;
 
-    public void saveSkill(SkillListing skill) {
-        skillListingRepository.save(skill);
-    }
+	/**
+	 * Save a skill listing
+	 */
+	public void saveSkill(SkillListing skill) {
+		skillListingRepository.save(skill);
+	}
 
-    public List<SkillListing> getSkillsByWorker(Long workerId) {
-        return skillListingRepository.findByWorkerId(workerId);
-    }
+	/**
+	 * Get all skills listed by a specific worker
+	 */
+	public List<SkillListing> getSkillsByWorker(Long workerId) {
+		return skillListingRepository.findByWorkerId(workerId);
+	}
 
-    public List<SkillListing> getAllSkills() {
-        return skillListingRepository.findAll();
-    }
+	/**
+	 * Get all skills
+	 */
+	public List<SkillListing> getAllSkills() {
+		return skillListingRepository.findAll();
+	}
 
-    public List<SkillListing> findBySkillNameContaining(String skill) {
-        return skillListingRepository.findBySkillNameContainingIgnoreCase(skill);
-    }
+	/**
+	 * Search skills by name (case-insensitive)
+	 */
+	public List<SkillListing> findBySkillNameContaining(String skill) {
+		return skillListingRepository.findBySkillNameContainingIgnoreCase(skill);
+	}
 
-
-    public SkillListing getSkillById(Long skillId) {
-        return skillListingRepository.findById(skillId)
-                .orElse(null);  // Return null if no skill is found
-    }
+	/**
+	 * Find a skill by ID
+	 */
+	public SkillListing getSkillById(Long skillId) {
+		return skillListingRepository.findById(skillId).orElse(null);
+	}
 }

@@ -65,4 +65,8 @@ public class BookingService {
 		return bookingRepository.findCompletedBookingsByUser(userId);
 	}
 
+	public List<Booking> findByRequesterId(Long requesterId) {
+		return bookingRepository.findByRequesterId(requesterId);
+	}
+
 }

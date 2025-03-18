@@ -4,27 +4,32 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "feedback", uniqueConstraints = @UniqueConstraint(columnNames = "booking_id"))
+@Table(name = "feedback", uniqueConstraints = { @UniqueConstraint(columnNames = { "booking_id", "reviewer_id" }) // Allow
+																													// 2
+																													// feedback
+																													// per
+																													// booking
+})
 public class Feedback {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToOne
-	@JoinColumn(name = "booking_id", unique = true, nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "booking_id", nullable = false)
 	private Booking booking;
 
 	@ManyToOne
 	@JoinColumn(name = "reviewer_id", nullable = false)
-	private User reviewer;
+	private User reviewer; // The person giving feedback
 
 	@ManyToOne
 	@JoinColumn(name = "reviewee_id", nullable = false)
-	private User reviewee;
+	private User reviewee; // The person receiving feedback
 
 	@Column(nullable = false)
-	private int rating; // Rating out of 5
+	private int rating;
 
 	@Column(length = 500)
 	private String comment;

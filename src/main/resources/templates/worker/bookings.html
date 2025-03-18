@@ -4,6 +4,9 @@
 <title>Your/Worker Bookings</title>
 </head>
 <body>
+
+	<!-- Include Navbar -->
+	<div th:insert="fragments/workerNavbar :: body"></div>
 	<h2>Your/Worker Bookings</h2>
 
 	<table border="1">
@@ -31,17 +34,17 @@
 
 				<!-- Submit Inspection Report Link -->
 				<td><a
-					th:href="@{/inspection/submit/{bookingId}(bookingId=${booking.id})}">
-						Submit Report </a></td>
+					th:href="@{/inspection/submit/{bookingId}(bookingId=${booking.id})}">Submit
+						Report</a></td>
 
 				<!-- View Inspection Report Link -->
 				<td><a
-					th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}">
-						View Report </a></td>
+					th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}">View
+						Report</a></td>
 
-				<!-- Feedback Report Link (Only if booking is COMPLETED) -->
+				<!-- Feedback Report Link (Only if feedbackMap is present) -->
 				<td><span
-					th:if="${feedbackService.getFeedbackByBookingId(booking.id).isPresent()}">
+					th:if="${feedbackMap != null and feedbackMap[booking.id] != null and feedbackMap[booking.id]}">
 						<a
 						th:href="@{/feedback/view/{bookingId}(bookingId=${booking.id})}">View
 							Feedback</a>

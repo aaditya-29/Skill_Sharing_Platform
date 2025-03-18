@@ -7,6 +7,7 @@ import com.example.skillsharing.model.InspectionReport;
 import com.example.skillsharing.model.SkillListing;
 import com.example.skillsharing.model.User;
 import com.example.skillsharing.service.BookingService;
+import com.example.skillsharing.service.FeedbackService;
 import com.example.skillsharing.service.InspectionReportService;
 import com.example.skillsharing.service.SkillListingService;
 import com.example.skillsharing.service.UserService;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class BookingController {
@@ -35,35 +38,45 @@ public class BookingController {
 	private SkillListingService skillListingService;
 
 	@Autowired
+
 	private InspectionReportService inspectionReportService;
+	@Autowired
+	private FeedbackService feedbackService;
 
 	@GetMapping("/requester/bookings")
 	public String showRequesterBookings(Model model, Principal principal) {
-		String email = principal.getName();
-		User requester = userService.findByEmail(email);
+	    String email = principal.getName();
+	    User requester = userService.findByEmail(email);
+	    List<Booking> bookings = bookingService.findByRequesterId(requester.getId());
 
-		if (requester != null) {
-			List<Booking> bookings = bookingService.getBookingsByRequester(requester.getId());
-			model.addAttribute("bookings", bookings);
-		} else {
-			model.addAttribute("bookings", new ArrayList<>());
-		}
+	    // Map to store booking ID -> Feedback Presence for the current requester
+	    Map<Long, Boolean> feedbackMap = new HashMap<>();
+	    
+	    for (Booking booking : bookings) {
+	        // Check if the requester has already left feedback for the worker
+	        boolean hasFeedback = feedbackService.getFeedbackByBookingAndReviewer(booking.getId(), requester.getId()).isPresent();
+	        feedbackMap.put(booking.getId(), hasFeedback);
+	    }
 
-		return "requester/bookings";
+	    model.addAttribute("bookings", bookings);
+	    model.addAttribute("feedbackMap", feedbackMap); // Pass feedback presence
+
+	    return "requester/bookings";
 	}
+
 
 	@GetMapping("/worker/bookings")
 	public String getWorkerBookings(Model model, Principal principal) {
 		String email = principal.getName();
 		User worker = userService.findByEmail(email);
 
+		List<Booking> bookings = new ArrayList<>();
 		if (worker != null) {
-			List<Booking> bookings = bookingService.getBookingsByWorker(worker.getId());
-			model.addAttribute("bookings", bookings);
-		} else {
-			model.addAttribute("bookings", new ArrayList<>());
+			bookings = bookingService.getBookingsByWorker(worker.getId());
 		}
 
+		// Ensure an empty list is passed if no bookings are found
+		model.addAttribute("bookings", bookings != null ? bookings : new ArrayList<>());
 		return "worker/bookings";
 	}
 
@@ -115,43 +128,5 @@ public class BookingController {
 
 		return "error";
 	}
-
-//	@PostMapping("/inspection/submit/{bookingId}")
-//	public String submitInspectionReport(@PathVariable Long bookingId, @ModelAttribute InspectionReport report,
-//			Principal principal) {
-//		Booking booking = bookingService.getBookingById(bookingId);
-//
-//		if (booking == null || !booking.getWorker().getEmail().equals(principal.getName())) {
-//			return "error"; // Prevent unauthorized access
-//		}
-//
-//		// Set booking and timestamp
-//		report.setBooking(booking);
-//		report.setInspectionTime(LocalDateTime.now());
-//
-//		// Save report
-//		inspectionReportService.saveReport(report);
-//
-//		// Update booking status
-//		booking.setStatus(BookingStatus.INSPECTION_DONE);
-//		bookingService.saveBooking(booking);
-//
-//		return "redirect:/worker/bookings";
-//	}
-
-//	@GetMapping("/inspection/view/{bookingId}")
-//	public String viewInspectionReport(@PathVariable Long bookingId, Model model, Principal principal) {
-//		Booking booking = bookingService.getBookingById(bookingId);
-//
-//		if (booking == null || (!booking.getRequester().getEmail().equals(principal.getName())
-//				&& !booking.getWorker().getEmail().equals(principal.getName()))) {
-//			return "error"; // Prevent unauthorized access
-//		}
-//
-//		InspectionReport report = booking.getInspectionReport();
-//		model.addAttribute("report", report);
-//
-//		return "inspection/view";
-//	}
 
 }

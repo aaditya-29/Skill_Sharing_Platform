@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>User Profile</title>
+<style>
+/* Global Styles */
+body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	background-color: #f4f7f6;
+	margin: 0;
+	padding: 0;
+	color: #333;
+}
+
+h2 {
+	text-align: center;
+	color: #4CAF50;
+	font-size: 2.5em;
+	margin-top: 40px;
+	font-weight: 600;
+}
+
+/* Profile Container */
+.profile-container {
+	width: 80%;
+	max-width: 900px;
+	margin: 30px auto;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 15px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Profile Left (Image) */
+.profile-left {
+	flex: 1;
+	text-align: center;
+	margin-right: 30px; /* Add space between image and details */
+}
+
+/* Profile Picture Styling */
+.profile-picture {
+	border-radius: 50%;
+	border: 3px solid #4CAF50;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile Right (Details) */
+.profile-right {
+	flex: 2;
+	text-align: left;
+}
+
+/* Profile Detail */
+.profile-detail {
+	font-size: 18px;
+	margin-bottom: 12px;
+	display: flex;
+	justify-content: space-between;
+	padding: 10px;
+	border-bottom: 1px solid #ddd;
+}
+
+.profile-detail strong {
+	font-size: 1.2em;
+	color: #4CAF50;
+	font-weight: 600;
+}
+
+.profile-detail span {
+	font-size: 1.2em;
+	color: #555;
+}
+
+/* Edit Profile Button */
+.edit-btn {
+	display: inline-block;
+	text-align: center;
+	padding: 12px 30px;
+	font-size: 16px;
+	color: white;
+	background-color: #4CAF50;
+	border-radius: 30px;
+	text-decoration: none;
+	margin-top: 20px;
+	font-weight: bold;
+	transition: background-color 0.3s, transform 0.3s;
+}
+
+.edit-btn:hover {
+	background-color: #388E3C;
+	transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media ( max-width : 768px) {
+	.profile-container {
+		flex-direction: column;
+		width: 90%;
+	}
+	.profile-left {
+		margin-right: 0;
+		margin-bottom: 20px;
+	}
+	.profile-right {
+		text-align: center;
+	}
+	h2 {
+		font-size: 2em;
+	}
+	.profile-detail {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.profile-detail strong {
+		width: auto;
+	}
+}
+</style>
+</head>
+<body>
+
+	<h2>User Profile</h2>
+
+	<div class="profile-container">
+		<!-- Profile Left (Profile Picture) -->
+		<div class="profile-left">
+			<img class="profile-picture" th:src="@{/profile/image}"
+				alt="Profile Picture" width="150" height="150">
+
+
+		</div>
+
+		<!-- Profile Right (Details) -->
+		<div class="profile-right">
+			<div class="profile-detail">
+				<strong>Name:</strong> <span th:text="${user.name}"></span>
+			</div>
+			<div class="profile-detail">
+				<strong>Email:</strong> <span th:text="${user.email}"></span>
+			</div>
+			<div class="profile-detail">
+				<strong>Contact:</strong> <span th:text="${user.contactNumber}"></span>
+			</div>
+			<div class="profile-detail">
+				<strong>Address:</strong> <span th:text="${user.address}"></span>
+			</div>
+			<div class="profile-detail">
+				<strong>Role:</strong> <span th:text="${user.role}"></span>
+			</div>
+			<div class="profile-detail">
+				<strong>Rating:</strong> <span th:text="${averageRating}"></span>
+			</div>
+
+			<!-- Edit Profile Button -->
+			<a href="/profile/update" class="edit-btn">Edit Profile</a>
+		</div>
+	</div>
+	<script th:src="@{/cursorParticles.js}"></script>
+
+</body>
+</html>

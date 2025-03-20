@@ -69,4 +69,11 @@ public class BookingService {
 		return bookingRepository.findByRequesterId(requesterId);
 	}
 
+	public void deleteBooking(Long id) {
+		bookingRepository.deleteById(id);
+	}
+
+	public void updateBooking(Booking booking) {
+		bookingRepository.save(booking);
+	}
 }

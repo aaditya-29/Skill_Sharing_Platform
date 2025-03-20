@@ -1,31 +1,212 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Requester Dashboard</title>
+
+<!-- Basic Styles -->
+<style>
+/* Global Styles */
+body {
+	font-family: 'Roboto', sans-serif;
+	background-color: #f5f5f5; /* Changed background to light gray */
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 50px;
+	color: #333; /* Dark text color for better readability */
+}
+
+h2 {
+	font-size: 38px;
+	color: #333; /* Dark text color */
+	margin-bottom: 40px;
+	font-weight: bold;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.worker-list {
+	display: flex;
+	flex-direction: column;
+	gap: 40px; /* Increased gap between cards */
+	width: 100%;
+	max-width: 1000px;
+	padding: 20px;
+	margin-bottom: 40px;
+}
+
+/* Worker Card Styling */
+.worker-card {
+	background-color: #fff;
+	border-radius: 12px;
+	padding: 25px;
+	box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	transition: transform 0.3s, box-shadow 0.3s;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #ddd;
+	margin-bottom: 30px; /* Margin between the cards */
+}
+
+.worker-card:hover {
+	transform: translateY(-10px);
+	box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
+}
+
+.worker-card img {
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 5px solid #4CAF50;
+	margin-bottom: 20px;
+}
+
+.worker-details {
+	margin-top: 15px;
+	text-align: center;
+}
+
+.worker-details h3 {
+	font-size: 22px;
+	color: #333;
+	font-weight: 600;
+	margin-bottom: 10px;
+}
+
+.worker-details p {
+	font-size: 16px;
+	color: #555;
+	margin: 5px 0;
+}
+
+.worker-details p strong {
+	color: #333;
+}
+
+.book-now-btn {
+	display: inline-block;
+	background-color: #4CAF50;
+	color: white;
+	text-decoration: none;
+	padding: 12px 25px;
+	border-radius: 25px;
+	margin-top: 20px;
+	transition: background-color 0.3s ease, transform 0.3s ease;
+	font-size: 16px;
+	font-weight: 500;
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.book-now-btn:hover {
+	background-color: #45a049;
+	transform: scale(1.05);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* No Workers Available Styling */
+.no-workers-message {
+	font-size: 18px;
+	color: #333; /* Dark text for better visibility */
+	font-weight: 500;
+	margin-top: 50px;
+}
+
+/* Responsive Styles */
+@media ( max-width : 768px) {
+	h2 {
+		font-size: 30px;
+	}
+	.worker-list {
+		gap: 20px;
+	}
+}
+
+@media ( max-width : 480px) {
+	h2 {
+		font-size: 26px;
+	}
+	.worker-card {
+		padding: 20px;
+		width: 100%;
+	}
+	.worker-card img {
+		width: 100px;
+		height: 100px;
+	}
+}
+</style>
 </head>
 <body>
-	<h2>Welcome, Requester!</h2>
 
-	<!-- Include Navbar -->
-	<div th:insert="fragments/navbar :: body"></div>
+	<h2>Available Workers</h2>
 
-	<!-- Search Form for Skills -->
-	<form action="/skills/search" method="get">
-		<input type="text" name="skill" placeholder="Search for a skill">
-		<button type="submit">Search</button>
-	</form>
+	<div class="worker-list">
 
-	<!-- Display search results -->
-	<h3>Search Results:</h3>
-	<ul>
-		<li th:each="skill : ${skills}"><span
-			th:text="${skill.skillName}"></span> — <span
-			th:text="${skill.category}"></span> — <span
-			th:text="${skill.location}"></span> — ₹<span th:text="${skill.price}"></span>
-			per hour (Worker: <span
-			th:text="${skill.worker != null ? skill.worker.name : 'N/A'}"></span>)
-		</li>
-	</ul>
-	<p th:if="${#lists.isEmpty(skills)}">No matching skills found.</p>
+		<!-- Include Navbar -->
+		<div th:insert="~{fragments/navbar :: body}"></div>
+		<!-- Display Worker List -->
+		<div th:if="${skills != null and skills.size() > 0}">
+			<div class="worker-card" th:each="skill : ${skills}">
+				<!-- Profile Picture -->
+				<img
+					th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}"
+					alt="Profile Picture" class="profile-pic">
+				<!-- Worker Details -->
+				<div class="worker-details">
+					<h3 th:text="${skill.worker.name ?: 'Unknown Worker'}"></h3>
+					<p>
+						<strong>Contact:</strong> <span
+							th:text="${skill.worker.contactNumber ?: 'N/A'}"></span>
+					</p>
+					<p>
+						<strong>Skill:</strong> <span
+							th:text="${skill.skillName ?: 'Not Specified'}"></span>
+					</p>
+					<p>
+						<strong>Category:</strong> <span
+							th:text="${skill.category ?: 'N/A'}"></span>
+					</p>
+					<p>
+						<strong>Location:</strong> <span
+							th:text="${skill.location ?: 'Unknown'}"></span>
+					</p>
+					<p>
+						<strong>Price:</strong> ₹ <span th:text="${skill.price ?: '0'}"></span>
+						per hour
+					</p>
+
+					<!-- Book Now Button -->
+					<a th:href="@{/booking/{workerId}(workerId=${skill.worker.id})}"
+						class="book-now-btn">Book Now</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Fallback Message for No Workers -->
+		<div th:if="${skills == null or skills.size() == 0}"
+			class="no-workers-message">
+			<p>No workers available at the moment. Please check back later!</p>
+		</div>
+	</div>
+
+	<!-- Optional: Smooth Scroll for 'Book Now' Button -->
+	<script>
+        document.querySelectorAll('.book-now-btn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                alert('Redirecting to booking page...');
+                window.location.href = button.getAttribute('href');
+            });
+        });
+    </script>
+
 </body>
 </html>

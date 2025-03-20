@@ -2,20 +2,82 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Inspection Report</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .report-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h2>Inspection Report</h2>
 
-    <p><strong>Initial Inspection:</strong></p>
-    <p th:text="${report.initialInspection}"></p>
+    <div class="report-container">
+        <h2>Inspection Report</h2>
 
-    <p><strong>Required Work:</strong></p>
-    <p th:text="${report.requiredWork}"></p>
+        <!-- Initial Inspection -->
+        <p><strong>Initial Inspection:</strong></p>
+        <p th:text="${report.initialInspection}"></p>
 
-    <p><strong>Estimated Cost:</strong> $<span th:text="${report.estimatedCost}"></span></p>
+        <!-- Required Work -->
+        <p><strong>Required Work:</strong></p>
+        <p th:text="${report.requiredWork}"></p>
 
-    <p><strong>Inspection Time:</strong> <span th:text="${#temporals.format(report.inspectionTime, 'yyyy-MM-dd HH:mm')}"></span></p>
+        <!-- Estimated Cost -->
+        <p><strong>Estimated Cost:</strong> $<span th:text="${report.estimatedCost}"></span></p>
 
-    <a href="/dashboard">Back to Dashboard</a>
+        <!-- Inspection Time -->
+        <p><strong>Inspection Time:</strong> 
+            <span th:text="${#temporals.format(report.inspectionTime, 'yyyy-MM-dd HH:mm')}"></span>
+        </p>
+
+        <!-- Back to Dashboard -->
+        <a href="/dashboard" class="back-button">Back to Dashboard</a>
+    </div>
+	<script th:src="@{/cursorParticles.js}"></script>
+
 </body>
 </html>

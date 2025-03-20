@@ -3,6 +3,8 @@ package com.example.skillsharing.model;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -24,7 +26,18 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	private double rating;
+	@Column(name = "rating")
+	private double rating; // Stores the average rating of the user
+
+	@Column(nullable = false, unique = true)
+	private String contactNumber; // Contact number is required
+
+	@Column(nullable = false)
+	private String address; // Address is required
+
+	@Lob
+	@Column(columnDefinition = "LONGBLOB")
+	private byte[] profilePicture; // Store image as a BLOB
 
 	// Default constructor
 	public User() {
@@ -77,6 +90,37 @@ public class User {
 
 	public void setRating(double rating) {
 		this.rating = rating;
+	}
+
+	public String getContactNumber() {
+		return contactNumber;
+	}
+
+	public void setContactNumber(String contactNumber) {
+		this.contactNumber = contactNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public byte[] getProfilePicture() {
+		return profilePicture;
+	}
+
+	public void setProfilePicture(byte[] profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+
+	public String getProfilePicUrl() {
+		if (profilePicture != null && profilePicture.length > 0) {
+			return "data:image/png;base64," + Base64.getEncoder().encodeToString(profilePicture);
+		}
+		return "/uploads/default.jpg"; // Default image in static folder
 	}
 
 	// Spring Security methods

@@ -25,21 +25,39 @@ public class InspectionController {
 
 	// Show Inspection Report Form
 	@GetMapping("/submit/{bookingId}")
-	public String showInspectionForm(@PathVariable Long bookingId, Model model) {
+	public String showInspectionForm(@PathVariable Long bookingId, Model model, Principal principal) {
+		Booking booking = bookingService.getBookingById(bookingId);
+
+		// Ensure the booking exists and is assigned to the logged-in worker
+		if (booking == null || !booking.getWorker().getEmail().equals(principal.getName())) {
+			return "error"; // Unauthorized access
+		}
+
+		// Check if an inspection report already exists
+		boolean inspectionDone = (inspectionReportService.getReportByBookingId(bookingId) != null);
+
 		model.addAttribute("bookingId", bookingId);
 		model.addAttribute("report", new InspectionReport());
+		model.addAttribute("inspectionDone", inspectionDone); // Pass to the template
+
 		return "inspection/inspection-form";
 	}
 
 	// Handle Inspection Report Submission
 	@PostMapping("/submit/{bookingId}")
 	public String submitInspectionReport(@PathVariable Long bookingId, @ModelAttribute InspectionReport report,
-			Principal principal) {
+			Principal principal, Model model) {
 		Booking booking = bookingService.getBookingById(bookingId);
 
 		// Ensure booking exists and is assigned to the logged-in worker
 		if (booking == null || !booking.getWorker().getEmail().equals(principal.getName())) {
 			return "error"; // Prevent unauthorized access
+		}
+
+		// Check if an inspection report already exists
+		if (inspectionReportService.getReportByBookingId(bookingId) != null) {
+			model.addAttribute("error", "Inspection report has already been submitted for this booking.");
+			return "redirect:/worker/bookings";
 		}
 
 		// Save Inspection Report

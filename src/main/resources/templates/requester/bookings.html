@@ -2,15 +2,101 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>View Bookings</title>
+<style>
+/* Global Styles */
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f2f2f2;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	height: 100vh;
+	padding-top: 20px;
+}
+
+h2 {
+	color: #333;
+	font-size: 32px;
+	margin-bottom: 30px;
+}
+
+/* Navbar Styling */
+.navbar {
+	background-color: #4CAF50;
+	width: 100%;
+	padding: 10px;
+	color: white;
+	text-align: center;
+}
+
+/* Table Styling */
+table {
+	width: 90%;
+	max-width: 1000px;
+	border-collapse: collapse;
+	margin-top: 30px;
+}
+
+th, td {
+	padding: 12px;
+	text-align: center;
+	border: 1px solid #ddd;
+}
+
+th {
+	background-color: #4CAF50;
+	color: white;
+}
+
+td {
+	background-color: white;
+}
+
+a {
+	color: #4CAF50;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/* No Bookings Message */
+.no-bookings {
+	color: #f44336;
+	font-size: 18px;
+	margin-top: 20px;
+}
+
+/* Responsive Design */
+@media ( max-width : 768px) {
+	table {
+		width: 90%;
+		font-size: 14px;
+	}
+	th, td {
+		padding: 10px;
+	}
+}
+</style>
 </head>
 <body>
-	<div th:insert="~{fragments/navbar :: body}"></div>
+
+
 
 	<h2>Your/Requester Bookings</h2>
 
-	<table border="1">
+	<!-- Include Navbar -->
+	<div th:insert="~{fragments/navbar :: body}"></div>
+
+	<!-- Bookings Table -->
+	<table>
 		<thead>
 			<tr>
+				<th>Booking ID</th>
 				<th>Worker</th>
 				<th>Skill</th>
 				<th>Start Time</th>
@@ -22,6 +108,7 @@
 		</thead>
 		<tbody>
 			<tr th:each="booking : ${bookings}">
+				<td th:text="${booking.id}"></td>
 				<td
 					th:text="${booking.worker != null ? booking.worker.name : 'N/A'}"></td>
 				<td
@@ -32,21 +119,32 @@
 					th:text="${#temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></td>
 				<td th:text="${booking.status}"></td>
 
-				<!-- View Inspection Report Link -->
-				<td><a
-					th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}">View
-						Report</a></td>
-
-				<!-- Feedback Report Link (Only if feedback exists) -->
-				<td><span th:if="${feedbackMap[booking.id]}"> <a
+				<!-- View Inspection Report Link (Only if report exists) -->
+				<td><span
+					th:if="${inspectionReportMap != null and inspectionReportMap[booking.id] != null}">
+						<a
+						th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}">View
+							Report</a>
+				</span> <span
+					th:unless="${inspectionReportMap != null and inspectionReportMap[booking.id] != null}">N/A</span>
+				</td>
+				<td><span
+					th:if="${feedbackMap != null and feedbackMap[booking.id] != null and feedbackMap[booking.id]}">
+						<a
 						th:href="@{/feedback/view/{bookingId}(bookingId=${booking.id})}">View
 							Feedback</a>
-				</span></td>
+				</span> <span
+					th:unless="${feedbackMap != null and feedbackMap[booking.id] != null and feedbackMap[booking.id]}">N/A</span>
+				</td>
 
 			</tr>
 		</tbody>
 	</table>
 
-	<p th:if="${#lists.isEmpty(bookings)}">No bookings available.</p>
+	<!-- No Bookings Available Message -->
+	<p th:if="${#lists.isEmpty(bookings)}" class="no-bookings">No
+		bookings available.</p>
+	<script th:src="@{/cursorParticles.js}"></script>
+
 </body>
 </html>

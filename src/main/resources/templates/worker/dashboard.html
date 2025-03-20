@@ -1,30 +1,196 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Worker Dashboard</title>
+    <title>Worker Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            padding-top: 20px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 36px;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: #4CAF50;
+            width: 100%;
+            padding: 15px;
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* Skill List Styling */
+        .skills-list {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 30px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .skills-list li {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .skills-list li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Skill Details */
+        .skill-details {
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .skill-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .skill-info {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 8px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .skill-info span {
+            font-weight: 500;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-top: 12px;
+        }
+
+        /* Icons */
+        .icon {
+            font-size: 18px;
+            color: #4CAF50;
+        }
+
+        /* Styling for the HR separator */
+        hr {
+            width: 80%;
+            border: 1px solid #ccc;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        /* Empty Skill Message */
+        p {
+            font-size: 18px;
+            color: #555;
+            text-align: center;
+        }
+
+        /* Animations for Text */
+        .welcome-text {
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Styling */
+        @media (max-width: 600px) {
+            .skills-list {
+                width: 100%;
+                padding: 0;
+            }
+            .skills-list li {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-	<h2>Welcome to Your Dashboard!</h2>
 
-	<!-- Include Navbar -->
-	<div th:insert="fragments/workerNavbar :: body"></div>
+    <!-- ✅ Include Worker Navbar -->
+    <div th:insert="fragments/workerNavbar :: body"></div>
 
+    <h2 class="welcome-text">
+        Welcome, <span th:text="${worker.name}"></span>!
+    </h2>
 
-	<br>
-	<br>
+    <h3>Your Expertise:</h3>
 
+    <!-- ✅ Handle when no skills are listed -->
+    <p th:if="${#lists.isEmpty(skills)}">You haven't listed any skills yet.</p>
 
+    <ul th:if="${not #lists.isEmpty(skills)}" class="skills-list">
+        <li th:each="skill : ${skills}">
+            <!-- Skill Details -->
+            <div class="skill-details">
+                <!-- Skill Name -->
+                <div class="skill-name" th:text="${skill.skillName}"></div>
 
-	<h3>Your Skills:</h3>
-	<ul>
-		<li th:each="skill : ${skills}"><span
-			th:text="${skill.skillName}"></span> — <span
-			th:text="${skill.category}"></span> — <span
-			th:text="${skill.location}"></span> — ₹<span th:text="${skill.price}"></span>
-			per hour</li>
-	</ul>
+                <!-- Skill Info: Category, Location -->
+                <div class="skill-info">
+                    <i class="icon">📂</i><span>Category: </span><span th:text="${skill.category}"></span>
+                </div>
+                <div class="skill-info">
+                    <i class="icon">📍</i><span>Location: </span><span th:text="${skill.location}"></span>
+                </div>
+            </div>
 
-	<hr>
+            <!-- Price -->
+            <div class="price">
+                ₹ <span th:text="${skill.price}"></span> per hour
+            </div>
+        </li>
+    </ul>
+
+    <hr>
+
+    <script th:src="@{/cursorParticles.js}"></script>
 
 </body>
 </html>

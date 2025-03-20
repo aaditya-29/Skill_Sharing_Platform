@@ -3,6 +3,9 @@ package com.example.skillsharing.service;
 import com.example.skillsharing.model.SkillListing;
 import com.example.skillsharing.repository.SkillListingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +13,13 @@ import java.util.List;
 @Service
 public class SkillListingService {
 
+	private final SkillListingRepository skillListingRepository;
+
+	// ✅ Constructor-based dependency injection (Recommended)
 	@Autowired
-	private SkillListingRepository skillListingRepository;
+	public SkillListingService(SkillListingRepository skillListingRepository) {
+		this.skillListingRepository = skillListingRepository;
+	}
 
 	/**
 	 * Save a skill listing
@@ -20,9 +28,6 @@ public class SkillListingService {
 		skillListingRepository.save(skill);
 	}
 
-	/**
-	 * Get all skills listed by a specific worker
-	 */
 	public List<SkillListing> getSkillsByWorker(Long workerId) {
 		return skillListingRepository.findByWorkerId(workerId);
 	}
@@ -46,5 +51,13 @@ public class SkillListingService {
 	 */
 	public SkillListing getSkillById(Long skillId) {
 		return skillListingRepository.findById(skillId).orElse(null);
+	}
+
+	/**
+	 * Find random workers with skills (Limited to 10)
+	 */
+	public List<SkillListing> findRandomWorkersWithSkills() {
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id"));
+		return skillListingRepository.findAll(pageable).getContent();
 	}
 }

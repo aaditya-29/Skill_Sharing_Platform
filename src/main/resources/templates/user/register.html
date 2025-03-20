@@ -1,20 +1,155 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Register</title>
+    <title>Register</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        /* Form Container */
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Labels */
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Input Fields */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus,
+        select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        /* Button Styles */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Error message styles */
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+
+        /* Redirect link styles */
+        .redirect-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .redirect-link a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .redirect-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Styling */
+        @media ( max-width : 500px) {
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-	<h2>Register</h2>
-	<form th:action="@{/auth/register}" th:object="${user}" method="post">
-		<input type="text" th:field="*{name}" placeholder="Full Name" required />
-		<input type="email" th:field="*{email}" placeholder="Email" required />
-		<input type="password" th:field="*{password}" placeholder="Password"
-			required /> <select th:field="*{role}">
-			<option value="WORKER">Worker</option>
-			<option value="REQUESTER">Requester</option>
-		</select>
-		<button type="submit">Register</button>
-		
-	</form>
+    <div class="form-container">
+        <h2>Register</h2>
+
+        <form th:action="@{/auth/register}" th:object="${user}" method="post">
+
+            <!-- Name Field -->
+            <label for="name">Full Name</label> 
+            <input type="text" th:field="*{name}" id="name" placeholder="Full Name" required />
+            <p class="error" th:if="${nameError}" th:text="${nameError}"></p>
+
+            <!-- Email Field -->
+            <label for="email">Email</label> 
+            <input type="email" th:field="*{email}" id="email" placeholder="Email" required />
+            <p class="error" th:if="${emailError}" th:text="${emailError}"></p>
+
+            <!-- Password Field -->
+            <label for="password">Password</label> 
+            <input type="password" th:field="*{password}" id="password" placeholder="Password (min 6 characters)" required />
+            <p class="error" th:if="${passwordError}" th:text="${passwordError}"></p>
+
+            <!-- Contact Number Field -->
+            <label for="contactNumber">Contact Number</label> 
+            <input type="text" th:field="*{contactNumber}" id="contactNumber" placeholder="Contact Number" required />
+            <p class="error" th:if="${contactError}" th:text="${contactError}"></p>
+
+            <!-- Address Field -->
+            <label for="address">Address</label> 
+            <input type="text" th:field="*{address}" id="address" placeholder="Address" required />
+            <p class="error" th:if="${addressError}" th:text="${addressError}"></p>
+
+            <!-- Role Selection -->
+            <label for="role">Select Role</label> 
+            <select th:field="*{role}" id="role">
+                <option value="WORKER">Worker</option>
+                <option value="REQUESTER">Requester</option>
+            </select>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <!-- Redirect Link for Already Registered -->
+        <div class="redirect-link">
+            <p>Already have an account? <a th:href="@{/auth/login}">Login here</a></p>
+        </div>
+    </div>
+    	<script th:src="@{/cursorParticles.js}"></script>
+    
 </body>
 </html>

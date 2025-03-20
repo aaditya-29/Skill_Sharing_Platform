@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 @Service
 public class FeedbackService {
@@ -30,4 +31,11 @@ public class FeedbackService {
 		return feedbackRepository.findAllByBookingId(bookingId);
 	}
 
+	public double getAverageRatingForUser(Long userId) {
+		List<Double> ratings = feedbackRepository.findRatingsByUserId(userId);
+
+		OptionalDouble average = ratings.stream().mapToDouble(Double::doubleValue).average();
+
+		return average.isPresent() ? average.getAsDouble() : 0.0; // Return 0 if no ratings
+	}
 }

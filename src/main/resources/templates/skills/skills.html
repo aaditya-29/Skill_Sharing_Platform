@@ -1,35 +1,92 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>All Skills</title>
+    <title>All Skills</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        p {
+            text-align: center;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                width: 95%;
+            }
+
+            th, td {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+    </style>
 </head>
 <body>
-	<h2>All Available Skills</h2>
+    <h2>All Available Skills</h2>
 
-	<!-- Include Navbar -->
-	<div th:insert="fragments/navbar :: body"></div>
+    <!-- Include Navbar -->
+    <div th:insert="fragments/navbar :: body"></div>
 
-	<table border="1">
-		<thead>
-			<tr>
-				<th>Skill Name</th>
-				<th>Category</th>
-				<th>Location</th>
-				<th>Price (per hour)</th>
-				<th>Worker Name</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="skill : ${skills}">
-				<td th:text="${skill.skillName}"></td>
-				<td th:text="${skill.category}"></td>
-				<td th:text="${skill.location}"></td>
-				<td>₹<span th:text="${skill.price}"></span></td>
-				<td th:text="${skill.worker != null ? skill.worker.name : 'N/A'}"></td>
-			</tr>
-		</tbody>
-	</table>
+    <table>
+        <thead>
+            <tr>
+                <th>Skill Name</th>
+                <th>Category</th>
+                <th>Location</th>
+                <th>Price (per hour)</th>
+                <th>Worker Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="skill : ${skills}">
+                <td th:text="${skill.skillName}"></td>
+                <td th:text="${skill.category}"></td>
+                <td th:text="${skill.location}"></td>
+                <td>₹<span th:text="${skill.price}"></span></td>
+                <td th:text="${skill.worker != null ? skill.worker.name : 'N/A'}"></td>
+            </tr>
+        </tbody>
+    </table>
 
-	<p th:if="${#lists.isEmpty(skills)}">No skills available.</p>
+    <p th:if="${#lists.isEmpty(skills)}">No skills available.</p>
+    	<script th:src="@{/cursorParticles.js}"></script>
+    
 </body>
 </html>

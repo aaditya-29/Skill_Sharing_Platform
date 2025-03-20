@@ -1,12 +1,50 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+<style>
+/* Navbar Styling */
+nav {
+	background-color: #4CAF50;
+	padding: 12px 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+nav a {
+	color: white;
+	text-decoration: none;
+	font-size: 16px;
+	margin: 0 15px;
+	padding: 8px 15px;
+	border-radius: 4px;
+}
+
+nav a:hover {
+	background-color: #45a049;
+	color: #fff;
+	transition: background-color 0.3s;
+}
+
+/* Responsive Navbar */
+@media ( max-width : 600px) {
+	nav {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	nav a {
+		margin: 5px 0;
+	}
+}
+</style>
+</head>
 <body>
-    <nav>
-        <a href="/requester/dashboard">Home</a> |
-        <a href="/skills/all">All Skills</a> |
-        <a href="/requester/bookings">View Bookings</a> |
-        <a href="/feedback/leave-review">Leave a Review</a> |
-        <a href="/auth/login">Logout</a>
-    </nav>
+	<nav>
+		<a href="/requester/dashboard">Home</a> | <a href="/skills/search">Search</a>
+		| <a href="/skills/all">All Skills</a> | <a href="/requester/bookings">View
+			Bookings</a> | <a href="/feedback/leave-review">Leave a Review</a> | <a
+			href="/profile"> View Profile</a> | <a href="/auth/login">Logout</a>
+	</nav>
 </body>
 </html>

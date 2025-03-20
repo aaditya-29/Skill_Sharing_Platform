@@ -2,6 +2,8 @@ package com.example.skillsharing.repository;
 
 import com.example.skillsharing.model.Feedback;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +16,8 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
 	// Find all feedback for a booking (both requester & worker feedback)
 	List<Feedback> findAllByBookingId(Long bookingId);
+
+	// ✅ Added method to get all ratings for a user
+	@Query("SELECT f.rating FROM Feedback f WHERE f.reviewee.id = :userId")
+	List<Double> findRatingsByUserId(@Param("userId") Long userId);
 }

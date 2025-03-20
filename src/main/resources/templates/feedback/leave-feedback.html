@@ -2,40 +2,92 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Leave Feedback</title>
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f9;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+.form-container {
+	background-color: #fff;
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	width: 100%;
+	max-width: 500px;
+}
+
+label {
+	font-size: 16px;
+	margin-bottom: 5px;
+	display: block;
+}
+
+select, input[type="number"], textarea {
+	width: 100%;
+	padding: 12px;
+	margin: 8px 0 20px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 16px;
+}
+
+button {
+	width: 100%;
+	padding: 12px;
+	background-color: #4CAF50;
+	border: none;
+	color: white;
+	font-size: 16px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #45a049;
+}
+
+.error {
+	color: red;
+	font-size: 14px;
+}
+</style>
 </head>
 <body>
-	<h2>Leave Feedback</h2>
 
-	<p th:if="${completedBookings.isEmpty()}">No completed bookings
-		available for review.</p>
+	<div class="form-container">
+		<h2>Leave Feedback</h2>
 
-<form th:if="${!completedBookings.isEmpty()}"
-      th:action="@{/feedback/submit}" 
-      method="post"
-      onsubmit="return validateForm()">
 
-    <label>Select User to Review:</label>
-    <select name="bookingId" id="bookingId" required>
-        <option value="" disabled selected>Select a user</option>
-        <option th:each="booking : ${completedBookings}"
-                th:value="${booking.id}"
-                th:text="${booking.requester.id == currentUser.id ? booking.worker.name : booking.requester.name}">
-        </option>
-    </select>
-    <br />
 
-    <label>Rating (1-5):</label>
-    <input type="number" name="rating" id="rating" min="1" max="5" required /><br />
+		<form th:action="@{/feedback/submit}" method="post"
+			onsubmit="return validateForm()">
+			<label for="bookingId">Select Completed Booking:</label> <select
+				name="bookingId" id="bookingId" required>
+				<option value="">-- Select Booking --</option>
+				<option th:each="booking : ${completedBookings}"
+					th:value="${booking.id}" th:text="'Booking #' + ${booking.id}"></option>
+			</select> <label for="rating">Rating (1-5):</label> <input type="number"
+				id="rating" name="rating" min="1" max="5" required> <label
+				for="comment">Comment:</label>
+			<textarea id="comment" name="comment" required></textarea>
 
-    <label>Comment:</label>
-    <textarea name="comment" id="comment" required></textarea>
-    <br />
+			<button type="submit">Submit Feedback</button>
 
-    <button type="submit">Submit Feedback</button>
+			<p th:if="${param.error}" class="error"
+				th:text="'Error: ' + ${param.error}"></p>
+			<p th:if="${param.success}" style="color: green;">Feedback
+				submitted successfully!</p>
+		</form>
+	</div>
 
-</form>
-
-<script>
+	<script>
     function validateForm() {
         let bookingId = document.getElementById("bookingId").value;
         let rating = document.getElementById("rating").value;
@@ -45,22 +97,18 @@
             alert("Please select a booking!");
             return false;
         }
-
-        console.log("Submitting feedback for Booking ID:", bookingId);
+        if (!rating || rating < 1 || rating > 5) {
+            alert("Please provide a rating between 1 and 5!");
+            return false;
+        }
+        if (!comment) {
+            alert("Please provide a comment!");
+            return false;
+        }
         return true;
     }
 </script>
-
-
-	<h3>Debugging: Completed Bookings</h3>
-	<ul>
-		<li th:each="booking : ${completedBookings}">Booking ID: <span
-			th:text="${booking.id}"></span> | Requester: <span
-			th:text="${booking.requester != null ? booking.requester.name : 'N/A'}"></span>
-			| Worker: <span
-			th:text="${booking.worker != null ? booking.worker.name : 'N/A'}"></span>
-		</li>
-	</ul>
+	<script th:src="@{/cursorParticles.js}"></script>
 
 </body>
 </html>

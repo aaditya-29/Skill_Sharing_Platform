@@ -1,40 +1,159 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Search Workers</title>
+    <title>Search Workers</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        hr {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border: 0;
+            border-top: 1px solid #ccc;
+        }
+
+        /* Results Section */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        li span {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        li form {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        li label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        li input[type="datetime-local"] {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* No Results Message */
+        p {
+            text-align: center;
+            color: #999;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
-	<h2>Search for Workers by Skill</h2>
+    <h2>Search for Workers by Skill</h2>
 
-	<!-- Search Form -->
-	<form th:action="@{/skills/search}" method="get">
-		<input type="text" name="skill"
-			placeholder="Enter skill (e.g., plumber)" required>
-		<button type="submit">Search</button>
-	</form>
+    <!-- Search Form -->
+    <form th:action="@{/skills/search}" method="get">
+        <input type="text" name="skill" placeholder="Enter skill (e.g., plumber)" required>
+        <button type="submit">Search</button>
+    </form>
 
-	<hr>
+    <hr>
 
-	<!-- Search Results -->
-	<h3>Search Results</h3>
-	<ul>
-		<li th:each="skill : ${skills}"><span
-			th:text="${skill.worker.name}">Worker Name</span> - <span
-			th:text="${skill.skillName}">Skill</span> - <span
-			th:text="${skill.category}">Category</span> - <span
-			th:text="${skill.location}">Location</span> - ₹<span
-			th:text="${skill.price}">Price</span> <!-- Book Now Form -->
-			<form th:action="@{/bookings/create}" method="post">
-				<input type="hidden" name="skillId" th:value="${skill.id}" /> <input
-					type="hidden" name="workerId" th:value="${skill.worker.id}" /> <label>Start
-					Time:</label> <input type="datetime-local" name="startTime" required /> <label>End
-					Time:</label> <input type="datetime-local" name="endTime" required />
-				<button type="submit">Book Now</button>
-			</form></li>
-	</ul>
+    <!-- Search Results -->
+    <h3>Search Results</h3>
+    <ul>
+        <li th:each="skill : ${skills}">
+            <div>
+                <span th:text="${skill.worker.name}">Worker Name</span> - 
+                <span th:text="${skill.skillName}">Skill</span> - 
+                <span th:text="${skill.category}">Category</span> - 
+                <span th:text="${skill.location}">Location</span> - ₹
+                <span th:text="${skill.price}">Price</span>
+            </div>
 
-	<!-- No results message -->
-	<p th:if="${#lists.isEmpty(skills)}">No workers found with that
-		skill.</p>
+            <!-- Book Now Form -->
+            <form th:action="@{/bookings/create}" method="post">
+                <input type="hidden" name="skillId" th:value="${skill.id}" />
+                <input type="hidden" name="workerId" th:value="${skill.worker.id}" />
+                <label>Start Time:</label>
+                <input type="datetime-local" name="startTime" required />
+                <label>End Time:</label>
+                <input type="datetime-local" name="endTime" required />
+                <button type="submit">Book Now</button>
+            </form>
+        </li>
+    </ul>
+
+    <!-- No results message -->
+    <p th:if="${#lists.isEmpty(skills)}">No workers found with that skill.</p>
+    	<script th:src="@{/cursorParticles.js}"></script>
+    
 </body>
 </html>

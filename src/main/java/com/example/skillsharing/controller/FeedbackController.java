@@ -33,10 +33,12 @@ public class FeedbackController {
 	public String showFeedbackPage(Model model) {
 		User currentUser = getCurrentUser();
 
+		// Ensure we fetch completed bookings
 		List<Booking> completedBookings = bookingService.findCompletedBookingsForUser(currentUser.getId());
 
 		model.addAttribute("completedBookings", completedBookings);
 		model.addAttribute("currentUser", currentUser);
+
 		return "feedback/leave-feedback";
 	}
 
@@ -75,9 +77,8 @@ public class FeedbackController {
 
 		feedbackService.saveFeedback(feedback);
 
-		// ✅ Redirect to the correct booking page
-		return isRequester ? "redirect:/requester/bookings?success=feedback_submitted"
-				: "redirect:/worker/bookings?success=feedback_submitted";
+		// ✅ Redirect with success message
+		return "redirect:/feedback/leave-review?success=feedback_submitted";
 	}
 
 	@GetMapping("/view/{bookingId}")
@@ -86,6 +87,7 @@ public class FeedbackController {
 
 		if (!feedbackList.isEmpty()) {
 			model.addAttribute("feedbackList", feedbackList);
+			System.out.println("THis is EMPTYYYYYYYYYYYYYYYYYYYYYYYYYY");
 			return "feedback/view-feedback";
 		} else {
 			model.addAttribute("errorMessage", "No feedback found for this booking.");

@@ -1,118 +1,94 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Login</title>
-<style>
-/* Global Styles */
-body {
-	font-family: 'Arial', sans-serif;
-	background-color: #f2f2f2;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-}
-
-h2 {
-	color: #333;
-	font-size: 28px;
-	margin-bottom: 20px;
-}
-
-/* Form Container */
-.form-container {
-	background-color: #fff;
-	padding: 30px;
-	border-radius: 8px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	width: 100%;
-	max-width: 400px;
-}
-
-/* Labels */
-label {
-	font-size: 16px;
-	color: #333;
-	margin-bottom: 5px;
-	display: block;
-}
-
-/* Input Fields */
-input {
-	width: 100%;
-	padding: 12px;
-	margin: 8px 0 20px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	box-sizing: border-box;
-	font-size: 16px;
-}
-
-input[type="email"]:focus, input[type="password"]:focus {
-	border-color: #4CAF50;
-	outline: none;
-}
-
-/* Button Styles */
-button {
-	width: 100%;
-	padding: 12px;
-	background-color: #4CAF50;
-	border: none;
-	color: white;
-	font-size: 16px;
-	border-radius: 4px;
-	cursor: pointer;
-}
-
-button:hover {
-	background-color: #45a049;
-}
-
-/* Error message styles */
-.error {
-	color: red;
-	font-size: 14px;
-	margin-top: 10px;
-	margin-bottom: 20px;
-}
-
-/* Responsive Styling */
-@media ( max-width : 500px) {
-	.form-container {
-		padding: 20px;
-	}
-}
-</style>
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.9); }
+            100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .animate-fadeInUp {
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+        }
+        .animate-slideIn {
+            animation: slideIn 1s ease-out forwards;
+            opacity: 0;
+        }
+        .hover-animate-glow:hover {
+            animation: glow 1.5s infinite;
+        }
+    </style>
 </head>
-<body>
-	<div class="form-container">
-		<h2>Login</h2>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md p-4 z-50 animate-slideIn">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-white text-2xl font-bold">Skill Sharing</h1>
+            <div class="md:hidden cursor-pointer" id="hamburger">
+                <div class="w-8 h-1 bg-white mb-2"></div>
+                <div class="w-8 h-1 bg-white mb-2"></div>
+                <div class="w-8 h-1 bg-white"></div>
+            </div>
+            <ul class="hidden md:flex space-x-6 text-white font-medium" id="nav-links">
+                <li><a class="hover:text-green-400 transition" th:href="@{/}">Home</a></li>
+                <li><a class="hover:text-green-400 transition" th:href="@{/about}">About</a></li>
+                <li><a class="hover:text-green-400 transition" th:href="@{/auth/register}">Register</a></li>
+                <li><a class="hover:text-green-400 transition" th:href="@{/auth/login}">Login</a></li>
+            </ul>
+        </div>
+    </nav>
 
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md mt-20 text-gray-200 animate-fadeInUp">
+        <h2 class="text-3xl font-semibold text-center mb-6 animate-slideIn">Login</h2>
+        <form th:action="@{/auth/login}" method="post" class="space-y-4 animate-fadeInUp">
+            <div>
+                <label for="email" class="block text-gray-300">Email:</label>
+                <input type="email" id="email" name="email" required
+                    class="w-full px-4 py-2 border rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-400 transition animate-slideIn"/>
+            </div>
+            <div>
+                <label for="password" class="block text-gray-300">Password:</label>
+                <input type="password" id="password" name="password" required
+                    class="w-full px-4 py-2 border rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-400 transition animate-slideIn"/>
+            </div>
+            <div th:if="${param.error}" class="text-red-500 text-sm text-center animate-fadeInUp">Invalid email or password. Please try again.</div>
+            <button type="submit"
+                class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition transform hover:scale-105 hover-animate-glow animate-pulse">Login</button>
+        </form>
+        <p class="text-center text-gray-300 mt-4 animate-fadeInUp">Don't have an account? <a th:href="@{/auth/register}" class="text-green-400 hover:underline">Register here</a></p>
+    </div>
 
-
-		<form th:action="@{/auth/login}" method="post">
-			<!-- Email Field -->
-			<label for="email">Email:</label> <input type="email" id="email"
-				name="email" placeholder="Email" required /><br />
-
-			<!-- Password Field -->
-			<label for="password">Password:</label> <input type="password"
-				id="password" name="password" placeholder="Password" required /><br />
-			<!-- Error Message if login fails -->
-			<div th:if="${param.error}" class="error">Invalid email or
-				password. Please try again.</div>
-			<button type="submit">Login</button>
-		</form>
-
-		<p>
-			Don't have an account? <a th:href="@{/auth/register}">Register
-				here</a>
-		</p>
-	</div>
-		<script th:src="@{/cursorParticles.js}"></script>
-	
+    <script>
+        document.getElementById('hamburger').addEventListener('click', function() {
+            document.getElementById('nav-links').classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html>

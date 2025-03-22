@@ -1,196 +1,95 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Worker Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Global Styles */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            padding-top: 20px;
-        }
-
-        h2 {
-            color: #333;
-            font-size: 36px;
-            margin-bottom: 20px;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-
-        h3 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        /* Navbar Styling */
-        .navbar {
-            background-color: #4CAF50;
-            width: 100%;
-            padding: 15px;
-            color: white;
-            text-align: center;
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        /* Skill List Styling */
-        .skills-list {
-            width: 100%;
-            max-width: 800px;
-            margin-top: 30px;
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .skills-list li {
-            background-color: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .skills-list li:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Skill Details */
-        .skill-details {
-            flex: 1;
-            padding-right: 20px;
-        }
-
-        .skill-name {
-            font-size: 22px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .skill-info {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 8px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .skill-info span {
-            font-weight: 500;
-        }
-
-        .price {
-            font-size: 20px;
-            font-weight: bold;
-            color: #4CAF50;
-            margin-top: 12px;
-        }
-
-        /* Icons */
-        .icon {
-            font-size: 18px;
-            color: #4CAF50;
-        }
-
-        /* Styling for the HR separator */
-        hr {
-            width: 80%;
-            border: 1px solid #ccc;
-            margin-top: 40px;
-            margin-bottom: 40px;
-        }
-
-        /* Empty Skill Message */
-        p {
-            font-size: 18px;
-            color: #555;
-            text-align: center;
-        }
-
-        /* Animations for Text */
-        .welcome-text {
-            animation: fadeIn 2s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            0% {
+        @keyframes fadeInUp {
+            from {
                 opacity: 0;
+                transform: translateY(20px);
             }
-            100% {
+            to {
                 opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* Responsive Styling */
-        @media (max-width: 600px) {
-            .skills-list {
-                width: 100%;
-                padding: 0;
-            }
-            .skills-list li {
-                padding: 15px;
-            }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.9); }
+            100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        .hover-animate-glow:hover {
+            animation: glow 1.5s infinite;
         }
     </style>
 </head>
-<body>
 
-    <!-- ✅ Include Worker Navbar -->
-    <div th:insert="fragments/workerNavbar :: body"></div>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
-    <h2 class="welcome-text">
-        Welcome, <span th:text="${worker.name}"></span>!
-    </h2>
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md p-4 z-50">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="text-xl font-bold text-white">Worker Dashboard</div>
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" class="text-white text-2xl md:hidden focus:outline-none">
+                ☰
+            </button>
+        </div>
 
-    <h3>Your Expertise:</h3>
+        <!-- Nav Links -->
+        <div id="menu" class="hidden md:flex flex-col md:flex-row items-center text-white font-medium mt-3 md:mt-0">
+            <a href="/worker/dashboard" class="py-2 px-4 hover:text-green-400">Home</a>
+            <a href="/skills/add" class="py-2 px-4 hover:text-green-400">Add a Skill</a>
+            <a href="/worker/bookings" class="py-2 px-4 hover:text-green-400">View Requests</a>
+            <a href="/feedback/leave-review" class="py-2 px-4 hover:text-green-400">Leave a Review</a>
+            <a href="/profile" class="py-2 px-4 hover:text-green-400">View Profile</a>
+            <a href="/auth/login" class="py-2 px-4 hover:text-red-400">Logout</a>
+        </div>
+    </nav>
 
-    <!-- ✅ Handle when no skills are listed -->
-    <p th:if="${#lists.isEmpty(skills)}">You haven't listed any skills yet.</p>
+    <!-- Page Content (Pushed Below Navbar) -->
+    <div class="flex flex-col items-center justify-center flex-grow p-4">
+        <h2 class="text-3xl font-semibold text-center animate-fadeInUp">Welcome, <span th:text="${worker.name}"></span>!</h2>
+        <h3 class="text-xl font-semibold text-center mt-4 animate-fadeInUp">Your Expertise:</h3>
 
-    <ul th:if="${not #lists.isEmpty(skills)}" class="skills-list">
-        <li th:each="skill : ${skills}">
-            <!-- Skill Details -->
-            <div class="skill-details">
-                <!-- Skill Name -->
-                <div class="skill-name" th:text="${skill.skillName}"></div>
+        <p th:if="${#lists.isEmpty(skills)}" class="text-gray-300 text-center mt-4 animate-fadeInUp">
+            You haven't listed any skills yet.
+        </p>
 
-                <!-- Skill Info: Category, Location -->
-                <div class="skill-info">
-                    <i class="icon">📂</i><span>Category: </span><span th:text="${skill.category}"></span>
+        <ul th:if="${not #lists.isEmpty(skills)}" class="w-full max-w-2xl mt-6 space-y-4 animate-fadeInUp">
+            <li th:each="skill : ${skills}" class="bg-gray-800 p-4 rounded-lg shadow-md flex justify-between items-center hover-animate-glow">
+                <div>
+                    <div class="text-xl font-semibold text-white" th:text="${skill.skillName}"></div>
+                    <div class="text-gray-300 mt-1"><i class="mr-2">📂</i>Category: <span th:text="${skill.category}"></span></div>
+                    <div class="text-gray-300 mt-1"><i class="mr-2">📍</i>Location: <span th:text="${skill.location}"></span></div>
                 </div>
-                <div class="skill-info">
-                    <i class="icon">📍</i><span>Location: </span><span th:text="${skill.location}"></span>
-                </div>
-            </div>
+                <div class="text-green-400 text-lg font-bold">₹ <span th:text="${skill.price}"></span> per hour</div>
+            </li>
+        </ul>
 
-            <!-- Price -->
-            <div class="price">
-                ₹ <span th:text="${skill.price}"></span> per hour
-            </div>
-        </li>
-    </ul>
+        <hr class="w-3/4 border-gray-700 mt-8 animate-fadeInUp">
+    </div>
 
-    <hr>
+    <!-- Mobile Navbar Toggle -->
+    <script>
+        document.getElementById('menu-btn').addEventListener('click', function () {
+            let menu = document.getElementById('menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
 
+    <!-- Cursor Particles -->
     <script th:src="@{/cursorParticles.js}"></script>
 
 </body>
+
 </html>

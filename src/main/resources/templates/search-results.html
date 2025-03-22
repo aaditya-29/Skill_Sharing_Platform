@@ -1,96 +1,103 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Search Results</title>
-    <style>
-        /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<title>Search Results</title>
+<style>
+/* Basic Reset */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7fc;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f4f7fc;
+	color: #333;
+	margin: 0;
+	padding: 20px;
+}
 
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 28px;
-        }
+h2 {
+	text-align: center;
+	color: #333;
+	margin-bottom: 30px;
+	font-size: 28px;
+}
 
-        /* No Results Styling */
-        .no-results {
-            text-align: center;
-            font-size: 18px;
-            color: #999;
-        }
+/* No Results Styling */
+.no-results {
+	text-align: center;
+	font-size: 18px;
+	color: #999;
+}
 
-        /* Results Section */
-        .result-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+/* Results Section */
+.result-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
 
-        .result-item {
-            background-color: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.3s;
-        }
+.result-item {
+	background-color: white;
+	padding: 20px;
+	margin-bottom: 20px;
+	width: 80%;
+	max-width: 600px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transition: box-shadow 0.3s;
+}
 
-        .result-item:hover {
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
+.result-item:hover {
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
 
-        .result-item h3 {
-            margin-bottom: 10px;
-            font-size: 22px;
-            color: #2c3e50;
-        }
+.result-item h3 {
+	margin-bottom: 10px;
+	font-size: 22px;
+	color: #2c3e50;
+}
 
-        .result-item p {
-            margin: 8px 0;
-            font-size: 16px;
-        }
+.result-item p {
+	margin: 8px 0;
+	font-size: 16px;
+}
 
-        .result-item span {
-            font-weight: bold;
-            color: #7f8c8d;
-        }
-
-    </style>
+.result-item span {
+	font-weight: bold;
+	color: #7f8c8d;
+}
+</style>
 </head>
 <body>
-    <h2>Search Results</h2>
+	<h2>Search Results</h2>
 
-    <!-- No results message -->
-    <div th:if="${skills.isEmpty()}" class="no-results">
-        <p>No workers found with that skill.</p>
-    </div>
+	<!-- No results message -->
+	<div th:if="${skills.isEmpty()}" class="no-results">
+		<p>No workers found with that skill.</p>
+	</div>
 
-    <!-- Display each skill's details -->
-    <div th:each="skill : ${skills}" class="result-container">
-        <div class="result-item">
-            <h3 th:text="${skill.skillName}">Skill Name</h3>
-            <p>Category: <span th:text="${skill.category}">Category</span></p>
-            <p>Location: <span th:text="${skill.location}">Location</span></p>
-            <p>Price: ₹<span th:text="${skill.price}">Price</span></p>
-            <p>Worker: <span th:text="${skill.worker.name}">Worker Name</span></p>
-        </div>
-    </div>
-    	<script th:src="@{/cursorParticles.js}"></script>
-    
+	<!-- Display each skill's details -->
+	<div th:each="skill : ${skills}" class="result-container">
+		<div class="result-item">
+			<h3 th:text="${skill.skillName}">Skill Name</h3>
+			<p>
+				Category: <span th:text="${skill.category}">Category</span>
+			</p>
+			<p>
+				Location: <span th:text="${skill.location}">Location</span>
+			</p>
+			<p>
+				Price: ₹<span th:text="${skill.price}">Price</span>
+			</p>
+			<p>
+				Worker: <span th:text="${skill.worker.name}">Worker Name</span>
+			</p>
+		</div>
+	</div>
+	<script th:src="@{/cursorParticles.js}"></script>
+
 </body>
 </html>

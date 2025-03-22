@@ -1,155 +1,104 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Register</title>
-    <style>
-        /* Global Styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<title>Register</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+    body {
+        background: linear-gradient(to right, #1a1a2e, #16213e);
+        font-family: 'Poppins', sans-serif;
+    }
 
-        h2 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
+    .form-container {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        animation: fadeInUp 1s ease-in-out;
+        transition: transform 0.3s ease-in-out;
+    }
 
-        /* Form Container */
-        .form-container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
+    .form-container:hover {
+        transform: scale(1.02);
+    }
 
-        /* Labels */
-        label {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 5px;
-            display: block;
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
         }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-        /* Input Fields */
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
+    input, select {
+        transition: all 0.3s ease-in-out;
+    }
 
-        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus,
-        select:focus {
-            border-color: #4CAF50;
-            outline: none;
-        }
+    input:focus, select:focus {
+        background: #ffffff;
+        transform: scale(1.05);
+    }
 
-        /* Button Styles */
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+    button {
+        transition: all 0.3s ease-in-out;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
-
-        /* Error message styles */
-        .error {
-            color: red;
-            font-size: 12px;
-            margin-top: -10px;
-            margin-bottom: 20px;
-        }
-
-        /* Redirect link styles */
-        .redirect-link {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .redirect-link a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-
-        .redirect-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive Styling */
-        @media ( max-width : 500px) {
-            .form-container {
-                padding: 20px;
-            }
-        }
-    </style>
+    button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(0, 255, 127, 0.5);
+    }
+</style>
 </head>
-<body>
-    <div class="form-container">
-        <h2>Register</h2>
-
-        <form th:action="@{/auth/register}" th:object="${user}" method="post">
-
-            <!-- Name Field -->
-            <label for="name">Full Name</label> 
-            <input type="text" th:field="*{name}" id="name" placeholder="Full Name" required />
-            <p class="error" th:if="${nameError}" th:text="${nameError}"></p>
-
-            <!-- Email Field -->
-            <label for="email">Email</label> 
-            <input type="email" th:field="*{email}" id="email" placeholder="Email" required />
-            <p class="error" th:if="${emailError}" th:text="${emailError}"></p>
-
-            <!-- Password Field -->
-            <label for="password">Password</label> 
-            <input type="password" th:field="*{password}" id="password" placeholder="Password (min 6 characters)" required />
-            <p class="error" th:if="${passwordError}" th:text="${passwordError}"></p>
-
-            <!-- Contact Number Field -->
-            <label for="contactNumber">Contact Number</label> 
-            <input type="text" th:field="*{contactNumber}" id="contactNumber" placeholder="Contact Number" required />
-            <p class="error" th:if="${contactError}" th:text="${contactError}"></p>
-
-            <!-- Address Field -->
-            <label for="address">Address</label> 
-            <input type="text" th:field="*{address}" id="address" placeholder="Address" required />
-            <p class="error" th:if="${addressError}" th:text="${addressError}"></p>
-
-            <!-- Role Selection -->
-            <label for="role">Select Role</label> 
-            <select th:field="*{role}" id="role">
-                <option value="WORKER">Worker</option>
-                <option value="REQUESTER">Requester</option>
-            </select>
-
-            <button type="submit">Register</button>
-        </form>
-
-        <!-- Redirect Link for Already Registered -->
-        <div class="redirect-link">
-            <p>Already have an account? <a th:href="@{/auth/login}">Login here</a></p>
+<body class="flex flex-col items-center justify-center min-h-screen text-white">
+    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md p-4 z-50 animate-slideIn">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-white text-2xl font-bold">Skill Sharing</h1>
+            <ul class="flex space-x-6 text-white font-medium">
+                <li><a class="hover:text-green-400 transition" th:href="@{/}">Home</a></li>
+                <li><a class="hover:text-green-400 transition" th:href="@{/about}">About</a></li>
+                <li><a class="hover:text-green-400 transition" th:href="@{/auth/register}">Register</a></li>
+                <li><a class="hover:text-green-400 transition" th:href="@{/auth/login}">Login</a></li>
+            </ul>
         </div>
+    </nav>
+    <div class="w-full max-w-md form-container mt-20">
+        <h2 class="text-3xl font-bold text-center mb-6">Register</h2>
+        
+        <form th:action="@{/auth/register}" th:object="${user}" method="post" class="space-y-4">
+            <div>
+                <label for="name" class="block text-sm font-medium">Full Name</label>
+                <input type="text" th:field="*{name}" id="name" class="w-full px-4 py-2 rounded bg-gray-200 text-black focus:ring-2 focus:ring-green-400 outline-none" placeholder="Full Name" required>
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium">Email</label>
+                <input type="email" th:field="*{email}" id="email" class="w-full px-4 py-2 rounded bg-gray-200 text-black focus:ring-2 focus:ring-green-400 outline-none" placeholder="Email" required>
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium">Password</label>
+                <input type="password" th:field="*{password}" id="password" class="w-full px-4 py-2 rounded bg-gray-200 text-black focus:ring-2 focus:ring-green-400 outline-none" placeholder="Password" required>
+            </div>
+            <div>
+                <label for="contactNumber" class="block text-sm font-medium">Contact Number</label>
+                <input type="text" th:field="*{contactNumber}" id="contactNumber" class="w-full px-4 py-2 rounded bg-gray-200 text-black focus:ring-2 focus:ring-green-400 outline-none" placeholder="Contact Number" required>
+            </div>
+            <div>
+                <label for="address" class="block text-sm font-medium">Address</label>
+                <input type="text" th:field="*{address}" id="address" class="w-full px-4 py-2 rounded bg-gray-200 text-black focus:ring-2 focus:ring-green-400 outline-none" placeholder="Address" required>
+            </div>
+            <div>
+                <label for="role" class="block text-sm font-medium">Select Role</label>
+                <select th:field="*{role}" id="role" class="w-full px-4 py-2 rounded bg-gray-200 text-black focus:ring-2 focus:ring-green-400 outline-none">
+                    <option value="WORKER">Worker</option>
+                    <option value="REQUESTER">Requester</option>
+                </select>
+            </div>
+            <button type="submit" class="w-full py-2 rounded bg-green-500 hover:bg-green-600 transition-all text-white font-semibold">Register</button>
+        </form>
+        <p class="mt-4 text-center">Already have an account? <a th:href="@{/auth/login}" class="text-green-400 hover:underline">Login here</a></p>
     </div>
-    	<script th:src="@{/cursorParticles.js}"></script>
-    
 </body>
 </html>

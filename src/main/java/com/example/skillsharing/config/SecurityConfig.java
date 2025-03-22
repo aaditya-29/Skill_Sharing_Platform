@@ -14,8 +14,11 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable()
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/", "/auth/register", "/auth/login", "/uploads/**")
-						.permitAll() // ✅ Allow static resources
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/", "/auth/register", "/auth/login", "/uploads/**", "/about").permitAll() // ✅
+																													// Allow
+																													// static
+																													// resources
 						.requestMatchers("/dashboard/worker").hasRole("WORKER").requestMatchers("/dashboard/requester")
 						.hasRole("REQUESTER").requestMatchers("/profile/**").authenticated() // ✅ Ensure only logged-in
 																								// users can access

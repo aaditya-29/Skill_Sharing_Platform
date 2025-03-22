@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Sharing Platform</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+	<!-- Navbar -->
+	<nav class="bg-gray-900 text-white py-4 shadow-lg fixed w-full z-50">
+		<div class="container mx-auto flex justify-between items-center px-6">
+			<h1 class="text-2xl font-bold tracking-wide">Skill Sharing</h1>
+			<ul class="hidden md:flex space-x-6 text-lg">
+				<li><a href="/"
+					class="hover:text-green-400 transition duration-300">Home</a></li>
+				<li><a href="/about"
+					class="hover:text-green-400 transition duration-300">About</a></li>
+				<li><a href="/auth/register"
+					class="hover:text-green-400 transition duration-300">Register</a></li>
+				<li><a href="/auth/login"
+					class="hover:text-green-400 transition duration-300">Login</a></li>
+			</ul>
+			<!-- Mobile Menu Button -->
+			<div class="md:hidden cursor-pointer" id="menu-toggle">
+				<div class="w-6 h-1 bg-white mb-1"></div>
+				<div class="w-6 h-1 bg-white mb-1"></div>
+				<div class="w-6 h-1 bg-white"></div>
+			</div>
+		</div>
+		<!-- Mobile Menu -->
+		<ul id="mobile-menu"
+			class="hidden flex-col items-center bg-gray-900 text-white text-lg space-y-4 py-6 absolute w-full top-16 left-0 shadow-md">
+			<li><a href="/"
+				class="hover:text-green-400 transition duration-300">Home</a></li>
+			<li><a href="/about"
+				class="hover:text-green-400 transition duration-300">About</a></li>
+			<li><a href="/auth/register"
+				class="hover:text-green-400 transition duration-300">Register</a></li>
+			<li><a href="/auth/login"
+				class="hover:text-green-400 transition duration-300">Login</a></li>
+		</ul>
+	</nav>
+
+	<!-- Hero Section -->
+	<header
+		class="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white min-h-screen flex flex-col items-center justify-center text-center px-6">
+		<h1 class="text-5xl font-extrabold mb-4 animate-fadeInUp">Welcome
+			to Skill Sharing Platform</h1>
+		<p class="text-xl mb-6 animate-fadeInUp delay-200">Find and book
+			skilled professionals easily.</p>
+
+		<!-- Get Started Button -->
+		<a href="/auth/register"
+			class="font-sans flex justify-center gap-3 items-center mx-auto shadow-xl text-lg text-gray-50 bg-[#0A0D2D] backdrop-blur-md lg:font-semibold relative overflow-hidden border-2 rounded-full group px-6 py-3 transition-all duration-500 ease-in-out transform hover:scale-105 hover:shadow-2xl">
+			<span class="relative z-10">Get Started</span> <!-- Animated Arrow -->
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 19"
+				class="w-8 h-8 bg-gray-50 text-gray-50 ease-in-out duration-500 transform rotate-45 border border-gray-700 group-hover:rotate-90 group-hover:bg-gray-50 group-hover:border-none rounded-full p-2">
+                <path class="fill-gray-800 group-hover:fill-gray-800"
+					d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z">
+                </path>
+            </svg> <!-- Expanding Glow Effect -->
+			<div
+				class="absolute inset-0 w-full h-full bg-emerald-500 opacity-0 transition-all duration-700 ease-in-out scale-75 group-hover:opacity-100 group-hover:scale-150 rounded-full -z-10"></div>
+		</a>
+
+		<div id="scroll-text"
+			class="absolute bottom-10 text-gray-400 text-sm transition-opacity duration-500">
+			Scroll down to learn more ↓</div>
+
+	</header>
+
+	<!-- Features Section -->
+	<section class="py-20 bg-white">
+		<div class="container mx-auto text-center">
+			<h2 class="text-4xl font-bold text-gray-900 mb-10 animate-fadeInUp">Why
+				Choose Us?</h2>
+			<div class="grid md:grid-cols-3 gap-8 px-6">
+				<div
+					class="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-lg transform transition-all duration-300 hover:scale-105">
+					<h3 class="text-2xl font-semibold text-gray-900 mb-3">🔹 Find
+						Skilled Workers</h3>
+					<p>Browse and connect with professionals in various fields.</p>
+				</div>
+				<div
+					class="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-lg transform transition-all duration-300 hover:scale-105">
+					<h3 class="text-2xl font-semibold text-gray-900 mb-3">🔹
+						Seamless Booking</h3>
+					<p>Book workers instantly with real-time availability.</p>
+				</div>
+				<div
+					class="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-lg transform transition-all duration-300 hover:scale-105">
+					<h3 class="text-2xl font-semibold text-gray-900 mb-3">🔹
+						Secure Transactions</h3>
+					<p>Safe and transparent payment process.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<footer class="bg-gray-900 text-white py-6 text-center">
+		<p>&copy; 2025 Skill Sharing Platform | All rights reserved.</p>
+	</footer>
+
+	<!-- JavaScript for Mobile Menu -->
+	<script>
+		document.getElementById('menu-toggle').addEventListener(
+				'click',
+				function() {
+					document.getElementById('mobile-menu').classList
+							.toggle('hidden');
+				});
+
+		window.addEventListener('scroll',
+				function() {
+					const scrollText = document.getElementById('scroll-text');
+					if (window.scrollY > 100) { // Adjust scroll threshold
+						scrollText.classList.add('opacity-0',
+								'pointer-events-none');
+					} else {
+						scrollText.classList.remove('opacity-0',
+								'pointer-events-none');
+					}
+				});
+	</script>
+
+	<!-- Animations -->
+	<style>
+@keyframes fadeInUp {from { opacity:0;
+	transform: translateY(20px);
+}
+
+to {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+}
+.animate-fadeInUp {
+	animation: fadeInUp 1s ease-out forwards;
+	opacity: 0;
+}
+
+.delay-200 {
+	animation-delay: 0.2s;
+}
+
+.delay-500 {
+	animation-delay: 0.5s;
+}
+</style>
+
+</body>
+</html>

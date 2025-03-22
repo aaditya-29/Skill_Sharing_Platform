@@ -1,150 +1,126 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<title>View Bookings</title>
-<style>
-/* Global Styles */
-body {
-	font-family: 'Arial', sans-serif;
-	background-color: #f2f2f2;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
-	height: 100vh;
-	padding-top: 20px;
-}
+    <title>View Bookings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-h2 {
-	color: #333;
-	font-size: 32px;
-	margin-bottom: 30px;
-}
+        .animate-fadeInUp {
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+        }
 
-/* Navbar Styling */
-.navbar {
-	background-color: #4CAF50;
-	width: 100%;
-	padding: 10px;
-	color: white;
-	text-align: center;
-}
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(34, 197, 94, 0.9);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+            }
+        }
 
-/* Table Styling */
-table {
-	width: 90%;
-	max-width: 1000px;
-	border-collapse: collapse;
-	margin-top: 30px;
-}
-
-th, td {
-	padding: 12px;
-	text-align: center;
-	border: 1px solid #ddd;
-}
-
-th {
-	background-color: #4CAF50;
-	color: white;
-}
-
-td {
-	background-color: white;
-}
-
-a {
-	color: #4CAF50;
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-/* No Bookings Message */
-.no-bookings {
-	color: #f44336;
-	font-size: 18px;
-	margin-top: 20px;
-}
-
-/* Responsive Design */
-@media ( max-width : 768px) {
-	table {
-		width: 90%;
-		font-size: 14px;
-	}
-	th, td {
-		padding: 10px;
-	}
-}
-</style>
+        .hover-animate-glow:hover {
+            animation: glow 1.5s infinite;
+        }
+    </style>
 </head>
-<body>
 
+<body class="flex flex-col items-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 text-white pt-20">
+    <!-- Mobile Responsive Navbar -->
+    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md p-4 z-50">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="text-xl font-bold text-white">Bookings</div>
+            <button id="menu-btn" class="md:hidden text-white focus:outline-none">
+                ☰
+            </button>
+        </div>
+        <div id="menu" class="hidden md:flex flex-col md:flex-row items-center text-white font-medium mt-3 md:mt-0">
+            <a href="/requester/dashboard" class="block md:inline-block py-2 px-4 hover:text-green-400">Home</a>
+            <a href="/skills/search" class="block md:inline-block py-2 px-4 hover:text-green-400">Search</a>
+            <a href="/skills/all" class="block md:inline-block py-2 px-4 hover:text-green-400">All Skills</a>
+            <a href="/requester/bookings" class="block md:inline-block py-2 px-4 hover:text-green-400">View Bookings</a>
+            <a href="/feedback/leave-review" class="block md:inline-block py-2 px-4 hover:text-green-400">Leave a Review</a>
+            <a href="/profile" class="block md:inline-block py-2 px-4 hover:text-green-400">View Profile</a>
+            <a href="/auth/login" class="block md:inline-block py-2 px-4 hover:text-green-400">Logout</a>
+        </div>
+    </nav>
 
+    <!-- Title -->
+    <h2 class="text-2xl md:text-4xl font-bold text-white mt-16 animate-fadeInUp">Your Bookings</h2>
 
-	<h2>Your/Requester Bookings</h2>
+    <!-- Bookings Table (Mobile Responsive) -->
+    <div class="w-full max-w-5xl p-4 md:p-6 mt-5 animate-fadeInUp">
+        <div th:if="${not #lists.isEmpty(bookings)}">
+            <div class="overflow-x-auto">
+                <table class="w-full text-center border-collapse shadow-lg rounded-lg overflow-hidden bg-gray-800 text-sm md:text-base">
+                    <thead class="bg-green-600 text-white">
+                        <tr>
+                            <th class="p-3">ID</th>
+                            <th class="p-3">Worker</th>
+                            <th class="p-3">Skill</th>
+                            <th class="p-3 hidden md:table-cell">Start Time</th>
+                            <th class="p-3 hidden md:table-cell">End Time</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3">Report</th>
+                            <th class="p-3">Feedback</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-300">
+                        <tr th:each="booking : ${bookings}" class="hover:bg-gray-700 transition">
+                            <td class="p-2 border-b" th:text="${booking.id}"></td>
+                            <td class="p-2 border-b" th:text="${booking.worker != null ? booking.worker.name : 'N/A'}"></td>
+                            <td class="p-2 border-b" th:text="${booking.skillListing != null ? booking.skillListing.skillName : 'N/A'}"></td>
+                            <td class="p-2 border-b hidden md:table-cell" th:text="${#temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td class="p-2 border-b hidden md:table-cell" th:text="${#temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td class="p-2 border-b text-green-400 font-semibold" th:text="${booking.status}"></td>
+                            <td class="p-2 border-b">
+                                <span th:if="${inspectionReportMap != null and inspectionReportMap[booking.id] != null}">
+                                    <a th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}" class="text-green-400 hover:text-green-300 transition">View</a>
+                                </span>
+                                <span th:unless="${inspectionReportMap != null and inspectionReportMap[booking.id] != null}">N/A</span>
+                            </td>
+                            <td class="p-2 border-b">
+                                <span th:if="${feedbackMap != null and feedbackMap[booking.id] != null and feedbackMap[booking.id]}">
+                                    <a th:href="@{/feedback/view/{bookingId}(bookingId=${booking.id})}" class="text-green-400 hover:text-green-300 transition">View</a>
+                                </span>
+                                <span th:unless="${feedbackMap != null and feedbackMap[booking.id] != null and feedbackMap[booking.id]}">N/A</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-	<!-- Include Navbar -->
-	<div th:insert="~{fragments/navbar :: body}"></div>
+        <!-- No Bookings Message -->
+        <div th:if="${#lists.isEmpty(bookings)}" class="text-center text-gray-300 text-lg mt-10">
+            <p>No bookings available.</p>
+        </div>
+    </div>
 
-	<!-- Bookings Table -->
-	<table>
-		<thead>
-			<tr>
-				<th>Booking ID</th>
-				<th>Worker</th>
-				<th>Skill</th>
-				<th>Start Time</th>
-				<th>End Time</th>
-				<th>Status</th>
-				<th>View Report</th>
-				<th>Feedback</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="booking : ${bookings}">
-				<td th:text="${booking.id}"></td>
-				<td
-					th:text="${booking.worker != null ? booking.worker.name : 'N/A'}"></td>
-				<td
-					th:text="${booking.skillListing != null ? booking.skillListing.skillName : 'N/A'}"></td>
-				<td
-					th:text="${#temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm')}"></td>
-				<td
-					th:text="${#temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></td>
-				<td th:text="${booking.status}"></td>
+    <!-- Cursor Particles -->
+    <script th:src="@{/cursorParticles.js}"></script>
 
-				<!-- View Inspection Report Link (Only if report exists) -->
-				<td><span
-					th:if="${inspectionReportMap != null and inspectionReportMap[booking.id] != null}">
-						<a
-						th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}">View
-							Report</a>
-				</span> <span
-					th:unless="${inspectionReportMap != null and inspectionReportMap[booking.id] != null}">N/A</span>
-				</td>
-				<td><span
-					th:if="${feedbackMap != null and feedbackMap[booking.id] != null and feedbackMap[booking.id]}">
-						<a
-						th:href="@{/feedback/view/{bookingId}(bookingId=${booking.id})}">View
-							Feedback</a>
-				</span> <span
-					th:unless="${feedbackMap != null and feedbackMap[booking.id] != null and feedbackMap[booking.id]}">N/A</span>
-				</td>
-
-			</tr>
-		</tbody>
-	</table>
-
-	<!-- No Bookings Available Message -->
-	<p th:if="${#lists.isEmpty(bookings)}" class="no-bookings">No
-		bookings available.</p>
-	<script th:src="@{/cursorParticles.js}"></script>
-
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-btn').addEventListener('click', function () {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
 </body>
+
 </html>

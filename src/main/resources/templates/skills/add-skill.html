@@ -1,98 +1,113 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Add Skill</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 60%;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        label {
-            display: block;
-            font-size: 16px;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        input[type="text"],
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 12px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                width: 90%;
+        /* Fade-in effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-
-            label {
-                font-size: 14px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
 
-            button {
-                font-size: 14px;
-            }
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Glowing button effect */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.9); }
+            100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+        }
+
+        .hover-glow:hover {
+            animation: glow 1.5s infinite;
         }
     </style>
 </head>
-<body>
 
-    <div class="container">
-        <h2>Add a New Skill</h2>
-        <form th:action="@{/skills/add}" th:object="${skill}" method="post">
-            <label for="skillName">Skill Name:</label>
-            <input type="text" id="skillName" th:field="*{skillName}" required/>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
-            <label for="category">Category:</label>
-            <input type="text" id="category" th:field="*{category}" required/>
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md p-4 z-50">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="text-xl font-bold text-white">Add Skill</div>
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" class="text-white text-2xl md:hidden focus:outline-none">
+                ☰
+            </button>
+        </div>
+        
+        <!-- Nav Links -->
+        <div id="menu" class="hidden md:flex flex-col md:flex-row items-center text-white font-medium mt-3 md:mt-0">
+            <a href="/worker/dashboard" class="py-2 px-4 hover:text-green-400">Home</a>
+            <a href="/skills/add" class="py-2 px-4 hover:text-green-400">Add a Skill</a>
+            <a href="/worker/bookings" class="py-2 px-4 hover:text-green-400">View Requests</a>
+            <a href="/feedback/leave-review" class="py-2 px-4 hover:text-green-400">Leave a Review</a>
+            <a href="/profile" class="py-2 px-4 hover:text-green-400">View Profile</a>
+            <a href="/auth/login" class="py-2 px-4 hover:text-green-400">Logout</a>
+        </div>
+    </nav>
 
-            <label for="location">Location:</label>
-            <input type="text" id="location" th:field="*{location}" required/>
+    <!-- Page Content (Pushed Below Navbar) -->
+    <div class="flex flex-col items-center justify-center flex-grow mt-20 p-4">
+        <!-- Form Container -->
+        <div class="w-full max-w-lg bg-gray-800 p-6 rounded-lg shadow-lg animate-fadeIn">
+            <h2 class="text-2xl font-bold text-center text-white mb-6">Add a New Skill</h2>
 
-            <label for="price">Price per Hour:</label>
-            <input type="number" id="price" step="0.01" th:field="*{price}" required/>
+            <form th:action="@{/skills/add}" th:object="${skill}" method="post" class="space-y-4">
+                <div>
+                    <label for="skillName" class="block text-gray-300">Skill Name:</label>
+                    <input type="text" id="skillName" th:field="*{skillName}" required
+                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition"/>
+                </div>
 
-            <button type="submit">Add Skill</button>
-        </form>
+                <div>
+                    <label for="category" class="block text-gray-300">Category:</label>
+                    <input type="text" id="category" th:field="*{category}" required
+                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition"/>
+                </div>
+
+                <div>
+                    <label for="location" class="block text-gray-300">Location:</label>
+                    <input type="text" id="location" th:field="*{location}" required
+                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition"/>
+                </div>
+
+                <div>
+                    <label for="price" class="block text-gray-300">Price per Hour:</label>
+                    <input type="number" id="price" step="0.01" th:field="*{price}" required
+                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition"/>
+                </div>
+
+                <button type="submit" 
+                    class="w-full p-3 text-lg font-semibold text-white bg-green-500 rounded-lg hover-glow transition duration-300 hover:bg-green-600">
+                    Add Skill
+                </button>
+            </form>
+        </div>
     </div>
-	<script th:src="@{/cursorParticles.js}"></script>
+
+    <!-- Mobile Navbar Toggle -->
+    <script>
+        document.getElementById('menu-btn').addEventListener('click', function() {
+            let menu = document.getElementById('menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+
+    <!-- Cursor Particles -->
+    <script th:src="@{/cursorParticles.js}"></script>
 
 </body>
+
 </html>

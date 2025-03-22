@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping()
 public class AuthController {
 
 	@Autowired
@@ -19,13 +19,23 @@ public class AuthController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	@GetMapping("/register")
+	@GetMapping("/")
+	public String home() {
+		return "index";
+	}
+
+	@GetMapping("/about")
+	public String about() {
+		return "about";
+	}
+
+	@GetMapping("/auth/register")
 	public String showRegistrationForm(Model model) {
 		model.addAttribute("user", new User());
 		return "user/register";
 	}
 
-	@PostMapping("/register")
+	@PostMapping("/auth/register")
 	public String registerUser(@ModelAttribute User user, Model model) {
 		boolean hasErrors = false;
 
@@ -81,13 +91,13 @@ public class AuthController {
 		return "redirect:/auth/login";
 	}
 
-	@GetMapping("/login")
+	@GetMapping("/auth/login")
 	public String showLoginForm(Model model) {
 		model.addAttribute("user", new User());
 		return "user/login";
 	}
 
-	@PostMapping("/login")
+	@PostMapping("/auth/login")
 	public String loginUser(@ModelAttribute User user, Model model) {
 		User dbUser = userService.findByEmail(user.getEmail());
 

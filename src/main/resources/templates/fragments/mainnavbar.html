@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<style>
+/* Global Styles */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f4f7fc;
+	color: #333;
+}
+
+/* Navbar Styles */
+.navbar {
+	background-color: #3498db;
+	padding: 15px 0;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	position: fixed;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+}
+
+.navbar .container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 20px;
+}
+
+.navbar .logo {
+	font-size: 1.8em;
+	font-weight: bold;
+	color: white;
+	text-transform: uppercase;
+}
+
+.navbar .nav-links {
+	list-style-type: none;
+	display: flex;
+	gap: 20px;
+}
+
+.navbar .nav-links li {
+	display: inline;
+}
+
+.navbar .nav-links a {
+	color: white;
+	text-decoration: none;
+	font-size: 1.1em;
+	transition: color 0.3s ease;
+}
+
+.navbar .nav-links a:hover {
+	color: #ecf0f1;
+}
+
+/* Hamburger Menu */
+.hamburger {
+	display: none;
+	flex-direction: column;
+	gap: 5px;
+	cursor: pointer;
+}
+
+.hamburger div {
+	width: 30px;
+	height: 4px;
+	background-color: white;
+	border-radius: 5px;
+}
+
+/* Responsive Design */
+@media ( max-width : 768px) {
+	.navbar .container {
+		flex-direction: column;
+		align-items: center;
+	}
+	.navbar .nav-links {
+		flex-direction: column;
+		gap: 15px;
+		margin-top: 15px;
+		display: none;
+		background-color: #3498db;
+		padding: 10px;
+		width: 100%;
+		text-align: center;
+	}
+	.navbar .nav-links.active {
+		display: block;
+	}
+	.navbar .nav-links a {
+		font-size: 1.2em;
+		display: block;
+		padding: 10px;
+	}
+	.hamburger {
+		display: flex;
+	}
+}
+</style>
+</head>
+<body>
+
+	<nav class="navbar" th:fragment="navbar">
+		<div class="container">
+			<h1 class="logo">Skill Sharing</h1>
+			<div class="hamburger" id="hamburger">
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+			<ul class="nav-links" id="nav-links">
+				<li><a th:href="@{/}">Home</a></li>
+				<li><a th:href="@{/about}">About</a></li>
+				<li><a th:href="@{/auth/register}">Register</a></li>
+				<li><a th:href="@{/auth/login}">Login</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<script>
+		document.getElementById('hamburger').addEventListener('click',
+				function() {
+					const navLinks = document.getElementById('nav-links');
+					navLinks.classList.toggle('active');
+				});
+	</script>
+
+</body>
+</html>

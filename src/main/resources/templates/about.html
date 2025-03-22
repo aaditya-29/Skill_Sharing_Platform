@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us - Skill Sharing Platform</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: "#0A0D2D",
+                    secondary: "#00BFA6",
+                    dark: "#111127",
+                    light: "#F5F5F5",
+                    card: "#1F2937"
+                }
+            }
+        }
+    };
+</script>
+<style>
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes bounceIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+.fade-in { animation: fadeInUp 1s ease-out; }
+.slide-left { animation: slideInLeft 1s ease-out; }
+.slide-right { animation: slideInRight 1s ease-out; }
+.bounce-in { animation: bounceIn 1s ease-out; }
+</style>
+</head>
+<body class="bg-dark text-white transition-all duration-500">
+
+    <!-- Navbar -->
+    <nav class="bg-primary text-white shadow-lg fixed w-full z-50">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <h1 class="text-3xl font-extrabold tracking-wide">Skill Sharing</h1>
+            <ul class="hidden md:flex space-x-6">
+                <li><a href="/" class="hover:text-secondary transition">Home</a></li>
+                <li><a href="/about" class="hover:text-secondary transition">About</a></li>
+                <li><a href="/auth/register" class="hover:text-secondary transition">Register</a></li>
+                <li><a href="/auth/login" class="hover:text-secondary transition">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative text-center text-white bg-gradient-to-r from-primary to-secondary py-32">
+        <h2 class="text-5xl font-extrabold fade-in">Welcome to Skill Sharing</h2>
+        <p class="mt-4 text-lg fade-in">Connecting professionals with those in need of skilled services.</p>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-16 px-6">
+        <div class="container mx-auto text-center">
+            <h3 class="text-4xl font-bold text-secondary fade-in">Our Mission</h3>
+            <p class="mt-4 text-gray-400 fade-in">We aim to create a seamless, reliable, and efficient system to hire skilled professionals effortlessly.</p>
+
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 bg-card shadow-lg rounded-lg slide-left hover:scale-105 transition">
+                    <h4 class="text-2xl font-semibold text-secondary">🔹 Find Skilled Workers</h4>
+                    <p class="mt-2 text-gray-300">Search for skilled professionals by category and location.</p>
+                </div>
+                <div class="p-6 bg-card shadow-lg rounded-lg fade-in hover:scale-105 transition">
+                    <h4 class="text-2xl font-semibold text-secondary">🔹 Book Instantly</h4>
+                    <p class="mt-2 text-gray-300">Real-time availability and instant job booking.</p>
+                </div>
+                <div class="p-6 bg-card shadow-lg rounded-lg slide-right hover:scale-105 transition">
+                    <h4 class="text-2xl font-semibold text-secondary">🔹 Track & Rate</h4>
+                    <p class="mt-2 text-gray-300">Track job progress and leave feedback & ratings.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet the Team -->
+    <section class="bg-gray-900 py-16">
+        <div class="container mx-auto text-center">
+            <h3 class="text-4xl font-bold text-secondary fade-in">Meet Our Team</h3>
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-6 bg-card shadow-lg rounded-lg transform hover:scale-110 transition-all slide-left">
+                    <img src="/images/team-member.jpg" class="w-24 h-24 rounded-full mx-auto shadow-lg">
+                    <h4 class="text-lg font-semibold mt-4 text-white">Aaditya Yadav</h4>
+                    <p class="text-gray-400">Project Lead & Backend Developer</p>
+                </div>
+                <div class="p-6 bg-card shadow-lg rounded-lg transform hover:scale-110 transition-all fade-in">
+                    <img src="/images/team-member.jpg" class="w-24 h-24 rounded-full mx-auto shadow-lg">
+                    <h4 class="text-lg font-semibold mt-4 text-white">Abhishek Pandey</h4>
+                    <p class="text-gray-400">Backend Developer</p>
+                </div>
+                <div class="p-6 bg-card shadow-lg rounded-lg transform hover:scale-110 transition-all slide-right">
+                    <img src="/images/team-member.jpg" class="w-24 h-24 rounded-full mx-auto shadow-lg">
+                    <h4 class="text-lg font-semibold mt-4 text-white">Hardik Gupta</h4>
+                    <p class="text-gray-400">Frontend Developer</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scroll Down Text -->
+    <div id="scroll-text" class="absolute bottom-10 text-gray-400 text-sm transition-opacity duration-500 text-center w-full">
+        Scroll down to learn more ↓
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-6">
+        <p>&copy; 2025 Skill Sharing Platform | All Rights Reserved.</p>
+    </footer>
+
+    <!-- Scroll Disappear Script -->
+    <script>
+        window.addEventListener('scroll', function () {
+            const scrollText = document.getElementById('scroll-text');
+            if (window.scrollY > 100) {
+                scrollText.classList.add('opacity-0', 'pointer-events-none'); 
+            } else {
+                scrollText.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        });
+    </script>
+
+</body>
+</html>

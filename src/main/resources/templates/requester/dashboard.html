@@ -1,212 +1,116 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Requester Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requester Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-<!-- Basic Styles -->
-<style>
-/* Global Styles */
-body {
-	font-family: 'Roboto', sans-serif;
-	background-color: #f5f5f5; /* Changed background to light gray */
-	margin: 0;
-	padding: 0;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding-top: 50px;
-	color: #333; /* Dark text color for better readability */
-}
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(34, 197, 94, 0.9);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+            }
+        }
 
-h2 {
-	font-size: 38px;
-	color: #333; /* Dark text color */
-	margin-bottom: 40px;
-	font-weight: bold;
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
+        .animate-fadeInUp {
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+        }
 
-.worker-list {
-	display: flex;
-	flex-direction: column;
-	gap: 40px; /* Increased gap between cards */
-	width: 100%;
-	max-width: 1000px;
-	padding: 20px;
-	margin-bottom: 40px;
-}
-
-/* Worker Card Styling */
-.worker-card {
-	background-color: #fff;
-	border-radius: 12px;
-	padding: 25px;
-	box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-	text-align: center;
-	transition: transform 0.3s, box-shadow 0.3s;
-	overflow: hidden;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	border: 1px solid #ddd;
-	margin-bottom: 30px; /* Margin between the cards */
-}
-
-.worker-card:hover {
-	transform: translateY(-10px);
-	box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
-}
-
-.worker-card img {
-	width: 120px;
-	height: 120px;
-	border-radius: 50%;
-	object-fit: cover;
-	border: 5px solid #4CAF50;
-	margin-bottom: 20px;
-}
-
-.worker-details {
-	margin-top: 15px;
-	text-align: center;
-}
-
-.worker-details h3 {
-	font-size: 22px;
-	color: #333;
-	font-weight: 600;
-	margin-bottom: 10px;
-}
-
-.worker-details p {
-	font-size: 16px;
-	color: #555;
-	margin: 5px 0;
-}
-
-.worker-details p strong {
-	color: #333;
-}
-
-.book-now-btn {
-	display: inline-block;
-	background-color: #4CAF50;
-	color: white;
-	text-decoration: none;
-	padding: 12px 25px;
-	border-radius: 25px;
-	margin-top: 20px;
-	transition: background-color 0.3s ease, transform 0.3s ease;
-	font-size: 16px;
-	font-weight: 500;
-	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-.book-now-btn:hover {
-	background-color: #45a049;
-	transform: scale(1.05);
-	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* No Workers Available Styling */
-.no-workers-message {
-	font-size: 18px;
-	color: #333; /* Dark text for better visibility */
-	font-weight: 500;
-	margin-top: 50px;
-}
-
-/* Responsive Styles */
-@media ( max-width : 768px) {
-	h2 {
-		font-size: 30px;
-	}
-	.worker-list {
-		gap: 20px;
-	}
-}
-
-@media ( max-width : 480px) {
-	h2 {
-		font-size: 26px;
-	}
-	.worker-card {
-		padding: 20px;
-		width: 100%;
-	}
-	.worker-card img {
-		width: 100px;
-		height: 100px;
-	}
-}
-</style>
+        .hover-animate-glow:hover {
+            animation: glow 1.5s infinite;
+        }
+    </style>
 </head>
-<body>
 
-	<h2>Available Workers</h2>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
-	<div class="worker-list">
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md p-4 z-50">
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <div class="text-xl font-bold text-white">Requester Dashboard</div>
+            <!-- Mobile Menu Button -->
+            <button id="menu-btn" class="text-white text-2xl md:hidden focus:outline-none">
+                ☰
+            </button>
+        </div>
 
-		<!-- Include Navbar -->
-		<div th:insert="~{fragments/navbar :: body}"></div>
-		<!-- Display Worker List -->
-		<div th:if="${skills != null and skills.size() > 0}">
-			<div class="worker-card" th:each="skill : ${skills}">
-				<!-- Profile Picture -->
-				<img
-					th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}"
-					alt="Profile Picture" class="profile-pic">
-				<!-- Worker Details -->
-				<div class="worker-details">
-					<h3 th:text="${skill.worker.name ?: 'Unknown Worker'}"></h3>
-					<p>
-						<strong>Contact:</strong> <span
-							th:text="${skill.worker.contactNumber ?: 'N/A'}"></span>
-					</p>
-					<p>
-						<strong>Skill:</strong> <span
-							th:text="${skill.skillName ?: 'Not Specified'}"></span>
-					</p>
-					<p>
-						<strong>Category:</strong> <span
-							th:text="${skill.category ?: 'N/A'}"></span>
-					</p>
-					<p>
-						<strong>Location:</strong> <span
-							th:text="${skill.location ?: 'Unknown'}"></span>
-					</p>
-					<p>
-						<strong>Price:</strong> ₹ <span th:text="${skill.price ?: '0'}"></span>
-						per hour
-					</p>
+        <!-- Nav Links -->
+        <div id="menu" class="hidden md:flex flex-col md:flex-row items-center text-white font-medium mt-3 md:mt-0">
+            <a href="/requester/dashboard" class="py-2 px-4 hover:text-green-400">Home</a>
+            <a href="/skills/search" class="py-2 px-4 hover:text-green-400">Search</a>
+            <a href="/skills/all" class="py-2 px-4 hover:text-green-400">All Skills</a>
+            <a href="/requester/bookings" class="py-2 px-4 hover:text-green-400">View Bookings</a>
+            <a href="/feedback/leave-review" class="py-2 px-4 hover:text-green-400">Leave a Review</a>
+            <a href="/profile" class="py-2 px-4 hover:text-green-400">View Profile</a>
+            <a href="/auth/login" class="py-2 px-4 hover:text-red-400">Logout</a>
+        </div>
+    </nav>
 
-					<!-- Book Now Button -->
-					<a th:href="@{/booking/{workerId}(workerId=${skill.worker.id})}"
-						class="book-now-btn">Book Now</a>
-				</div>
-			</div>
-		</div>
+    <!-- Page Content (Pushed Below Navbar) -->
+    <div class="flex flex-col items-center justify-center flex-grow p-4">
+        <h2 class="text-4xl font-bold text-white animate-fadeInUp">Available Workers</h2>
 
-		<!-- Fallback Message for No Workers -->
-		<div th:if="${skills == null or skills.size() == 0}"
-			class="no-workers-message">
-			<p>No workers available at the moment. Please check back later!</p>
-		</div>
-	</div>
+        <div class="worker-list w-full max-w-5xl p-6 space-y-6 mt-10 animate-fadeInUp">
+            <div th:if="${skills != null and skills.size() > 0}">
+                <div class="worker-card bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition transform hover:scale-105 hover-animate-glow flex items-center space-x-6 w-full h-40"
+                    th:each="skill : ${skills}">
+                    <img th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}" 
+                        alt="Profile Picture"
+                        class="w-28 h-28 rounded-full border-4 border-green-500 flex-shrink-0">
 
-	<!-- Optional: Smooth Scroll for 'Book Now' Button -->
-	<script>
-        document.querySelectorAll('.book-now-btn').forEach(button => {
-            button.addEventListener('click', (event) => {
-                event.preventDefault();
-                alert('Redirecting to booking page...');
-                window.location.href = button.getAttribute('href');
-            });
+                    <div class="worker-details flex-1">
+                        <h3 class="text-xl font-semibold text-white mb-1" th:text="${skill.worker.name ?: 'Unknown Worker'}"></h3>
+                        <div class="grid grid-cols-3 gap-2 text-gray-300">
+                            <p><strong>Contact:</strong> <span th:text="${skill.worker.contactNumber ?: 'N/A'}"></span></p>
+                            <p><strong>Skill:</strong> <span th:text="${skill.skillName ?: 'Not Specified'}"></span></p>
+                            <p><strong>Category:</strong> <span th:text="${skill.category ?: 'N/A'}"></span></p>
+                            <p><strong>Location:</strong> <span th:text="${skill.location ?: 'Unknown'}"></span></p>
+                            <p><strong>Price:</strong> ₹ <span th:text="${skill.price ?: '0'}"></span> per hour</p>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/booking/{workerId}(workerId=${skill.worker.id})}" 
+                        class="ml-auto bg-green-500 text-white px-5 py-2 rounded-full text-lg font-semibold hover:bg-green-600 transition transform hover:scale-105 hover-animate-glow self-end">
+                        Book Now
+                    </a>
+                </div>
+            </div>
+
+            <div th:if="${skills == null or skills.size() == 0}" class="text-center text-gray-300 text-lg mt-10">
+                <p>No workers available at the moment. Please check back later!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navbar Toggle -->
+    <script>
+        document.getElementById('menu-btn').addEventListener('click', function () {
+            let menu = document.getElementById('menu');
+            menu.classList.toggle('hidden');
         });
     </script>
 
+    <script th:src="@{/cursorParticles.js}"></script>
+
 </body>
+
 </html>

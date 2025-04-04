@@ -3,7 +3,11 @@ package com.example.skillsharing.controller;
 import com.example.skillsharing.model.Role;
 import com.example.skillsharing.model.User;
 import com.example.skillsharing.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -107,5 +111,16 @@ public class AuthController {
 		}
 
 		return "redirect:/dashboard"; // Change as per your app's main page
+	}
+
+	@GetMapping("/auth/logout")
+	public String logoutUser(HttpSession session) {
+		// Invalidate the session
+		session.invalidate();
+
+		// Clear authentication context
+		SecurityContextHolder.clearContext();
+
+		return "redirect:/auth/login"; // Redirect to login page after logout
 	}
 }

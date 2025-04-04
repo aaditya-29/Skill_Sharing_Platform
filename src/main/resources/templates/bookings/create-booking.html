@@ -1,116 +1,119 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Create Booking</title>
-    <style>
-        /* Global Styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding-top: 20px;
-        }
+<title>Create Booking</title>
+<style>
+/* Global Styles */
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f2f2f2;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	padding-top: 20px;
+}
 
-        h2 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+h2 {
+	color: #333;
+	font-size: 28px;
+	margin-bottom: 20px;
+	text-align: center;
+}
 
-        /* Form Container */
-        .form-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-        }
+/* Form Container */
+.form-container {
+	background-color: white;
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	width: 100%;
+	max-width: 500px;
+}
 
-        /* Labels */
-        label {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 8px;
-            display: block;
-        }
+/* Labels */
+label {
+	font-size: 16px;
+	color: #333;
+	margin-bottom: 8px;
+	display: block;
+}
 
-        /* Input Fields */
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
+/* Input Fields */
+input {
+	width: 100%;
+	padding: 12px;
+	margin: 8px 0 20px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	font-size: 16px;
+}
 
-        input[type="datetime-local"]:focus {
-            border-color: #4CAF50;
-            outline: none;
-        }
+input[type="datetime-local"]:focus {
+	border-color: #4CAF50;
+	outline: none;
+}
 
-        /* Button Styles */
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+/* Button Styles */
+button {
+	width: 100%;
+	padding: 12px;
+	background-color: #4CAF50;
+	border: none;
+	color: white;
+	font-size: 16px;
+	border-radius: 4px;
+	cursor: pointer;
+}
 
-        button:hover {
-            background-color: #45a049;
-        }
+button:hover {
+	background-color: #45a049;
+}
 
-        /* Error Message */
-        .error {
-            color: red;
-            font-size: 12px;
-            margin-top: -10px;
-        }
+/* Error Message */
+.error {
+	color: red;
+	font-size: 12px;
+	margin-top: -10px;
+}
 
-        /* Responsive Styling */
-        @media (max-width: 500px) {
-            .form-container {
-                padding: 20px;
-            }
-        }
-    </style>
+/* Responsive Styling */
+@media ( max-width : 500px) {
+	.form-container {
+		padding: 20px;
+	}
+}
+</style>
 </head>
 <body>
 
 
 
-    <div class="form-container">
-        <h2>Book <span th:text="${booking.worker.name}"></span> for <span th:text="${skillName}"></span></h2>
+	<div class="form-container">
+		<h2>
+			Book <span th:text="${booking.worker.name}"></span> for <span
+				th:text="${skillName}"></span>
+		</h2>
 
-        <form th:action="@{/bookings/create}" th:object="${booking}" method="post">
-            <input type="hidden" th:field="*{worker.id}" />
-            <input type="hidden" th:field="*{requester.id}" />
+		<form th:action="@{/bookings/create}" th:object="${booking}"
+			method="post">
+			<input type="hidden" th:field="*{worker.id}" /> <input type="hidden"
+				th:field="*{requester.id}" />
 
-            <!-- Start Time Field -->
-            <label for="startTime">Start Time</label>
-            <input type="datetime-local" id="startTime" name="startTime" th:field="*{startTime}" required />
-            
-            <!-- End Time Field -->
-            <label for="endTime">End Time</label>
-            <input type="datetime-local" id="endTime" name="endTime" th:field="*{endTime}" required />
+			<!-- Request Time (Only for display) -->
+			<p>
+				Request Time: <span
+					th:text="${#temporals.format(booking.requestTime, 'yyyy-MM-dd HH:mm:ss')}" />
+			</p>
 
-            <!-- Submit Button -->
-            <button type="submit">Confirm Booking</button>
-        </form>
-    </div>
+			<!-- Submit Button -->
+			<button type="submit">Confirm Booking</button>
+		</form>
+
+	</div>
 	<script th:src="@{/cursorParticles.js}"></script>
 
 </body>

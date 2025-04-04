@@ -45,25 +45,25 @@ public class BookingController {
 
 	@GetMapping("/requester/bookings")
 	public String showRequesterBookings(Model model, Principal principal) {
-	    String email = principal.getName();
-	    User requester = userService.findByEmail(email);
-	    List<Booking> bookings = bookingService.findByRequesterId(requester.getId());
+		String email = principal.getName();
+		User requester = userService.findByEmail(email);
+		List<Booking> bookings = bookingService.findByRequesterId(requester.getId());
 
-	    // Map to store booking ID -> Feedback Presence for the current requester
-	    Map<Long, Boolean> feedbackMap = new HashMap<>();
-	    
-	    for (Booking booking : bookings) {
-	        // Check if the requester has already left feedback for the worker
-	        boolean hasFeedback = feedbackService.getFeedbackByBookingAndReviewer(booking.getId(), requester.getId()).isPresent();
-	        feedbackMap.put(booking.getId(), hasFeedback);
-	    }
+		// Map to store booking ID -> Feedback Presence for the current requester
+		Map<Long, Boolean> feedbackMap = new HashMap<>();
 
-	    model.addAttribute("bookings", bookings);
-	    model.addAttribute("feedbackMap", feedbackMap); // Pass feedback presence
+		for (Booking booking : bookings) {
+			// Check if the requester has already left feedback for the worker
+			boolean hasFeedback = feedbackService.getFeedbackByBookingAndReviewer(booking.getId(), requester.getId())
+					.isPresent();
+			feedbackMap.put(booking.getId(), hasFeedback);
+		}
 
-	    return "requester/bookings";
+		model.addAttribute("bookings", bookings);
+		model.addAttribute("feedbackMap", feedbackMap); // Pass feedback presence
+
+		return "requester/bookings";
 	}
-
 
 	@GetMapping("/worker/bookings")
 	public String getWorkerBookings(Model model, Principal principal) {
@@ -81,52 +81,47 @@ public class BookingController {
 	}
 
 	@PostMapping("/bookings/create")
-	public String createBooking(@RequestParam Long skillId, @RequestParam Long workerId, @RequestParam String startTime,
-			@RequestParam String endTime) {
-		// Get the logged-in user's email
+	public String createBooking(@RequestParam Long skillId, @RequestParam Long workerId) {
 		String email = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
 				.getUsername();
 		User requester = userService.findByEmail(email);
 
-		// Retrieve skill listing and worker
 		SkillListing skillListing = skillListingService.getSkillById(skillId);
 		User worker = userService.getUserById(workerId);
 
-		// Validation: Ensure requester and worker are not the same
 		if (requester == null || skillListing == null || worker == null || requester.getId().equals(worker.getId())) {
-			System.out.println("⚠️ Requester and Worker cannot be the same user!");
-			return "error"; // Redirect to an error page or handle it gracefully
+			return "error";
 		}
-
-		// Parse start and end times
-		LocalDateTime parsedStartTime = LocalDateTime.parse(startTime);
-		LocalDateTime parsedEndTime = LocalDateTime.parse(endTime);
 
 		// Create and save booking
 		Booking booking = new Booking();
 		booking.setWorker(worker);
 		booking.setRequester(requester);
 		booking.setSkillListing(skillListing);
-		booking.setStartTime(parsedStartTime);
-		booking.setEndTime(parsedEndTime);
 		booking.setStatus(BookingStatus.PENDING);
+		booking.setRequestTime(LocalDateTime.now()); // ✅ Store request time
 
 		bookingService.saveBooking(booking);
 		return "redirect:/requester/bookings";
 	}
 
 	@PostMapping("/bookings/update-status")
-	public String updateBookingStatus(@RequestParam Long bookingId, @RequestParam BookingStatus status,
-			Principal principal) {
-		Booking booking = bookingService.getBookingById(bookingId);
+	public String updateBookingStatus(@RequestParam Long bookingId, @RequestParam BookingStatus status) {
+	    Booking booking = bookingService.getBookingById(bookingId);
 
-		if (booking != null) {
-			booking.setStatus(status);
-			bookingService.saveBooking(booking);
-			return "redirect:/worker/bookings";
-		}
+	    if (booking != null) {
+	        booking.setStatus(status);
 
-		return "error";
+	        if (status == BookingStatus.ACCEPTED) {
+	            booking.setAcceptanceTime(LocalDateTime.now()); // ✅ Store acceptance time
+	        }
+
+	        bookingService.saveBooking(booking);
+	        return "redirect:/worker/bookings";
+	    }
+
+	    return "error";
 	}
+
 
 }

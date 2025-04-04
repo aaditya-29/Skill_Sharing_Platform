@@ -19,7 +19,7 @@ public class WorkController {
     @GetMapping("/work/start/{bookingId}")
     public String startWork(@PathVariable Long bookingId) {
         Booking booking = bookingService.getBookingById(bookingId);
-        booking.setStartTime(LocalDateTime.now());
+//        booking.setStartTime(LocalDateTime.now());
         booking.setStatus(BookingStatus.IN_PROGRESS);
         bookingService.saveBooking(booking);
         return "redirect:/worker/dashboard";
@@ -28,7 +28,7 @@ public class WorkController {
     @GetMapping("/work/finish/{bookingId}")
     public String finishWork(@PathVariable Long bookingId) {
         Booking booking = bookingService.getBookingById(bookingId);
-        booking.setEndTime(LocalDateTime.now());
+//        booking.setEndTime(LocalDateTime.now());
         booking.setStatus(BookingStatus.COMPLETED);
         bookingService.saveBooking(booking);
         return "redirect:/worker/dashboard";

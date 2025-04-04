@@ -67,11 +67,11 @@
 
     <!-- Page Content (Pushed Below Navbar) -->
     <div class="flex flex-col items-center justify-center flex-grow p-4">
-        <h2 class="text-4xl font-bold text-white animate-fadeInUp">Available Workers</h2>
+        <h2 class="text-4xl font-bold mt-20 text-white animate-fadeInUp">Available Workers</h2>
 
         <div class="worker-list w-full max-w-5xl p-6 space-y-6 mt-10 animate-fadeInUp">
             <div th:if="${skills != null and skills.size() > 0}">
-                <div class="worker-card bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition transform hover:scale-105 hover-animate-glow flex items-center space-x-6 w-full h-40"
+                <div class="worker-card bg-gray-800 rounded-lg mt-5 p-6 shadow-lg hover:shadow-xl transition transform hover:scale-105 hover-animate-glow flex items-center space-x-6 w-full h-40"
                     th:each="skill : ${skills}">
                     <img th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}" 
                         alt="Profile Picture"

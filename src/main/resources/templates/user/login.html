@@ -1,94 +1,139 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <style>
         @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
         @keyframes glow {
-            0% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.9); }
-            100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+            0% {
+                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(34, 197, 94, 0.9);
+            }
+
+            100% {
+                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+            }
         }
+
         @keyframes slideIn {
             from {
                 transform: translateX(-100px);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
             }
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+
         .animate-fadeInUp {
             animation: fadeInUp 1s ease-out forwards;
             opacity: 0;
         }
+
         .animate-slideIn {
             animation: slideIn 1s ease-out forwards;
             opacity: 0;
         }
+
         .hover-animate-glow:hover {
             animation: glow 1.5s infinite;
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md p-4 z-50 animate-slideIn">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-white text-2xl font-bold">Skill Sharing</h1>
-            <div class="md:hidden cursor-pointer" id="hamburger">
-                <div class="w-8 h-1 bg-white mb-2"></div>
-                <div class="w-8 h-1 bg-white mb-2"></div>
-                <div class="w-8 h-1 bg-white"></div>
+
+<body
+    class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+    <!-- Responsive Navbar  -->
+    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md z-50 animate-slideIn">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 text-white text-2xl font-bold">
+                    Skill Sharing
+                </div>
+                <div class="flex md:hidden">
+                    <button id="hamburger" class="text-gray-300 hover:text-white focus:outline-none">
+                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="hidden md:flex md:items-center md:space-x-6 text-white font-medium" id="nav-links">
+                    <a th:href="@{/}" class="hover:text-green-400 transition">Home</a>
+                    <a th:href="@{/about}" class="hover:text-green-400 transition">About</a>
+                    <a th:href="@{/auth/register}" class="hover:text-green-400 transition">Register</a>
+                    <a th:href="@{/auth/login}" class="hover:text-green-400 transition">Login</a>
+                </div>
             </div>
-            <ul class="hidden md:flex space-x-6 text-white font-medium" id="nav-links">
-                <li><a class="hover:text-green-400 transition" th:href="@{/}">Home</a></li>
-                <li><a class="hover:text-green-400 transition" th:href="@{/about}">About</a></li>
-                <li><a class="hover:text-green-400 transition" th:href="@{/auth/register}">Register</a></li>
-                <li><a class="hover:text-green-400 transition" th:href="@{/auth/login}">Login</a></li>
-            </ul>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden px-4 pt-2 pb-4 bg-gray-900 space-y-2" id="mobile-nav">
+            <a th:href="@{/}" class="block text-white hover:text-green-400 transition">Home</a>
+            <a th:href="@{/about}" class="block text-white hover:text-green-400 transition">About</a>
+            <a th:href="@{/auth/register}" class="block text-white hover:text-green-400 transition">Register</a>
+            <a th:href="@{/auth/login}" class="block text-white hover:text-green-400 transition">Login</a>
         </div>
     </nav>
 
-    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md mt-20 text-gray-200 animate-fadeInUp">
-        <h2 class="text-3xl font-semibold text-center mb-6 animate-slideIn">Login</h2>
+
+    <!-- Login Form -->
+    <div class="bg-gray-800 p-6 sm:p-8 rounded-lg shadow-lg w-11/12 max-w-md mt-24 text-gray-200 animate-fadeInUp">
+        <h2 class="text-2xl sm:text-3xl font-semibold text-center mb-6 animate-slideIn">Login</h2>
         <form th:action="@{/auth/login}" method="post" class="space-y-4 animate-fadeInUp">
             <div>
                 <label for="email" class="block text-gray-300">Email:</label>
                 <input type="email" id="email" name="email" required
-                    class="w-full px-4 py-2 border rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-400 transition animate-slideIn"/>
+                    class="w-full px-4 py-2 border rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-400 transition" />
             </div>
             <div>
                 <label for="password" class="block text-gray-300">Password:</label>
                 <input type="password" id="password" name="password" required
-                    class="w-full px-4 py-2 border rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-400 transition animate-slideIn"/>
+                    class="w-full px-4 py-2 border rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-400 transition" />
             </div>
-            <div th:if="${param.error}" class="text-red-500 text-sm text-center animate-fadeInUp">Invalid email or password. Please try again.</div>
+            <div th:if="${param.error}" class="text-red-500 text-sm text-center animate-fadeInUp">
+                Invalid email or password. Please try again.
+            </div>
             <button type="submit"
-                class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition transform hover:scale-105 hover-animate-glow animate-pulse">Login</button>
+                class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition transform hover:scale-105 hover-animate-glow">Login</button>
         </form>
-        <p class="text-center text-gray-300 mt-4 animate-fadeInUp">Don't have an account? <a th:href="@{/auth/register}" class="text-green-400 hover:underline">Register here</a></p>
+        <p class="text-center text-gray-300 mt-4 animate-fadeInUp">
+            Don’t have an account?
+            <a th:href="@{/auth/register}" class="text-green-400 hover:underline">Register here</a>
+        </p>
     </div>
 
+    <!-- Toggle Nav Script -->
     <script>
-        document.getElementById('hamburger').addEventListener('click', function() {
-            document.getElementById('nav-links').classList.toggle('hidden');
+        const hamburger = document.getElementById('hamburger');
+        const mobileNav = document.getElementById('mobile-nav');
+
+        hamburger.addEventListener('click', () => {
+            mobileNav.classList.toggle('hidden');
         });
     </script>
+
+    <!-- Cursor Particles -->
+    <script th:src="@{/cursorParticles.js}"></script>
 </body>
+
 </html>

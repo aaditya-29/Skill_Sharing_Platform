@@ -1,61 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About Us - Skill Sharing Platform</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    primary: "#0A0D2D",
-                    secondary: "#00BFA6",
-                    dark: "#111127",
-                    light: "#F5F5F5",
-                    card: "#1F2937"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Skill Sharing Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0A0D2D",
+                        secondary: "#00BFA6",
+                        dark: "#111127",
+                        light: "#F5F5F5",
+                        card: "#1F2937"
+                    }
                 }
             }
+        };
+    </script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-    };
-</script>
-<style>
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-50px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(50px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes bounceIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}
-.fade-in { animation: fadeInUp 1s ease-out; }
-.slide-left { animation: slideInLeft 1s ease-out; }
-.slide-right { animation: slideInRight 1s ease-out; }
-.bounce-in { animation: bounceIn 1s ease-out; }
-</style>
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .slide-left {
+            animation: slideInLeft 1s ease-out;
+        }
+
+        .slide-right {
+            animation: slideInRight 1s ease-out;
+        }
+
+        .bounce-in {
+            animation: bounceIn 1s ease-out;
+        }
+    </style>
 </head>
+
 <body class="bg-dark text-white transition-all duration-500">
 
     <!-- Navbar -->
-    <nav class="bg-primary text-white shadow-lg fixed w-full z-50">
-        <div class="container mx-auto flex justify-between items-center p-4">
-            <h1 class="text-3xl font-extrabold tracking-wide">Skill Sharing</h1>
-            <ul class="hidden md:flex space-x-6">
-                <li><a href="/" class="hover:text-secondary transition">Home</a></li>
-                <li><a href="/about" class="hover:text-secondary transition">About</a></li>
-                <li><a href="/auth/register" class="hover:text-secondary transition">Register</a></li>
-                <li><a href="/auth/login" class="hover:text-secondary transition">Login</a></li>
+    <nav class="bg-gray-900 text-white py-4 shadow-lg fixed w-full z-50">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <h1 class="text-2xl font-bold tracking-wide">Skill Sharing</h1>
+            <ul class="hidden md:flex space-x-6 text-lg">
+                <li><a href="/" class="hover:text-green-400 transition duration-300">Home</a></li>
+                <li><a href="/about" class="hover:text-green-400 transition duration-300">About</a></li>
+                <li><a href="/auth/register" class="hover:text-green-400 transition duration-300">Register</a></li>
+                <li><a href="/auth/login" class="hover:text-green-400 transition duration-300">Login</a></li>
             </ul>
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden cursor-pointer" id="menu-toggle">
+                <div class="w-6 h-1 bg-white mb-1"></div>
+                <div class="w-6 h-1 bg-white mb-1"></div>
+                <div class="w-6 h-1 bg-white"></div>
+            </div>
         </div>
+        <!-- Mobile Menu -->
+        <ul id="mobile-menu"
+            class="hidden flex-col items-center bg-gray-900 text-white text-lg space-y-4 py-6 px-4 absolute w-full top-16 left-0 shadow-md">
+            <li><a href="/" class="hover:text-green-400 transition duration-300">Home</a></li>
+            <li><a href="/about" class="hover:text-green-400 transition duration-300">About</a></li>
+            <li><a href="/auth/register" class="hover:text-green-400 transition duration-300">Register</a></li>
+            <li><a href="/auth/login" class="hover:text-green-400 transition duration-300">Login</a></li>
+        </ul>
     </nav>
 
     <!-- Hero Section -->
@@ -68,7 +127,8 @@
     <section class="py-16 px-6">
         <div class="container mx-auto text-center">
             <h3 class="text-4xl font-bold text-secondary fade-in">Our Mission</h3>
-            <p class="mt-4 text-gray-400 fade-in">We aim to create a seamless, reliable, and efficient system to hire skilled professionals effortlessly.</p>
+            <p class="mt-4 text-gray-400 fade-in">We aim to create a seamless, reliable, and efficient system to hire
+                skilled professionals effortlessly.</p>
 
             <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="p-6 bg-card shadow-lg rounded-lg slide-left hover:scale-105 transition">
@@ -112,7 +172,8 @@
     </section>
 
     <!-- Scroll Down Text -->
-    <div id="scroll-text" class="absolute bottom-10 text-gray-400 text-sm transition-opacity duration-500 text-center w-full">
+    <div id="scroll-text"
+        class="absolute bottom-10 text-gray-400 text-sm transition-opacity duration-500 text-center w-full">
         Scroll down to learn more ↓
     </div>
 
@@ -123,15 +184,43 @@
 
     <!-- Scroll Disappear Script -->
     <script>
+
+
         window.addEventListener('scroll', function () {
             const scrollText = document.getElementById('scroll-text');
             if (window.scrollY > 100) {
-                scrollText.classList.add('opacity-0', 'pointer-events-none'); 
+                scrollText.classList.add('opacity-0', 'pointer-events-none');
             } else {
                 scrollText.classList.remove('opacity-0', 'pointer-events-none');
             }
         });
+
+
+
+
+        <!-- JavaScript for Mobile Menu -->
+
+        document.getElementById('menu-toggle').addEventListener(
+            'click',
+            function () {
+                document.getElementById('mobile-menu').classList
+                    .toggle('hidden');
+            });
+
+        window.addEventListener('scroll',
+            function () {
+                const scrollText = document.getElementById('scroll-text');
+                if (window.scrollY > 100) { // Adjust scroll threshold
+                    scrollText.classList.add('opacity-0',
+                        'pointer-events-none');
+                } else {
+                    scrollText.classList.remove('opacity-0',
+                        'pointer-events-none');
+                }
+            });
+
     </script>
 
 </body>
+
 </html>

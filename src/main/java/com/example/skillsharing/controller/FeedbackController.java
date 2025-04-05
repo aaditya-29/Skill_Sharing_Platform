@@ -1,7 +1,6 @@
 package com.example.skillsharing.controller;
 
 import com.example.skillsharing.model.Booking;
-
 import com.example.skillsharing.model.Feedback;
 import com.example.skillsharing.model.User;
 import com.example.skillsharing.service.BookingService;
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,12 +35,21 @@ public class FeedbackController {
 	public String showFeedbackPage(Model model) {
 		User currentUser = getCurrentUser();
 
-		// Ensure we fetch completed bookings
+		// Fetch all completed bookings for the current user
 		List<Booking> completedBookings = bookingService.findCompletedBookingsForUser(currentUser.getId());
 
-		model.addAttribute("completedBookings", completedBookings);
-		model.addAttribute("currentUser", currentUser);
+		// Filter out bookings already reviewed by the current user
+		List<Booking> eligibleBookings = new ArrayList<>();
+		for (Booking booking : completedBookings) {
+			boolean alreadyReviewed = feedbackService
+					.getFeedbackByBookingAndReviewer(booking.getId(), currentUser.getId()).isPresent();
+			if (!alreadyReviewed) {
+				eligibleBookings.add(booking);
+			}
+		}
 
+		model.addAttribute("completedBookings", eligibleBookings);
+		model.addAttribute("currentUser", currentUser);
 		return "feedback/leave-feedback";
 	}
 
@@ -52,16 +62,13 @@ public class FeedbackController {
 			return "redirect:/feedback/leave-review?error=invalid_booking";
 		}
 
-		// Ensure only involved users can leave feedback
 		if (!booking.getRequester().getId().equals(currentUser.getId())
 				&& !booking.getWorker().getId().equals(currentUser.getId())) {
 			return "redirect:/feedback/leave-review?error=unauthorized";
 		}
 
-		// Check if feedback already exists for this booking from the user
 		Optional<Feedback> existingFeedback = feedbackService.getFeedbackByBookingAndReviewer(bookingId,
 				currentUser.getId());
-
 		if (existingFeedback.isPresent()) {
 			return "redirect:/feedback/leave-review?error=already_reviewed";
 		}
@@ -72,38 +79,38 @@ public class FeedbackController {
 		feedback.setRating(rating);
 		feedback.setComment(comment);
 
-		// Determine reviewee based on who is giving feedback
 		boolean isRequester = booking.getRequester().getId().equals(currentUser.getId());
-		feedback.setReviewee(isRequester ? booking.getWorker() : booking.getRequester());
+		User reviewee = isRequester ? booking.getWorker() : booking.getRequester();
+
+		System.out.println("✅ Reviewer: " + currentUser.getName() + ", Reviewee: " + reviewee.getName());
+		feedback.setReviewee(reviewee);
 
 		feedbackService.saveFeedback(feedback);
-
-		// ✅ Redirect with success message
 		return "redirect:/feedback/leave-review?success=feedback_submitted";
 	}
 
-	@GetMapping("/view/{bookingId}")
-	public String viewFeedback(@PathVariable Long bookingId, Model model) {
-		List<Feedback> feedbackList = feedbackService.getAllFeedbackForBooking(bookingId);
+	// ✅ Updated to show only feedback where current user is reviewee
+	@GetMapping("/view")
+	public String viewFeedback(Model model, Principal principal) {
+		User currentUser = userService.findByEmail(principal.getName());
 
-		if (!feedbackList.isEmpty()) {
-			model.addAttribute("feedbackList", feedbackList);
-			System.out.println("THis is EMPTYYYYYYYYYYYYYYYYYYYYYYYYYY");
-			return "feedback/view-feedback";
-		} else {
-			model.addAttribute("errorMessage", "No feedback found for this booking.");
-			return "feedback/view-feedback";
+		System.out.println("🔐 Logged-in User ID: " + currentUser.getId() + ", Name: " + currentUser.getName());
+
+		List<Feedback> feedbackList = feedbackService.getFeedbackForUser(currentUser.getId());
+
+		for (Feedback f : feedbackList) {
+			System.out.println(
+					"📝 Feedback: Reviewer=" + f.getReviewer().getName() + ", Reviewee=" + f.getReviewee().getName());
 		}
+
+		model.addAttribute("feedbackList", feedbackList);
+		return "feedback/view-feedback";
 	}
 
 	private User getCurrentUser() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String email;
-		if (principal instanceof UserDetails) {
-			email = ((UserDetails) principal).getUsername();
-		} else {
-			email = principal.toString();
-		}
+		String email = (principal instanceof UserDetails) ? ((UserDetails) principal).getUsername()
+				: principal.toString();
 		return userService.findByEmail(email);
 	}
 }

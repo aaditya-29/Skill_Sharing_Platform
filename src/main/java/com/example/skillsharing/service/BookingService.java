@@ -76,4 +76,17 @@ public class BookingService {
 	public void updateBooking(Booking booking) {
 		bookingRepository.save(booking);
 	}
+
+	public List<Booking> getBookingsWithReportsByWorker(Long workerId) {
+		return bookingRepository.findByWorkerIdWithInspectionReport(workerId);
+	}
+	public List<Booking> findByRequester(User requester) {
+	    return bookingRepository.findByRequester(requester);
+	}
+
+	public List<Booking> findByWorker(User worker) {
+	    return bookingRepository.findByWorker(worker);
+	}
+
+
 }

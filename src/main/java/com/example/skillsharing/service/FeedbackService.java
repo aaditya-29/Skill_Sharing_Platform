@@ -1,6 +1,8 @@
 package com.example.skillsharing.service;
 
+import com.example.skillsharing.model.Booking;
 import com.example.skillsharing.model.Feedback;
+import com.example.skillsharing.model.User;
 import com.example.skillsharing.repository.FeedbackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,12 @@ public class FeedbackService {
 	}
 
 	public List<Feedback> getFeedbackForUser(Long userId) {
-		return feedbackRepository.findByRevieweeId(userId);
+		List<Feedback> received = feedbackRepository.findByRevieweeId(userId);
+		System.out.println("✅ Received Feedback count: " + received.size());
+		for (Feedback f : received) {
+			System.out.println("From: " + f.getReviewer().getName() + " ➜ To: " + f.getReviewee().getName());
+		}
+		return received;
 	}
 
 	public Optional<Feedback> getFeedbackByBookingAndReviewer(Long bookingId, Long reviewerId) {
@@ -33,9 +40,20 @@ public class FeedbackService {
 
 	public double getAverageRatingForUser(Long userId) {
 		List<Double> ratings = feedbackRepository.findRatingsByUserId(userId);
-
 		OptionalDouble average = ratings.stream().mapToDouble(Double::doubleValue).average();
-
-		return average.isPresent() ? average.getAsDouble() : 0.0; // Return 0 if no ratings
+		return average.isPresent() ? Math.round(average.getAsDouble() * 10.0) / 10.0 : 0.0;
 	}
+
+	public Feedback findByBookingAndReviewee(Booking booking, User reviewee) {
+		return feedbackRepository.findByBookingAndReviewee(booking, reviewee).orElse(null);
+	}
+
+	public List<Feedback> getAllFeedback() {
+		return feedbackRepository.findAll();
+	}
+
+	public List<Feedback> getReceivedFeedbackForUser(Long userId) {
+		return feedbackRepository.findByRevieweeId(userId);
+	}
+
 }

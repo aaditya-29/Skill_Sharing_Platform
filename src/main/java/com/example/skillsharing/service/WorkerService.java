@@ -10,10 +10,15 @@ import java.util.List;
 @Service
 public class WorkerService {
 
-    @Autowired
-    private WorkerRepository workerRepository;
+	@Autowired
+	private WorkerRepository workerRepository;
 
-    public List<Worker> findWorkersBySkill(String skill) {
-        return workerRepository.findBySkillNameContainingIgnoreCase(skill);
-    }
+	public List<Worker> findWorkersBySkill(String skill) {
+		return workerRepository.findBySkillNameContainingIgnoreCase(skill);
+	}
+
+	public List<Worker> findWorkersByCategory(String category) {
+		return workerRepository.findByCategoryContainingIgnoreCase(category);
+	}
+
 }

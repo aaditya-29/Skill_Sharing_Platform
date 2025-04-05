@@ -1,109 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<title>Feedback Report</title>
-<style>
-/* Styling for the page */
-body {
-	font-family: 'Arial', sans-serif;
-	background-color: #f4f4f9;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-}
-
-h2 {
-	color: #333;
-	font-size: 28px;
-	margin-bottom: 20px;
-	text-align: center;
-}
-
-.report-container {
-	background-color: #fff;
-	padding: 20px;
-	border-radius: 8px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	width: 100%;
-	max-width: 600px;
-}
-
-p {
-	font-size: 16px;
-	margin: 8px 0;
-}
-
-.strong {
-	font-weight: bold;
-}
-
-.error-message {
-	color: red;
-	text-align: center;
-}
-
-.back-link {
-	display: block;
-	margin-top: 20px;
-	text-align: center;
-	color: #4CAF50;
-	text-decoration: none;
-	font-size: 16px;
-}
-
-.back-link:hover {
-	text-decoration: underline;
-}
-</style>
+	<title>Feedback Report</title>
+	<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-	<div class="report-container">
-		<h2>Feedback Report</h2>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-6">
 
+	<!-- Heading -->
+	<h2 class="text-4xl font-bold mt-10 mb-6 animate-fadeInUp">Feedback
+		You Received</h2>
 
+	<!-- Feedback Container -->
+	<div class="w-full max-w-4xl bg-gray-800 rounded-lg p-6 shadow-md space-y-6 animate-fadeInUp">
 
-
-		<!-- Feedback Information -->
-		<div th:if="${feedback}">
-			<p>
-				<span class="strong">Booking ID:</span> <span
-					th:text="${feedback.booking.id}"></span>
-			</p>
-			<p>
-				<span class="strong">Reviewer:</span> <span
-					th:text="${feedback.reviewer.name}"></span>
-			</p>
-			<p>
-				<span class="strong">Reviewee:</span> <span
-					th:text="${feedback.reviewee.name}"></span>
-			</p>
-			<p>
-				<span class="strong">Rating:</span> <span
-					th:text="${feedback.rating}"></span>/5
-			</p>
-			<p>
-				<span class="strong">Comment:</span> <span
-					th:text="${feedback.comment}"></span>
-			</p>
-			<p>
-				<span class="strong">Submitted At:</span> <span
-					th:text="${#temporals.format(feedback.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-			</p>
+		<!-- Feedback Entries -->
+		<div th:if="${feedbackList}">
+			<div th:each="feedback : ${feedbackList}"
+				class="bg-gray-700 m-4 p-4 rounded-md border-l-4 border-green-500">
+				<p class="text-green-400 font-semibold">
+					Reviewee: <span th:text="${feedback.reviewee.name}"></span>
+				</p>
+				<p>
+					<strong class="text-gray-300">Reviewer:</strong> <span th:text="${feedback.reviewer.name}"></span>
+				</p>
+				<p>
+					<strong class="text-gray-300">Rating:</strong> <span th:text="${feedback.rating}"></span>/5
+				</p>
+				<p>
+					<strong class="text-gray-300">Comment:</strong> <span th:text="${feedback.comment}"></span>
+				</p>
+			</div>
 		</div>
 
 		<!-- Error Message -->
-		<div th:if="${errorMessage}">
-			<p class="error-message" th:text="${errorMessage}"></p>
+		<div th:if="${errorMessage}" class="text-center">
+			<p class="text-red-500 text-lg font-semibold" th:text="${errorMessage}"></p>
 		</div>
 
-		<!-- Back to Dashboard Link -->
-		<a class="back-link" href="/dashboard">Back to Dashboard</a>
+		<!-- Back to Dashboard -->
+		<div class="text-center">
+			<a href="/dashboard"
+				class="inline-block mt-6 px-6 py-2 bg-green-600 hover:bg-green-700 rounded-md text-white font-semibold transition">
+				Back to Dashboard </a>
+		</div>
+
 	</div>
+
+	<!-- Optional: Particle Cursor or Effects -->
 	<script th:src="@{/cursorParticles.js}"></script>
 
 </body>
+
 </html>

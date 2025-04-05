@@ -4,6 +4,8 @@
 <head>
     <title>Add Skill</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         /* Fade-in effect */
         @keyframes fadeIn {
@@ -11,6 +13,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -24,9 +27,17 @@
 
         /* Glowing button effect */
         @keyframes glow {
-            0% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.9); }
-            100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+            0% {
+                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(34, 197, 94, 0.9);
+            }
+
+            100% {
+                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+            }
         }
 
         .hover-glow:hover {
@@ -38,17 +49,19 @@
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md p-4 z-50">
-        <div class="container mx-auto flex justify-between items-center px-4">
+    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md z-50">
+        <div class="container mx-auto flex justify-between items-center px-4 py-4">
             <div class="text-xl font-bold text-white">Add Skill</div>
+
             <!-- Mobile Menu Button -->
-            <button id="menu-btn" class="text-white text-2xl md:hidden focus:outline-none">
+            <button id="menu-btn" class="text-white text-3xl md:hidden focus:outline-none">
                 ☰
             </button>
         </div>
-        
-        <!-- Nav Links -->
-        <div id="menu" class="hidden md:flex flex-col md:flex-row items-center text-white font-medium mt-3 md:mt-0">
+
+        <!-- Nav Links (hidden on mobile, slide down when toggled) -->
+        <div id="menu"
+            class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out md:max-h-full md:flex md:flex-row md:items-center md:justify-center md:space-x-4 space-y-2 md:space-y-0 flex flex-col text-white font-medium text-center px-4 md:pb-0">
             <a href="/worker/dashboard" class="py-2 px-4 hover:text-green-400">Home</a>
             <a href="/skills/add" class="py-2 px-4 hover:text-green-400">Add a Skill</a>
             <a href="/worker/bookings" class="py-2 px-4 hover:text-green-400">View Requests</a>
@@ -57,6 +70,7 @@
             <a href="/auth/logout" class="py-2 px-4 hover:text-green-400">Logout</a>
         </div>
     </nav>
+
 
     <!-- Page Content (Pushed Below Navbar) -->
     <div class="flex flex-col items-center justify-center flex-grow mt-20 p-4">
@@ -68,28 +82,28 @@
                 <div>
                     <label for="skillName" class="block text-gray-300">Skill Name:</label>
                     <input type="text" id="skillName" th:field="*{skillName}" required
-                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition"/>
+                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition" />
                 </div>
 
                 <div>
                     <label for="category" class="block text-gray-300">Category:</label>
                     <input type="text" id="category" th:field="*{category}" required
-                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition"/>
+                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition" />
                 </div>
 
                 <div>
                     <label for="location" class="block text-gray-300">Location:</label>
                     <input type="text" id="location" th:field="*{location}" required
-                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition"/>
+                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition" />
                 </div>
 
                 <div>
                     <label for="price" class="block text-gray-300">Price per Hour:</label>
                     <input type="number" id="price" step="0.01" th:field="*{price}" required
-                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition"/>
+                        class="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition" />
                 </div>
 
-                <button type="submit" 
+                <button type="submit"
                     class="w-full p-3 text-lg font-semibold text-white bg-green-500 rounded-lg hover-glow transition duration-300 hover:bg-green-600">
                     Add Skill
                 </button>
@@ -99,11 +113,21 @@
 
     <!-- Mobile Navbar Toggle -->
     <script>
-        document.getElementById('menu-btn').addEventListener('click', function() {
-            let menu = document.getElementById('menu');
-            menu.classList.toggle('hidden');
+        const menuBtn = document.getElementById('menu-btn');
+        const menu = document.getElementById('menu');
+
+        menuBtn.addEventListener('click', () => {
+            // Toggle classes for smooth expand/collapse
+            if (menu.classList.contains('max-h-0')) {
+                menu.classList.remove('max-h-0', 'overflow-hidden');
+                menu.classList.add('max-h-screen');
+            } else {
+                menu.classList.remove('max-h-screen');
+                menu.classList.add('max-h-0', 'overflow-hidden');
+            }
         });
     </script>
+
 
     <!-- Cursor Particles -->
     <script th:src="@{/cursorParticles.js}"></script>

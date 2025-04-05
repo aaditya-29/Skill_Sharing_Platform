@@ -3,7 +3,6 @@ package com.example.skillsharing.controller;
 import com.example.skillsharing.model.Role;
 import com.example.skillsharing.model.SkillListing;
 import com.example.skillsharing.model.User;
-import com.example.skillsharing.model.Worker;
 import com.example.skillsharing.service.SkillListingService;
 import com.example.skillsharing.service.UserService;
 import com.example.skillsharing.service.WorkerService;
@@ -24,7 +23,6 @@ public class WorkerController {
 	private final SkillListingService skillListingService;
 	private final UserService userService;
 
-	@Autowired
 	public WorkerController(WorkerService workerService, SkillListingService skillListingService,
 			UserService userService) {
 		this.workerService = workerService;
@@ -32,13 +30,19 @@ public class WorkerController {
 		this.userService = userService;
 	}
 
+	/**
+	 * Search for workers by skill
+	 */
 	@GetMapping("/workers/search")
-	public String searchWorkers(@RequestParam("skill") String skill, Model model) {
-		List<Worker> workers = workerService.findWorkersBySkill(skill);
-		model.addAttribute("workers", workers);
-		return "search-workers";
+	public String searchWorkers(@RequestParam("skill") String searchTerm, Model model) {
+		List<SkillListing> skills = skillListingService.searchBySkillOrCategory(searchTerm);
+		model.addAttribute("skills", skills);
+		return "search-results";
 	}
 
+	/**
+	 * Worker Dashboard
+	 */
 	@GetMapping("/worker/dashboard")
 	public String workerDashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
 		if (userDetails == null) {
@@ -66,5 +70,4 @@ public class WorkerController {
 
 		return "worker/dashboard"; // ✅ Display worker dashboard
 	}
-
 }

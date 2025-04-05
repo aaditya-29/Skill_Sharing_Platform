@@ -1,77 +1,101 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Update Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Fade-in Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        /* Card Hover Effect */
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-out forwards;
+            opacity: 0;
+        }
+
         .card-hover {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0px 10px 30px rgba(76, 175, 80, 0.5);
         }
 
-        /* Button Hover Effect */
         .btn-animate {
             transition: background 0.3s ease, transform 0.3s ease;
         }
+
         .btn-animate:hover {
             background-color: #388E3C;
             transform: scale(1.05);
         }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                width: 90%;
-                padding: 15px;
-            }
-        }
     </style>
 </head>
-<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen py-10">
 
-    <h2 class="text-4xl font-bold text-green-400 mb-6 animate-fadeIn">Update Profile</h2>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen py-10 px-4">
+
+    <h2 class="text-4xl font-bold text-green-400 mb-6 animate-fadeIn text-center">Update Profile</h2>
 
     <!-- Include Navbar Based on Role -->
     <div th:if="${user.role == 'WORKER'}" th:insert="fragments/workerNavbar :: body"></div>
     <div th:if="${user.role == 'REQUESTER'}" th:insert="fragments/navbar :: body"></div>
 
-    <div class="bg-gray-800 p-8 rounded-2xl shadow-xl max-w-lg w-full animate-fadeIn card-hover">
+    <div class="bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-lg animate-fadeIn card-hover">
 
         <!-- Profile Update Form -->
-        <form th:action="@{/profile/update}" method="post" enctype="multipart/form-data" class="flex flex-col gap-5">
-            <label class="text-green-400 font-semibold" for="name">Name:</label>
-            <input type="text" name="name" th:value="${user.name}" required class="p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-400">
-            
-            <label class="text-green-400 font-semibold" for="contactNumber">Contact:</label>
-            <input type="text" name="contactNumber" th:value="${user.contactNumber}" required class="p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-400">
-            
-            <label class="text-green-400 font-semibold" for="address">Address:</label>
-            <input type="text" name="address" th:value="${user.address}" required class="p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-400">
+        <form th:action="@{/profile/update}" method="post" enctype="multipart/form-data"
+            class="flex flex-col gap-4 sm:gap-5">
 
-            <label class="text-green-400 font-semibold" for="profileImage">Profile Picture:</label>
-            <input type="file" name="profileImage" accept="image/*" class="p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-400">
+            <div>
+                <label class="text-green-400 font-semibold block mb-1" for="name">Name:</label>
+                <input type="text" name="name" th:value="${user.name}" required
+                    class="w-full p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-400">
+            </div>
 
-            <button type="submit" class="bg-green-500 text-white px-6 py-3 rounded-lg btn-animate font-semibold text-lg">
+            <div>
+                <label class="text-green-400 font-semibold block mb-1" for="contactNumber">Contact:</label>
+                <input type="text" name="contactNumber" th:value="${user.contactNumber}" required
+                    class="w-full p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-400">
+            </div>
+
+            <div>
+                <label class="text-green-400 font-semibold block mb-1" for="address">Address:</label>
+                <input type="text" name="address" th:value="${user.address}" required
+                    class="w-full p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-400">
+            </div>
+
+            <div>
+                <label class="text-green-400 font-semibold block mb-1" for="profileImage">Profile Picture:</label>
+                <input type="file" name="profileImage" accept="image/*"
+                    class="w-full p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-400">
+            </div>
+
+            <button type="submit"
+                class="bg-green-500 text-white px-6 py-3 rounded-lg btn-animate font-semibold text-lg w-full">
                 Update Profile
             </button>
         </form>
 
         <!-- Cancel Button -->
-        <a href="/profile" class="block text-center text-green-400 mt-4 hover:underline">Cancel</a>
+        <a href="/profile" class="block text-center text-green-400 mt-4 hover:underline">
+            Cancel
+        </a>
     </div>
 
     <!-- Cursor Particle Effect -->
     <script src="/cursorParticles.js"></script>
 </body>
+
 </html>

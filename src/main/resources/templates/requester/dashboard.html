@@ -2,115 +2,158 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Requester Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Requester Dashboard</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<style>
+		@keyframes fadeInUp {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
 
-        @keyframes glow {
-            0% {
-                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 20px rgba(34, 197, 94, 0.9);
-            }
-            100% {
-                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
-            }
-        }
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
 
-        .animate-fadeInUp {
-            animation: fadeInUp 1s ease-out forwards;
-            opacity: 0;
-        }
+		@keyframes glow {
+			0% {
+				box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+			}
 
-        .hover-animate-glow:hover {
-            animation: glow 1.5s infinite;
-        }
-    </style>
+			50% {
+				box-shadow: 0 0 20px rgba(34, 197, 94, 0.9);
+			}
+
+			100% {
+				box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+			}
+		}
+
+		.animate-fadeInUp {
+			animation: fadeInUp 2s ease-out forwards;
+			opacity: 0;
+		}
+
+		.hover-animate-glow:hover {
+			animation: glow 2s infinite;
+		}
+	</style>
 </head>
+<!-- ... HEAD remains unchanged ... -->
 
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md p-4 z-50">
-        <div class="container mx-auto flex justify-between items-center px-4">
-            <div class="text-xl font-bold text-white">Requester Dashboard</div>
-            <!-- Mobile Menu Button -->
-            <button id="menu-btn" class="text-white text-2xl md:hidden focus:outline-none">
-                ☰
-            </button>
-        </div>
+	<!-- Navbar -->
+	<nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md z-50">
+		<div class="container mx-auto flex justify-between items-center px-4 py-3">
+			<div class="text-xl font-bold text-white">Requester Dashboard</div>
+			<button id="menu-btn" class="text-white text-3xl md:hidden focus:outline-none">
+				&#9776;
+			</button>
+		</div>
 
-        <!-- Nav Links -->
-        <div id="menu" class="hidden md:flex flex-col md:flex-row items-center text-white font-medium mt-3 md:mt-0">
-            <a href="/requester/dashboard" class="py-2 px-4 hover:text-green-400">Home</a>
-            <a href="/skills/search" class="py-2 px-4 hover:text-green-400">Search</a>
-            <a href="/skills/all" class="py-2 px-4 hover:text-green-400">All Skills</a>
-            <a href="/requester/bookings" class="py-2 px-4 hover:text-green-400">View Bookings</a>
-            <a href="/feedback/leave-review" class="py-2 px-4 hover:text-green-400">Leave a Review</a>
-            <a href="/profile" class="py-2 px-4 hover:text-green-400">View Profile</a>
-            <a href="/auth/logout" class="py-2 px-4 hover:text-red-400">Logout</a>
-        </div>
-    </nav>
+		<!-- Mobile Menu -->
+		<div id="menu"
+			class="hidden flex-col md:flex md:flex-row md:items-center bg-gray-900 text-white font-medium px-4 md:px-0 md:space-x-4 py-3 md:py-0">
+			<a href="/requester/dashboard" class="py-2 hover:text-green-400">Home</a>
+			<a href="/skills/search" class="py-2 hover:text-green-400">Search</a>
+			<a href="/skills/all" class="py-2 hover:text-green-400">All Skills</a>
+			<a href="/requester/bookings" class="py-2 hover:text-green-400">View Bookings</a>
+			<a href="/feedback/leave-review" class="py-2 hover:text-green-400">Leave a Review</a>
+			<a href="/profile" class="py-2 hover:text-green-400">View Profile</a>
+			<a href="/auth/logout" class="py-2 hover:text-red-400">Logout</a>
+		</div>
+	</nav>
 
-    <!-- Page Content (Pushed Below Navbar) -->
-    <div class="flex flex-col items-center justify-center flex-grow p-4">
-        <h2 class="text-4xl font-bold mt-20 text-white animate-fadeInUp">Available Workers</h2>
+	<!-- Page Content -->
+	<div class="flex flex-col items-center justify-center flex-grow p-4 mt-24">
+		<h2 class="text-3xl sm:text-4xl font-bold text-white text-center animate-fadeInUp">Available Workers</h2>
 
-        <div class="worker-list w-full max-w-5xl p-6 space-y-6 mt-10 animate-fadeInUp">
-            <div th:if="${skills != null and skills.size() > 0}">
-                <div class="worker-card bg-gray-800 rounded-lg mt-5 p-6 shadow-lg hover:shadow-xl transition transform hover:scale-105 hover-animate-glow flex items-center space-x-6 w-full h-40"
-                    th:each="skill : ${skills}">
-                    <img th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}" 
-                        alt="Profile Picture"
-                        class="w-28 h-28 rounded-full border-4 border-green-500 flex-shrink-0">
+		<div class="worker-list w-full max-w-6xl p-4 sm:p-6 space-y-6 mt-10 animate-fadeInUp">
+			<div th:if="${skills != null and skills.size() > 0}">
+				<div th:each="skill : ${skills}"
+					class="worker-card bg-gray-800 mt-4 rounded-lg p-4 sm:p-6 shadow-lg hover:shadow-xl transition transform hover:scale-105 hover-animate-glow flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 w-full">
 
-                    <div class="worker-details flex-1">
-                        <h3 class="text-xl font-semibold text-white mb-1" th:text="${skill.worker.name ?: 'Unknown Worker'}"></h3>
-                        <div class="grid grid-cols-3 gap-2 text-gray-300">
-                            <p><strong>Contact:</strong> <span th:text="${skill.worker.contactNumber ?: 'N/A'}"></span></p>
-                            <p><strong>Skill:</strong> <span th:text="${skill.skillName ?: 'Not Specified'}"></span></p>
-                            <p><strong>Category:</strong> <span th:text="${skill.category ?: 'N/A'}"></span></p>
-                            <p><strong>Location:</strong> <span th:text="${skill.location ?: 'Unknown'}"></span></p>
-                            <p><strong>Price:</strong> ₹ <span th:text="${skill.price ?: '0'}"></span> per hour</p>
-                        </div>
-                    </div>
+					<!-- Profile Picture -->
+					<img th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}"
+						alt="Profile Picture"
+						class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-green-500 flex-shrink-0">
 
-                    <a th:href="@{/booking/{workerId}(workerId=${skill.worker.id})}" 
-                        class="ml-auto bg-green-500 text-white px-5 py-2 rounded-full text-lg font-semibold hover:bg-green-600 transition transform hover:scale-105 hover-animate-glow self-end">
-                        Book Now
-                    </a>
-                </div>
-            </div>
+					<!-- Worker Details -->
+					<div class="worker-details flex-1 text-center sm:text-left">
+						<h3 class="text-xl font-semibold text-white mb-1"
+							th:text="${skill.worker.name ?: 'Unknown Worker'}"></h3>
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-y-1 text-gray-300">
+							<p><strong>Contact:</strong> <span th:text="${skill.worker.contactNumber ?: 'N/A'}"></span>
+							</p>
+							<p><strong>Skill:</strong> <span th:text="${skill.skillName ?: 'Not Specified'}"></span></p>
+							<p><strong>Category:</strong> <span th:text="${skill.category ?: 'N/A'}"></span></p>
+							<p><strong>Location:</strong> <span th:text="${skill.location ?: 'Unknown'}"></span></p>
+							<p><strong>Price:</strong> ₹ <span th:text="${skill.price ?: '0'}"></span> per hour</p>
+						</div>
+					</div>
 
-            <div th:if="${skills == null or skills.size() == 0}" class="text-center text-gray-300 text-lg mt-10">
-                <p>No workers available at the moment. Please check back later!</p>
-            </div>
-        </div>
-    </div>
+					<!-- Book Now Button -->
+					<button type="button"
+						th:onclick="'openBookingModal(' + ${skill.id} + ',' + ${skill.worker.id} + ')'"
+						class="w-full sm:w-auto mt-4 sm:mt-0 bg-green-500 text-white px-5 py-2 rounded-full text-base font-semibold hover:bg-green-600 transition transform hover:scale-105 hover-animate-glow">
+						Book Now
+					</button>
+				</div>
+			</div>
 
-    <!-- Mobile Navbar Toggle -->
-    <script>
-        document.getElementById('menu-btn').addEventListener('click', function () {
-            let menu = document.getElementById('menu');
-            menu.classList.toggle('hidden');
-        });
-    </script>
+			<!-- No Skills Available -->
+			<div th:if="${skills == null or skills.size() == 0}" class="text-center text-gray-300 text-lg mt-10">
+				<p>No workers available at the moment. Please check back later!</p>
+			</div>
+		</div>
+	</div>
 
-    <script th:src="@{/cursorParticles.js}"></script>
+	<!-- Booking Modal -->
+	<div id="bookingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+		<div class="bg-white text-black p-6 rounded-lg shadow-xl w-11/12 max-w-md text-center">
+			<h3 class="text-xl font-bold mb-4">Confirm Booking</h3>
+			<p class="mb-6">Are you sure you want to book this worker?</p>
+			<form id="bookingForm" th:action="@{/bookings/create}" method="post">
+				<input type="hidden" id="modalSkillId" name="skillId" />
+				<input type="hidden" id="modalWorkerId" name="workerId" />
+				<div class="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4">
+					<button type="button" onclick="closeBookingModal()"
+						class="w-full sm:w-auto px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition">Cancel</button>
+					<button type="submit"
+						class="w-full sm:w-auto px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">Yes,
+						Book</button>
+				</div>
+			</form>
+		</div>
+	</div>
 
+	<!-- Scripts -->
+	<script>
+		document.getElementById('menu-btn').addEventListener('click', function () {
+			const menu = document.getElementById('menu');
+			menu.classList.toggle('hidden');
+		});
+
+
+		function openBookingModal(skillId, workerId) {
+			document.getElementById('modalSkillId').value = skillId;
+			document.getElementById('modalWorkerId').value = workerId;
+			document.getElementById('bookingModal').classList.remove('hidden');
+		}
+
+		function closeBookingModal() {
+			document.getElementById('bookingModal').classList.add('hidden');
+		}
+
+
+	</script>
+
+	<script th:src="@{/cursorParticles.js}"></script>
 </body>
 
 </html>

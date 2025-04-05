@@ -1,17 +1,22 @@
 package com.example.skillsharing.controller;
 
-import com.example.skillsharing.model.SkillListing;
-import com.example.skillsharing.model.User;
-import com.example.skillsharing.service.SkillListingService;
-import com.example.skillsharing.service.UserService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import com.example.skillsharing.model.SkillListing;
+import com.example.skillsharing.model.User;
+import com.example.skillsharing.service.SkillListingService;
+import com.example.skillsharing.service.UserService;
 
 @Controller
 @RequestMapping("/skills")
@@ -67,7 +72,7 @@ public class SkillController {
     public String searchWorkers(@RequestParam(name = "skill", required = false) String skill, Model model) {
         try {
             if (skill != null && !skill.isEmpty()) {
-                List<SkillListing> skills = skillListingService.findBySkillNameContaining(skill);
+                List<SkillListing> skills = skillListingService.searchBySkillOrCategory(skill);
                 model.addAttribute("skills", skills);
             } else {
                 model.addAttribute("skills", List.of());

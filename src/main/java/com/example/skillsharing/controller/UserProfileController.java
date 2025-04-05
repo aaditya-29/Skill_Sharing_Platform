@@ -1,6 +1,7 @@
 package com.example.skillsharing.controller;
 
 import com.example.skillsharing.model.User;
+
 import com.example.skillsharing.service.FeedbackService;
 import com.example.skillsharing.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,10 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 
 @Controller
 public class UserProfileController {

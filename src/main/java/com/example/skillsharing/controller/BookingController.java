@@ -3,7 +3,6 @@ package com.example.skillsharing.controller;
 
 import com.example.skillsharing.model.Booking;
 import com.example.skillsharing.model.BookingStatus;
-import com.example.skillsharing.model.InspectionReport;
 import com.example.skillsharing.model.SkillListing;
 import com.example.skillsharing.model.User;
 import com.example.skillsharing.service.BookingService;
@@ -45,22 +44,34 @@ public class BookingController {
 
 	@GetMapping("/requester/bookings")
 	public String showRequesterBookings(Model model, Principal principal) {
+		// Get current user (requester) by email
 		String email = principal.getName();
 		User requester = userService.findByEmail(email);
+
+		// Fetch all bookings made by the requester
 		List<Booking> bookings = bookingService.findByRequesterId(requester.getId());
 
-		// Map to store booking ID -> Feedback Presence for the current requester
+		// Map to track if feedback has been given for a booking
 		Map<Long, Boolean> feedbackMap = new HashMap<>();
 
+		// Map to track if an inspection report exists for a booking
+		Map<Long, Boolean> inspectionReportMap = new HashMap<>();
+
 		for (Booking booking : bookings) {
-			// Check if the requester has already left feedback for the worker
+			// Check if feedback exists for this booking from the current requester
 			boolean hasFeedback = feedbackService.getFeedbackByBookingAndReviewer(booking.getId(), requester.getId())
 					.isPresent();
 			feedbackMap.put(booking.getId(), hasFeedback);
+
+			// Check if an inspection report exists for this booking
+			boolean hasReport = inspectionReportService.getReportByBookingId(booking.getId()) != null;
+			inspectionReportMap.put(booking.getId(), hasReport);
 		}
 
+		// Add data to the model for Thymeleaf view
 		model.addAttribute("bookings", bookings);
-		model.addAttribute("feedbackMap", feedbackMap); // Pass feedback presence
+		model.addAttribute("feedbackMap", feedbackMap);
+		model.addAttribute("inspectionReportMap", inspectionReportMap);
 
 		return "requester/bookings";
 	}
@@ -72,11 +83,17 @@ public class BookingController {
 
 		List<Booking> bookings = new ArrayList<>();
 		if (worker != null) {
-			bookings = bookingService.getBookingsByWorker(worker.getId());
+			bookings = bookingService.getBookingsWithReportsByWorker(worker.getId());
 		}
 
-		// Ensure an empty list is passed if no bookings are found
-		model.addAttribute("bookings", bookings != null ? bookings : new ArrayList<>());
+		// Debug check
+		for (Booking booking : bookings) {
+			System.out.println("Booking ID: " + booking.getId());
+			System.out.println("Status: " + booking.getStatus());
+			System.out.println("Has Inspection Report: " + (booking.getInspectionReport() != null));
+		}
+
+		model.addAttribute("bookings", bookings);
 		return "worker/bookings";
 	}
 
@@ -107,21 +124,20 @@ public class BookingController {
 
 	@PostMapping("/bookings/update-status")
 	public String updateBookingStatus(@RequestParam Long bookingId, @RequestParam BookingStatus status) {
-	    Booking booking = bookingService.getBookingById(bookingId);
+		Booking booking = bookingService.getBookingById(bookingId);
 
-	    if (booking != null) {
-	        booking.setStatus(status);
+		if (booking != null) {
+			booking.setStatus(status);
 
-	        if (status == BookingStatus.ACCEPTED) {
-	            booking.setAcceptanceTime(LocalDateTime.now()); // ✅ Store acceptance time
-	        }
+			if (status == BookingStatus.ACCEPTED) {
+				booking.setAcceptanceTime(LocalDateTime.now()); // ✅ Store acceptance time
+			}
 
-	        bookingService.saveBooking(booking);
-	        return "redirect:/worker/bookings";
-	    }
+			bookingService.saveBooking(booking);
+			return "redirect:/worker/bookings";
+		}
 
-	    return "error";
+		return "error";
 	}
-
 
 }

@@ -2,7 +2,6 @@ package com.example.skillsharing.controller;
 
 import com.example.skillsharing.model.Booking;
 import com.example.skillsharing.model.BookingStatus;
-import com.example.skillsharing.model.User;
 import com.example.skillsharing.service.BookingService;
 import com.example.skillsharing.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,20 +27,18 @@ public class AdminController {
 		return "admin/dashboard";
 	}
 
-	// 🟢 Delete User (Admin Control)
+	// ✅ Changed to POST for form compatibility
 	@PostMapping("/user/delete/{id}")
 	public String deleteUser(@PathVariable Long id) {
 		userService.deleteUser(id);
-		return "redirect:/admin/dashboard?userDeleted"; // ✅ Redirect after deletion
+		return "redirect:/admin/dashboard?userDeleted";
 	}
-
-	// ❌ Removed updateUserRole() since you don't want role changes
 
 	// 🟢 Delete Booking (Admin Control)
 	@PostMapping("/booking/delete/{id}")
 	public String deleteBooking(@PathVariable Long id) {
 		bookingService.deleteBooking(id);
-		return "redirect:/admin/dashboard?bookingDeleted"; // ✅ Redirect after deletion
+		return "redirect:/admin/dashboard?bookingDeleted";
 	}
 
 	// 🟢 Update Booking Status (Fix: Convert String to Enum)
@@ -50,13 +47,13 @@ public class AdminController {
 		Booking booking = bookingService.getBookingById(bookingId);
 		if (booking != null) {
 			try {
-				BookingStatus bookingStatus = BookingStatus.valueOf(status.toUpperCase()); // ✅ Convert String to Enum
+				BookingStatus bookingStatus = BookingStatus.valueOf(status.toUpperCase());
 				booking.setStatus(bookingStatus);
 				bookingService.updateBooking(booking);
 			} catch (IllegalArgumentException e) {
-				return "redirect:/admin/dashboard?error=InvalidStatus"; // 🚨 Handle invalid status
+				return "redirect:/admin/dashboard?error=InvalidStatus";
 			}
 		}
-		return "redirect:/admin/dashboard?statusUpdated"; // ✅ Redirect after update
+		return "redirect:/admin/dashboard?statusUpdated";
 	}
 }

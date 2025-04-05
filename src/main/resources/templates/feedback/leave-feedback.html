@@ -1,114 +1,139 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<title>Leave Feedback</title>
-<style>
-body {
-	font-family: 'Arial', sans-serif;
-	background-color: #f4f4f9;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-}
-
-.form-container {
-	background-color: #fff;
-	padding: 30px;
-	border-radius: 8px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	width: 100%;
-	max-width: 500px;
-}
-
-label {
-	font-size: 16px;
-	margin-bottom: 5px;
-	display: block;
-}
-
-select, input[type="number"], textarea {
-	width: 100%;
-	padding: 12px;
-	margin: 8px 0 20px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	font-size: 16px;
-}
-
-button {
-	width: 100%;
-	padding: 12px;
-	background-color: #4CAF50;
-	border: none;
-	color: white;
-	font-size: 16px;
-	border-radius: 4px;
-	cursor: pointer;
-}
-
-button:hover {
-	background-color: #45a049;
-}
-
-.error {
-	color: red;
-	font-size: 14px;
-}
-</style>
-</head>
-<body>
-
-	<div class="form-container">
-		<h2>Leave Feedback</h2>
-
-
-
-		<form th:action="@{/feedback/submit}" method="post"
-			onsubmit="return validateForm()">
-			<label for="bookingId">Select Completed Booking:</label> <select
-				name="bookingId" id="bookingId" required>
-				<option value="">-- Select Booking --</option>
-				<option th:each="booking : ${completedBookings}"
-					th:value="${booking.id}" th:text="'Booking #' + ${booking.id}"></option>
-			</select> <label for="rating">Rating (1-5):</label> <input type="number"
-				id="rating" name="rating" min="1" max="5" required> <label
-				for="comment">Comment:</label>
-			<textarea id="comment" name="comment" required></textarea>
-
-			<button type="submit">Submit Feedback</button>
-
-			<p th:if="${param.error}" class="error"
-				th:text="'Error: ' + ${param.error}"></p>
-			<p th:if="${param.success}" style="color: green;">Feedback
-				submitted successfully!</p>
-		</form>
-	</div>
-
-	<script>
-    function validateForm() {
-        let bookingId = document.getElementById("bookingId").value;
-        let rating = document.getElementById("rating").value;
-        let comment = document.getElementById("comment").value;
-
-        if (!bookingId) {
-            alert("Please select a booking!");
-            return false;
-        }
-        if (!rating || rating < 1 || rating > 5) {
-            alert("Please provide a rating between 1 and 5!");
-            return false;
-        }
-        if (!comment) {
-            alert("Please provide a comment!");
-            return false;
-        }
-        return true;
+  <title>Leave Feedback</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .emoji {
+      font-size: 2.5rem;
+      cursor: pointer;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      filter: grayscale(100%) brightness(0.7);
     }
-</script>
-	<script th:src="@{/cursorParticles.js}"></script>
 
+    .emoji:hover {
+      transform: scale(1.3) rotate(5deg);
+      filter: grayscale(0%) brightness(1.2);
+    }
+
+    .emoji.selected {
+      transform: scale(1.5);
+      filter: grayscale(0%) brightness(1.5);
+      animation: bounce 0.3s ease;
+    }
+
+    @keyframes bounce {
+      0% {
+        transform: scale(1.4) translateY(0);
+      }
+
+      50% {
+        transform: scale(1.5) translateY(-5px);
+      }
+
+      100% {
+        transform: scale(1.4) translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4 sm:p-6">
+
+  <div class="bg-gray-800 p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-md sm:max-w-xl animate-fadeInUp">
+    <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-center">Leave Feedback</h2>
+
+    <form th:action="@{/feedback/submit}" method="post" onsubmit="return validateForm()">
+      <!-- Booking Selection -->
+      <label for="bookingId" class="block mb-2 text-sm font-medium">Select Completed Booking:</label>
+      <select name="bookingId" id="bookingId" required
+        class="w-full p-3 mb-4 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+        <option value="">-- Select Booking --</option>
+        <option th:each="booking : ${completedBookings}" th:value="${booking.id}"
+          th:text="'Booking #' + ${booking.id} + ' - ' + (${booking.requester.id} == ${currentUser.id} ? ${booking.worker.name} : ${booking.requester.name})">
+        </option>
+      </select>
+
+      <!-- Rating -->
+      <label for="rating" class="block mb-2 text-sm font-medium">Rating:</label>
+      <div class="flex flex-wrap justify-center gap-4 my-4" id="emojiRating">
+        <span class="emoji" data-value="1" title="Terrible">💔</span>
+        <span class="emoji" data-value="2" title="Not Good">😟</span>
+        <span class="emoji" data-value="3" title="Okay">😌</span>
+        <span class="emoji" data-value="4" title="Good">😊</span>
+        <span class="emoji" data-value="5" title="Excellent">🥳</span>
+      </div>
+      <input type="hidden" id="rating" name="rating" required />
+      <p id="selectedEmojiText" class="text-sm text-gray-400 text-center mb-4">Click an emoji to rate</p>
+
+      <!-- Comment -->
+      <label for="comment" class="block mb-2 text-sm font-medium">Comment:</label>
+      <textarea id="comment" name="comment" required rows="4"
+        class="w-full p-3 mb-4 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+        placeholder="Leave your thoughts..."></textarea>
+
+      <!-- Submit Button -->
+      <button type="submit"
+        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-md transition duration-300">
+        Submit Feedback
+      </button>
+
+      <!-- Messages -->
+      <p th:if="${param.error}" class="text-red-500 text-sm mt-4" th:text="'Error: ' + ${param.error}"></p>
+      <p th:if="${param.success}" class="text-green-500 text-sm mt-4">Feedback submitted successfully!</p>
+    </form>
+  </div>
+
+  <!-- Validation Script -->
+  <script>
+    function validateForm() {
+      let bookingId = document.getElementById("bookingId").value;
+      let rating = document.getElementById("rating").value;
+      let comment = document.getElementById("comment").value;
+
+      if (!bookingId) {
+        alert("Please select a booking!");
+        return false;
+      }
+      if (!rating || rating < 1 || rating > 5) {
+        alert("Please provide a rating between 1 and 5!");
+        return false;
+      }
+      if (!comment) {
+        alert("Please provide a comment!");
+        return false;
+      }
+      return true;
+    }
+
+    const emojis = document.querySelectorAll('#emojiRating .emoji');
+    const ratingInput = document.getElementById('rating');
+    const feedbackText = document.getElementById('selectedEmojiText');
+
+    const emojiLabels = {
+      1: "💔 Heartbreak",
+      2: "😕 Not Great",
+      3: "🙂 Okay",
+      4: "😄 Good",
+      5: "🤩 Excellent!"
+    };
+
+    emojis.forEach(emoji => {
+      emoji.addEventListener('click', () => {
+        const value = emoji.getAttribute('data-value');
+        ratingInput.value = value;
+
+        emojis.forEach(e => e.classList.remove('selected-emoji', 'selected'));
+        emoji.classList.add('selected-emoji', 'selected');
+
+        feedbackText.textContent = `You selected: ${emojiLabels[value]}`;
+      });
+    });
+  </script>
+
+  <script th:src="@{/cursorParticles.js}"></script>
 </body>
+
 </html>

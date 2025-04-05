@@ -28,7 +28,8 @@ public class SecurityConfig {
 						.usernameParameter("email") // ✅ Ensure login uses "email" as username
 						.passwordParameter("password") // ✅ Ensure password field is read correctly
 						.defaultSuccessUrl("/dashboard", true).failureUrl("/auth/login?error=true").permitAll())
-				.logout(logout -> logout.logoutSuccessUrl("/").permitAll());
+				.logout(logout -> logout.logoutUrl("/auth/logout").logoutSuccessUrl("/auth/login")
+						.invalidateHttpSession(true).deleteCookies("JSESSIONID").permitAll());
 
 		return http.build();
 	}

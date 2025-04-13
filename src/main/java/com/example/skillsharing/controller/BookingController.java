@@ -44,57 +44,60 @@ public class BookingController {
 
 	@GetMapping("/requester/bookings")
 	public String showRequesterBookings(Model model, Principal principal) {
-		// Get current user (requester) by email
-		String email = principal.getName();
-		User requester = userService.findByEmail(email);
+	    // Get current user (requester) by email
+	    String email = principal.getName();
+	    User requester = userService.findByEmail(email);
 
-		// Fetch all bookings made by the requester
-		List<Booking> bookings = bookingService.findByRequesterId(requester.getId());
+	    // Fetch all bookings made by the requester and sort them by request time (latest first)
+	    List<Booking> bookings = bookingService.findByRequesterId(requester.getId());
+	    bookings.sort((b1, b2) -> b2.getRequestTime().compareTo(b1.getRequestTime())); // Sort by request time, latest first
 
-		// Map to track if feedback has been given for a booking
-		Map<Long, Boolean> feedbackMap = new HashMap<>();
+	    // Map to track if feedback has been given for a booking
+	    Map<Long, Boolean> feedbackMap = new HashMap<>();
 
-		// Map to track if an inspection report exists for a booking
-		Map<Long, Boolean> inspectionReportMap = new HashMap<>();
+	    // Map to track if an inspection report exists for a booking
+	    Map<Long, Boolean> inspectionReportMap = new HashMap<>();
 
-		for (Booking booking : bookings) {
-			// Check if feedback exists for this booking from the current requester
-			boolean hasFeedback = feedbackService.getFeedbackByBookingAndReviewer(booking.getId(), requester.getId())
-					.isPresent();
-			feedbackMap.put(booking.getId(), hasFeedback);
+	    for (Booking booking : bookings) {
+	        // Check if feedback exists for this booking from the current requester
+	        boolean hasFeedback = feedbackService.getFeedbackByBookingAndReviewer(booking.getId(), requester.getId())
+	                .isPresent();
+	        feedbackMap.put(booking.getId(), hasFeedback);
 
-			// Check if an inspection report exists for this booking
-			boolean hasReport = inspectionReportService.getReportByBookingId(booking.getId()) != null;
-			inspectionReportMap.put(booking.getId(), hasReport);
-		}
+	        // Check if an inspection report exists for this booking
+	        boolean hasReport = inspectionReportService.getReportByBookingId(booking.getId()) != null;
+	        inspectionReportMap.put(booking.getId(), hasReport);
+	    }
 
-		// Add data to the model for Thymeleaf view
-		model.addAttribute("bookings", bookings);
-		model.addAttribute("feedbackMap", feedbackMap);
-		model.addAttribute("inspectionReportMap", inspectionReportMap);
+	    // Add data to the model for Thymeleaf view
+	    model.addAttribute("bookings", bookings);
+	    model.addAttribute("feedbackMap", feedbackMap);
+	    model.addAttribute("inspectionReportMap", inspectionReportMap);
 
-		return "requester/bookings";
+	    return "requester/bookings";
 	}
 
 	@GetMapping("/worker/bookings")
 	public String getWorkerBookings(Model model, Principal principal) {
-		String email = principal.getName();
-		User worker = userService.findByEmail(email);
+	    String email = principal.getName();
+	    User worker = userService.findByEmail(email);
 
-		List<Booking> bookings = new ArrayList<>();
-		if (worker != null) {
-			bookings = bookingService.getBookingsWithReportsByWorker(worker.getId());
-		}
+	    List<Booking> bookings = new ArrayList<>();
+	    if (worker != null) {
+	        bookings = bookingService.getBookingsWithReportsByWorker(worker.getId());
+	        // Sort bookings by the acceptance time or request time (latest first)
+	        bookings.sort((b1, b2) -> b2.getRequestTime().compareTo(b1.getRequestTime())); // Sort by request time, latest first
+	    }
 
-		// Debug check
-		for (Booking booking : bookings) {
-			System.out.println("Booking ID: " + booking.getId());
-			System.out.println("Status: " + booking.getStatus());
-			System.out.println("Has Inspection Report: " + (booking.getInspectionReport() != null));
-		}
+	    // Debug check
+	    for (Booking booking : bookings) {
+	        System.out.println("Booking ID: " + booking.getId());
+	        System.out.println("Status: " + booking.getStatus());
+	        System.out.println("Has Inspection Report: " + (booking.getInspectionReport() != null));
+	    }
 
-		model.addAttribute("bookings", bookings);
-		return "worker/bookings";
+	    model.addAttribute("bookings", bookings);
+	    return "worker/bookings";
 	}
 
 	@PostMapping("/bookings/create")

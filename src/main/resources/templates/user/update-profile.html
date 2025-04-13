@@ -45,8 +45,9 @@
 </head>
 
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen py-10 px-4">
+    <div th:replace="fragments/navbar :: navbar"></div>
 
-    <h2 class="text-4xl font-bold text-green-400 mb-6 animate-fadeIn text-center">Update Profile</h2>
+    <h2 class="text-4xl font-bold mt-8 text-green-400 mb-6 animate-fadeIn text-center">Update Profile</h2>
 
     <!-- Include Navbar Based on Role -->
     <div th:if="${user.role == 'WORKER'}" th:insert="fragments/workerNavbar :: body"></div>
@@ -93,6 +94,7 @@
             Cancel
         </a>
     </div>
+<script th:src="@{/js/menuToggle.js}"></script>
 
     <!-- Cursor Particle Effect -->
     <script src="/cursorParticles.js"></script>

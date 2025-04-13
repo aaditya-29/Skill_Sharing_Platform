@@ -6,6 +6,7 @@ import com.example.skillsharing.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -122,5 +123,32 @@ public class AuthController {
 		SecurityContextHolder.clearContext();
 
 		return "redirect:/auth/login"; // Redirect to login page after logout
+	}
+
+	@GetMapping("/updatePassword")
+	public String showUpdatePasswordForm() {
+		return "user/updatePassword";
+	}
+
+	@PostMapping("/updatePassword")
+	public String updatePassword(@RequestParam String currentPassword, @RequestParam String newPassword,
+			@RequestParam String confirmPassword, Model model, Principal principal) {
+		User currentUser = userService.findByEmail(principal.getName());
+
+		if (!passwordEncoder.matches(currentPassword, currentUser.getPassword())) {
+			model.addAttribute("error", "Current password is incorrect.");
+			return "user/updatePassword";
+		}
+
+		if (!newPassword.equals(confirmPassword)) {
+			model.addAttribute("error", "New password and confirmation do not match.");
+			return "user/updatePassword";
+		}
+
+		currentUser.setPassword(passwordEncoder.encode(newPassword));
+		userService.saveUser(currentUser);
+		model.addAttribute("success", "Password updated successfully.");
+		return "user/updatePassword";
+
 	}
 }

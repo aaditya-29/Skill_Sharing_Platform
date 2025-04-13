@@ -1,58 +1,106 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-	<style>
-		/* Navbar Styling */
-		nav {
-			background-color: #4CAF50;
-			padding: 12px 20px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		}
-
-		nav a {
-			color: white;
-			text-decoration: none;
-			font-size: 16px;
-			margin: 0 15px;
-			padding: 8px 15px;
-			border-radius: 4px;
-		}
-
-		nav a:hover {
-			background-color: #45a049;
-			color: #fff;
-			transition: background-color 0.3s;
-		}
-
-		/* Responsive Navbar */
-		@media (max-width : 600px) {
-			nav {
-				flex-direction: column;
-				align-items: flex-start;
-			}
-
-			nav a {
-				margin: 5px 0;
-			}
-		}
-	</style>
+    <meta charset="UTF-8">
+    <title>Navbar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
-<body>
-	<nav>
-		<a href="/requester/dashboard">Home</a> |
-		<a href="/skills/search">Search</a>|
-		<a href="/skills/all">All Skills</a> | <a href="/requester/bookings">View Bookings</a> |
-		<a href="/feedback/leave-review">Leave a Review</a> |
-		<a href="/profile"> View Profile</a> | <a href="/auth/logout">Logout</a>
-	</nav>
+<body class="bg-gray-100">
 
-	<!-- Cursor Particles -->
-	<script th:src="@{/cursorParticles.js}"></script>
+    <!-- Navbar Fragment -->
+    <div th:fragment="navbar">
+
+        <!-- UNIVERSAL NAVBAR TEMPLATE FOR ALL ROLES -->
+        <div sec:authorize="hasAnyRole('ROLE_WORKER', 'ROLE_REQUESTER', 'ROLE_ADMIN')">
+            <nav class="w-full bg-gray-900 text-white shadow-md fixed top-0 left-0 z-50">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="flex justify-between items-center h-16">
+
+                        <!-- Logo + Brand Name (Visible for all roles) -->
+                        <div class="flex-shrink-0">
+                            <div class="flex items-center space-x-3">
+                                <div class="h-12 w-12 rounded-full overflow-hidden shadow-md">
+                                    <img th:src="@{/images/FinalLogo2.png}" alt="Logo" class="h-full w-full object-cover" />
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-2xl font-semibold tracking-wide">Taskoria</span>
+                                    <span class="text-sm text-gray-400 -mt-1">Where Skill Meets Opportunity</span>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <!-- Mobile Menu Toggle Button -->
+                        <div class="md:hidden">
+                            <button id="mobile-menu-toggle" class="focus:outline-none text-3xl">&#9776;</button>
+                        </div>
+
+                        <!-- Menu Items (Desktop) -->
+                        <div class="hidden md:flex space-x-6 items-center">
+                            <div sec:authorize="hasRole('ROLE_WORKER')" class="flex space-x-6">
+                                <a href="/worker/dashboard" class="hover:text-green-400">Home</a>
+                                <a href="/skills/add" class="hover:text-green-400">Add Skill</a>
+                                <a href="/worker/bookings" class="hover:text-green-400">Requests</a>
+                                <a href="/feedback/leave-review" class="hover:text-green-400">Review</a>
+                                <a href="/profile" class="hover:text-green-400">Profile</a>
+                            </div>
+
+                            <div sec:authorize="hasRole('ROLE_REQUESTER')" class="flex space-x-6">
+                                <a href="/requester/dashboard" class="hover:text-green-400">Home</a>
+                                <a href="/skills/search" class="hover:text-green-400">Search Skills</a>
+                                <a href="/skills/all" class="hover:text-green-400">All Skills</a>
+                                <a href="/requester/bookings" class="hover:text-green-400">Bookings</a>
+                                <a href="/feedback/leave-review" class="hover:text-green-400">Review</a>
+                                <a href="/profile" class="hover:text-green-400">Profile</a>
+                            </div>
+
+                            <div sec:authorize="hasRole('ROLE_ADMIN')" class="flex space-x-6">
+                                <a href="/dashboard/admin" class="hover:text-green-400">Home</a>
+                                <a href="/admin/users" class="hover:text-green-400">Manage Users</a>
+                            </div>
+
+                            <a href="/auth/logout" class="hover:text-red-400">Logout</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu (Hidden by default) -->
+                <div id="mobile-menu"
+                    class="hidden md:hidden flex-col bg-gray-800 px-6 py-4 space-y-3 text-left transition-all duration-300 ease-in-out">
+                    <div sec:authorize="hasRole('ROLE_WORKER')" class="flex flex-col space-y-3">
+                        <a href="/worker/dashboard" class="hover:text-green-400">Home</a>
+                        <a href="/skills/add" class="hover:text-green-400">Add Skill</a>
+                        <a href="/worker/bookings" class="hover:text-green-400">Requests</a>
+                        <a href="/feedback/leave-review" class="hover:text-green-400">Review</a>
+                        <a href="/profile" class="hover:text-green-400">Profile</a>
+                        <a href="/auth/logout" class="hover:text-red-400">Logout</a>
+                    </div>
+
+                    <div sec:authorize="hasRole('ROLE_REQUESTER')" class="flex flex-col space-y-3">
+                        <a href="/requester/dashboard" class="hover:text-green-400">Home</a>
+                        <a href="/skills/search" class="hover:text-green-400">Search Skills</a>
+                        <a href="/skills/all" class="hover:text-green-400">All Skills</a>
+                        <a href="/requester/bookings" class="hover:text-green-400">Bookings</a>
+                        <a href="/feedback/leave-review" class="hover:text-green-400">Review</a>
+                        <a href="/profile" class="hover:text-green-400">Profile</a>
+                        <a href="/auth/logout" class="hover:text-red-400">Logout</a>
+                    </div>
+
+                    <div sec:authorize="hasRole('ROLE_ADMIN')" class="flex flex-col space-y-3">
+                        <a href="/dashboard/admin" class="hover:text-green-400">Home</a>
+                        <a href="/admin/users" class="hover:text-green-400">Manage Users</a>
+                        <a href="/auth/logout" class="hover:text-red-400">Logout</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+    </div>
+
 </body>
 
 </html>

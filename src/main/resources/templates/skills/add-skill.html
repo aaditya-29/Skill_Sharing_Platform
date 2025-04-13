@@ -49,27 +49,8 @@
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md z-50">
-        <div class="container mx-auto flex justify-between items-center px-4 py-4">
-            <div class="text-xl font-bold text-white">Add Skill</div>
+       <div th:replace="fragments/navbar :: navbar"></div>
 
-            <!-- Mobile Menu Button -->
-            <button id="menu-btn" class="text-white text-3xl md:hidden focus:outline-none">
-                ☰
-            </button>
-        </div>
-
-        <!-- Nav Links (hidden on mobile, slide down when toggled) -->
-        <div id="menu"
-            class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out md:max-h-full md:flex md:flex-row md:items-center md:justify-center md:space-x-4 space-y-2 md:space-y-0 flex flex-col text-white font-medium text-center px-4 md:pb-0">
-            <a href="/worker/dashboard" class="py-2 px-4 hover:text-green-400">Home</a>
-            <a href="/skills/add" class="py-2 px-4 hover:text-green-400">Add a Skill</a>
-            <a href="/worker/bookings" class="py-2 px-4 hover:text-green-400">View Requests</a>
-            <a href="/feedback/leave-review" class="py-2 px-4 hover:text-green-400">Leave a Review</a>
-            <a href="/profile" class="py-2 px-4 hover:text-green-400">View Profile</a>
-            <a href="/auth/logout" class="py-2 px-4 hover:text-green-400">Logout</a>
-        </div>
-    </nav>
 
 
     <!-- Page Content (Pushed Below Navbar) -->
@@ -111,22 +92,8 @@
         </div>
     </div>
 
-    <!-- Mobile Navbar Toggle -->
-    <script>
-        const menuBtn = document.getElementById('menu-btn');
-        const menu = document.getElementById('menu');
+<script th:src="@{/js/menuToggle.js}"></script>
 
-        menuBtn.addEventListener('click', () => {
-            // Toggle classes for smooth expand/collapse
-            if (menu.classList.contains('max-h-0')) {
-                menu.classList.remove('max-h-0', 'overflow-hidden');
-                menu.classList.add('max-h-screen');
-            } else {
-                menu.classList.remove('max-h-screen');
-                menu.classList.add('max-h-0', 'overflow-hidden');
-            }
-        });
-    </script>
 
 
     <!-- Cursor Particles -->

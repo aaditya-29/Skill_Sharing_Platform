@@ -2,126 +2,104 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Requester Dashboard</title>
-	<script src="https://cdn.tailwindcss.com"></script>
-	<style>
-		@keyframes fadeInUp {
-			from {
-				opacity: 0;
-				transform: translateY(20px);
-			}
-
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
-		}
-
-		@keyframes glow {
-			0% {
-				box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
-			}
-
-			50% {
-				box-shadow: 0 0 20px rgba(34, 197, 94, 0.9);
-			}
-
-			100% {
-				box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
-			}
-		}
-
-		.animate-fadeInUp {
-			animation: fadeInUp 2s ease-out forwards;
-			opacity: 0;
-		}
-
-		.hover-animate-glow:hover {
-			animation: glow 2s infinite;
-		}
-	</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Requester Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<!-- ... HEAD remains unchanged ... -->
 
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
-	<!-- Navbar -->
-	<nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md z-50">
-		<div class="container mx-auto flex justify-between items-center px-4 py-3">
-			<div class="text-xl font-bold text-white">Requester Dashboard</div>
-			<button id="menu-btn" class="text-white text-3xl md:hidden focus:outline-none">
-				&#9776;
-			</button>
-		</div>
-
-		<!-- Mobile Menu -->
-		<div id="menu"
-			class="hidden flex-col md:flex md:flex-row md:items-center bg-gray-900 text-white font-medium px-4 md:px-0 md:space-x-4 py-3 md:py-0">
-			<a href="/requester/dashboard" class="py-2 hover:text-green-400">Home</a>
-			<a href="/skills/search" class="py-2 hover:text-green-400">Search</a>
-			<a href="/skills/all" class="py-2 hover:text-green-400">All Skills</a>
-			<a href="/requester/bookings" class="py-2 hover:text-green-400">View Bookings</a>
-			<a href="/feedback/leave-review" class="py-2 hover:text-green-400">Leave a Review</a>
-			<a href="/profile" class="py-2 hover:text-green-400">View Profile</a>
-			<a href="/auth/logout" class="py-2 hover:text-red-400">Logout</a>
-		</div>
-	</nav>
+	<!-- Include the appropriate Navbar based on the user role -->
+	<div th:replace="fragments/navbar :: navbar"></div>
 
 	<!-- Page Content -->
-	<div class="flex flex-col items-center justify-center flex-grow p-4 mt-24">
-		<h2 class="text-3xl sm:text-4xl font-bold text-white text-center animate-fadeInUp">Available Workers</h2>
+	<div
+		class="flex flex-col items-center justify-center flex-grow p-4 mt-15">
+		<h2 class="text-3xl sm:text-4xl font-bold  mt-16 text-white text-center">Available
+			Workers</h2>
 
-		<div class="worker-list w-full max-w-6xl p-4 sm:p-6 space-y-6 mt-10 animate-fadeInUp">
+		<div class="worker-list w-full max-w-6xl p-4 sm:p-6 space-y-6 mt-6">
 			<div th:if="${skills != null and skills.size() > 0}">
 				<div th:each="skill : ${skills}"
-					class="worker-card bg-gray-800 mt-4 rounded-lg p-4 sm:p-6 shadow-lg hover:shadow-xl transition transform hover:scale-105 hover-animate-glow flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 w-full">
+					class="worker-card bg-gray-800 mt-4 rounded-lg p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 w-full">
 
 					<!-- Profile Picture -->
-					<img th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}"
+					<img
+						th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}"
 						alt="Profile Picture"
 						class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-green-500 flex-shrink-0">
 
-					<!-- Worker Details -->
-					<div class="worker-details flex-1 text-center sm:text-left">
-						<h3 class="text-xl font-semibold text-white mb-1"
-							th:text="${skill.worker.name ?: 'Unknown Worker'}"></h3>
-						<div class="grid grid-cols-1 sm:grid-cols-2 gap-y-1 text-gray-300">
-							<p><strong>Contact:</strong> <span th:text="${skill.worker.contactNumber ?: 'N/A'}"></span>
-							</p>
-							<p><strong>Skill:</strong> <span th:text="${skill.skillName ?: 'Not Specified'}"></span></p>
-							<p><strong>Category:</strong> <span th:text="${skill.category ?: 'N/A'}"></span></p>
-							<p><strong>Location:</strong> <span th:text="${skill.location ?: 'Unknown'}"></span></p>
-							<p><strong>Price:</strong> ₹ <span th:text="${skill.price ?: '0'}"></span> per hour</p>
+					<!-- Worker Details + Book Now Button in Flex Row -->
+					<div
+						class="flex flex-col sm:flex-row justify-between items-center w-full gap-4">
+						<!-- Worker Info -->
+						<div class="worker-details flex-1 text-center sm:text-left">
+							<h3 class="text-xl font-semibold text-white mb-1">
+								<span th:text="${skill.worker.name ?: 'Unknown Worker'}"></span>
+								<span th:if="${workerRatings[skill.worker.id] > 0}"
+									class="text-yellow-400 ml-2"
+									th:text=" ${workerRatings[skill.worker.id]} + ' ⭐'"></span> <span
+									th:if="${workerRatings[skill.worker.id] == 0}"
+									class="text-gray-400 ml-2">(No ratings)</span>
+							</h3>
+
+							<div
+								class="grid grid-cols-1 sm:grid-cols-2 gap-y-1 text-gray-300">
+								<p>
+									<strong>Contact:</strong> <span
+										th:text="${skill.worker.contactNumber ?: 'N/A'}"></span>
+								</p>
+								<p>
+									<strong>Skill:</strong> <span
+										th:text="${skill.skillName ?: 'Not Specified'}"></span>
+								</p>
+								<p>
+									<strong>Category:</strong> <span
+										th:text="${skill.category ?: 'N/A'}"></span>
+								</p>
+								<p>
+									<strong>Location:</strong> <span
+										th:text="${skill.location ?: 'Unknown'}"></span>
+								</p>
+								<p>
+									<strong>Price:</strong> ₹ <span th:text="${skill.price ?: '0'}"></span>
+									per hour
+								</p>
+							</div>
+						</div>
+
+						<!-- Book Now Button Centered Vertically -->
+						<div class="flex items-center">
+							<button type="button"
+								th:onclick="'openBookingModal(' + ${skill.id} + ',' + ${skill.worker.id} + ')'"
+								class="bg-green-500 text-white px-5 py-2 rounded-full text-base font-semibold hover:bg-green-600 transition-all transform hover:scale-105">
+								Book Now</button>
 						</div>
 					</div>
-
-					<!-- Book Now Button -->
-					<button type="button"
-						th:onclick="'openBookingModal(' + ${skill.id} + ',' + ${skill.worker.id} + ')'"
-						class="w-full sm:w-auto mt-4 sm:mt-0 bg-green-500 text-white px-5 py-2 rounded-full text-base font-semibold hover:bg-green-600 transition transform hover:scale-105 hover-animate-glow">
-						Book Now
-					</button>
 				</div>
 			</div>
 
 			<!-- No Skills Available -->
-			<div th:if="${skills == null or skills.size() == 0}" class="text-center text-gray-300 text-lg mt-10">
+			<div th:if="${skills == null or skills.size() == 0}"
+				class="text-center text-gray-300 text-lg mt-10">
 				<p>No workers available at the moment. Please check back later!</p>
 			</div>
 		</div>
 	</div>
 
 	<!-- Booking Modal -->
-	<div id="bookingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-		<div class="bg-white text-black p-6 rounded-lg shadow-xl w-11/12 max-w-md text-center">
+	<div id="bookingModal"
+		class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+		<div
+			class="bg-white text-black p-6 rounded-lg shadow-xl w-11/12 max-w-md text-center">
 			<h3 class="text-xl font-bold mb-4">Confirm Booking</h3>
 			<p class="mb-6">Are you sure you want to book this worker?</p>
 			<form id="bookingForm" th:action="@{/bookings/create}" method="post">
-				<input type="hidden" id="modalSkillId" name="skillId" />
-				<input type="hidden" id="modalWorkerId" name="workerId" />
-				<div class="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4">
+				<input type="hidden" id="modalSkillId" name="skillId" /> <input
+					type="hidden" id="modalWorkerId" name="workerId" />
+				<div
+					class="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4">
 					<button type="button" onclick="closeBookingModal()"
 						class="w-full sm:w-auto px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition">Cancel</button>
 					<button type="submit"
@@ -132,27 +110,21 @@
 		</div>
 	</div>
 
-	<!-- Scripts -->
 	<script>
-		document.getElementById('menu-btn').addEventListener('click', function () {
-			const menu = document.getElementById('menu');
-			menu.classList.toggle('hidden');
-		});
-
-
+		// Open the booking modal and set hidden input values
 		function openBookingModal(skillId, workerId) {
-			document.getElementById('modalSkillId').value = skillId;
-			document.getElementById('modalWorkerId').value = workerId;
-			document.getElementById('bookingModal').classList.remove('hidden');
+			document.getElementById("modalSkillId").value = skillId;
+			document.getElementById("modalWorkerId").value = workerId;
+			document.getElementById("bookingModal").classList.remove("hidden");
 		}
 
+		// Close the booking modal
 		function closeBookingModal() {
-			document.getElementById('bookingModal').classList.add('hidden');
+			document.getElementById("bookingModal").classList.add("hidden");
 		}
-
-
 	</script>
 
+	<script th:src="@{/js/menuToggle.js}"></script>
 	<script th:src="@{/cursorParticles.js}"></script>
 </body>
 

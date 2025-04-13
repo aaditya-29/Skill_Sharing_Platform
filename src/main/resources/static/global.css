@@ -1,0 +1,44 @@
+/* global.css */
+
+/* Typography and Base */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fafb;
+    color: #1f2937;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar */
+nav {
+    background-color: #1f2937;
+    color: white;
+}
+
+nav a {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+}
+
+nav a:hover {
+    color: #34d399; /* green-400 */
+}
+
+nav a.logout:hover {
+    color: #f87171; /* red-400 */
+}
+
+/* Responsive nav links */
+.nav-links {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .nav-links {
+        display: flex !important;
+    }
+}

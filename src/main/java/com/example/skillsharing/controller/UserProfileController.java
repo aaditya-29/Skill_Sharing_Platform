@@ -18,7 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-
 @Controller
 public class UserProfileController {
 
@@ -97,6 +96,8 @@ public class UserProfileController {
 
 		return "redirect:/profile?success";
 	}
+
+
 
 	@GetMapping("/profile/image")
 	@ResponseBody

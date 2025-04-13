@@ -19,26 +19,8 @@
         }
 
         .animate-fadeIn {
-            animation: fadeIn 1s ease-out forwards;
+            animation: fadeIn 0.6s ease-out forwards;
             opacity: 0;
-        }
-
-        @keyframes glow {
-            0% {
-                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
-            }
-
-            50% {
-                box-shadow: 0 0 20px rgba(34, 197, 94, 0.9);
-            }
-
-            100% {
-                box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
-            }
-        }
-
-        .hover-glow:hover {
-            animation: glow 1.5s infinite;
         }
     </style>
 </head>
@@ -46,34 +28,20 @@
 <body class="bg-gray-900 text-white min-h-screen flex flex-col items-center px-4 pb-10">
 
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md z-50">
-        <div class="flex justify-between items-center px-4 py-3">
-            <div class="text-xl font-bold text-white">Skills</div>
-            <button id="menu-btn" class="text-white text-3xl md:hidden focus:outline-none">&#9776;</button>
-        </div>
-        <div id="menu"
-            class="hidden flex-col md:flex md:flex-row md:items-center bg-gray-900 text-white font-medium px-4 md:px-0 md:space-x-4 py-3 md:py-0">
-            <a href="/requester/dashboard" class="py-2 hover:text-green-400">Home</a>
-            <a href="/skills/search" class="py-2 hover:text-green-400">Search</a>
-            <a href="/skills/all" class="py-2 hover:text-green-400">All Skills</a>
-            <a href="/requester/bookings" class="py-2 hover:text-green-400">View Bookings</a>
-            <a href="/feedback/leave-review" class="py-2 hover:text-green-400">Leave a Review</a>
-            <a href="/profile" class="py-2 hover:text-green-400">View Profile</a>
-            <a href="/auth/logout" class="py-2 hover:text-red-400">Logout</a>
-        </div>
-    </nav>
+        <div th:replace="fragments/navbar :: navbar"></div>
+
 
     <!-- Page Title -->
-    <h2 class="text-2xl sm:text-4xl font-bold mt-24 mb-6 text-center animate-fadeIn">All Available Skills</h2>
+    <h2 class="text-2xl sm:text-4xl font-bold mt-20 mb-6 text-center animate-fadeIn">All Available Skills</h2>
 
     <!-- Skills Section -->
-    <div class="w-full max-w-6xl animate-fadeIn">
+    <div class="w-full max-w-6xl">
 
         <!-- Skills Available -->
         <div th:if="${not #lists.isEmpty(skills)}">
 
             <!-- Desktop Table -->
-            <div class="hidden md:block overflow-x-auto">
+            <div class="hidden md:block overflow-x-auto animate-fadeIn">
                 <table class="w-full text-center border-collapse bg-gray-800 text-sm rounded-lg shadow-lg">
                     <thead class="bg-green-600 text-white">
                         <tr>
@@ -97,9 +65,9 @@
             </div>
 
             <!-- Mobile Cards -->
-            <div class="block md:hidden space-y-4">
+            <div class="block md:hidden space-y-4 animate-fadeIn">
                 <div th:each="skill : ${skills}"
-                    class="bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-md hover:shadow-green-600 transition">
+                    class="bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-md transition">
                     <p><span class="font-semibold text-green-400">Skill:</span> <span
                             th:text="${skill.skillName}"></span></p>
                     <p><span class="font-semibold text-green-400">Category:</span> <span
@@ -115,20 +83,17 @@
         </div>
 
         <!-- No Skills Message -->
-        <div th:if="${#lists.isEmpty(skills)}" class="text-center text-gray-300 text-lg mt-10">
+        <div th:if="${#lists.isEmpty(skills)}" class="text-center text-gray-300 text-lg mt-10 animate-fadeIn">
             <p>No skills available.</p>
         </div>
     </div>
 
-    <!-- Cursor Particles -->
+    <!-- Optional Cursor Particle Script -->
     <script th:src="@{/cursorParticles.js}"></script>
 
     <!-- Mobile Menu Toggle -->
-    <script>
-        document.getElementById('menu-btn').addEventListener('click', () => {
-            document.getElementById('menu').classList.toggle('hidden');
-        });
-    </script>
+    <script th:src="@{/js/menuToggle.js}"></script>
+
 </body>
 
 </html>

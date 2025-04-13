@@ -47,26 +47,8 @@
 <body class="flex flex-col items-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 text-white pt-20">
 
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md z-50">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="text-xl font-bold">Worker Dashboard</div>
-            <!-- Mobile Menu Button -->
-            <button id="menu-btn" class="md:hidden text-white text-3xl focus:outline-none">
-                ☰
-            </button>
-        </div>
+        <div th:replace="fragments/navbar :: navbar"></div>
 
-        <!-- Dropdown Menu -->
-        <div id="menu"
-            class="transition-all duration-500 ease-in-out max-h-0 overflow-hidden md:max-h-full md:flex md:flex-row md:items-center md:justify-center md:space-x-4 space-y-2 md:space-y-0 text-center px-4 md:pb-0 flex flex-col text-white font-medium">
-            <a href="/worker/dashboard" class="py-2 px-4 hover:text-green-400">Home</a>
-            <a href="/skills/add" class="py-2 px-4 hover:text-green-400">Add a Skill</a>
-            <a href="/worker/bookings" class="py-2 px-4 hover:text-green-400">View Requests</a>
-            <a href="/feedback/leave-review" class="py-2 px-4 hover:text-green-400">Leave a Review</a>
-            <a href="/profile" class="py-2 px-4 hover:text-green-400">View Profile</a>
-            <a href="/auth/logout" class="py-2 px-4 hover:text-red-400">Logout</a>
-        </div>
-    </nav>
 
     <script>
         function toggleMenu() {
@@ -76,10 +58,10 @@
     </script>
 
     <!-- Title -->
-    <h2 class="text-2xl md:text-4xl font-bold text-white mt-16 animate-fadeInUp">Your Bookings</h2>
+    <h2 class="text-2xl md:text-4xl font-bold text-white mt-8 animate-fadeInUp">Your Bookings</h2>
 
     <!-- Bookings Table (Desktop) -->
-    <div class="w-full max-w-5xl p-4 md:p-6 mt-5 hidden md:block animate-fadeInUp">
+    <div class="w-full max-w-5xl p-4 md:p-6 mt-4 hidden md:block animate-fadeInUp">
         <div th:if="${not #lists.isEmpty(bookings)}">
             <div class="overflow-x-auto">
                 <table
@@ -207,21 +189,8 @@
         </div>
     </div>
 
-    <!-- Menu Toggle Script -->
-    <script>
-        const menuBtn = document.getElementById('menu-btn');
-        const menu = document.getElementById('menu');
+   <script th:src="@{/js/menuToggle.js}"></script>
 
-        menuBtn.addEventListener('click', () => {
-            if (menu.classList.contains('max-h-0')) {
-                menu.classList.remove('max-h-0', 'overflow-hidden');
-                menu.classList.add('max-h-screen');
-            } else {
-                menu.classList.remove('max-h-screen');
-                menu.classList.add('max-h-0', 'overflow-hidden');
-            }
-        });
-    </script>
 
     <script th:src="@{/cursorParticles.js}"></script>
 </body>

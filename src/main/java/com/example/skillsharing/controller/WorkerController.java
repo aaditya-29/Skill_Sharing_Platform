@@ -30,9 +30,6 @@ public class WorkerController {
 		this.userService = userService;
 	}
 
-	/**
-	 * Search for workers by skill
-	 */
 	@GetMapping("/workers/search")
 	public String searchWorkers(@RequestParam("skill") String searchTerm, Model model) {
 		List<SkillListing> skills = skillListingService.searchBySkillOrCategory(searchTerm);
@@ -40,9 +37,6 @@ public class WorkerController {
 		return "search-results";
 	}
 
-	/**
-	 * Worker Dashboard
-	 */
 	@GetMapping("/worker/dashboard")
 	public String workerDashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
 		if (userDetails == null) {
@@ -59,10 +53,6 @@ public class WorkerController {
 
 		// ✅ Fetch skills for the worker
 		List<SkillListing> skills = skillListingService.getSkillsByWorker(worker.getId());
-
-		// ✅ Debugging log
-		System.out.println("📌 Worker ID: " + worker.getId());
-		System.out.println("📌 Skills Found: " + (skills != null ? skills.size() : "NULL"));
 
 		// ✅ Add attributes to the model
 		model.addAttribute("skills", skills);

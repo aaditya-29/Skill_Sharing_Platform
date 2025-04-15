@@ -43,7 +43,7 @@
 	class="bg-gray-900 text-white min-h-screen flex flex-col items-center px-4 py-6">
 
 	<!-- Navbar -->
-	<div th:replace="fragments/navbar :: navbar"></div>
+	<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 	<!-- Heading -->
 	<h2 class="text-2xl mt-20 sm:text-4xl font-bold mb-4 text-center">Search
@@ -68,7 +68,7 @@
 				<img
 					th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}"
 					alt="Profile Picture"
-					class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-green-500 self-center" />
+					class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-green-500 flex-shrink-0">
 
 				<!-- Worker Details -->
 				<div
@@ -76,44 +76,54 @@
 					<!-- Info -->
 					<div class="text-sm sm:text-base text-center sm:text-left">
 						<h3 class="text-xl font-semibold text-white mb-1">
-							<span th:text="${skill.worker.name ?: 'Unknown Worker'}"></span>
-							<span th:if="${workerRatings[skill.worker.id] > 0}"
+							<span
+								th:text="${skill.worker != null ? skill.worker.name : 'Unknown Worker'}"></span>
+
+							<!-- Check if rating is available and display it -->
+							<span
+								th:if="${workerRatings != null and workerRatings[skill.worker != null ? skill.worker.id : 0] != null}"
 								class="text-yellow-400 ml-2"
-								th:text=" ${workerRatings[skill.worker.id]} + ' ⭐'"></span> <span
-								th:if="${workerRatings[skill.worker.id] == 0}"
+								th:text="${workerRatings[skill.worker.id]} + ' ⭐'"></span>
+
+							<!-- If no rating available, show "(No ratings)" -->
+							<span
+								th:if="${workerRatings == null or workerRatings[skill.worker.id] == null}"
 								class="text-gray-400 ml-2">(No ratings)</span>
 						</h3>
+
 						<div
 							class="grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-gray-300">
 							<p>
 								<strong>Contact:</strong> <span
-									th:text="${skill.worker.contactNumber ?: 'N/A'}"></span>
+									th:text="${skill.worker != null ? skill.worker.contactNumber : 'N/A'}"></span>
 							</p>
 							<p>
 								<strong>Skill:</strong> <span
-									th:text="${skill.skillName ?: 'Not Specified'}"></span>
+									th:text="${skill.skillName != null ? skill.skillName : 'Not Specified'}"></span>
 							</p>
 							<p>
 								<strong>Category:</strong> <span
-									th:text="${skill.category ?: 'N/A'}"></span>
+									th:text="${skill.category != null ? skill.category : 'N/A'}"></span>
 							</p>
 							<p>
 								<strong>Location:</strong> <span
-									th:text="${skill.location ?: 'Unknown'}"></span>
+									th:text="${skill.location != null ? skill.location : 'Unknown'}"></span>
 							</p>
 							<p class="sm:col-span-2">
-								<strong>Price:</strong> ₹ <span th:text="${skill.price ?: '0'}"></span>
-								per hour
+								<strong>Price:</strong> ₹ <span
+									th:text="${skill.price != null ? skill.price : 0}"></span> per
+								hour
 							</p>
 						</div>
 					</div>
 
-					<!-- Book Button (Vertically Centered) -->
+					<!-- Book Button -->
 					<div class="flex items-center justify-center w-full sm:w-auto">
 						<button type="button"
-							th:onclick="'openBookingModal(' + ${skill.id} + ',' + ${skill.worker.id} + ')'"
-							class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 transform hover:scale-105">Book
-							Now</button>
+							th:onclick="'openBookingModal(' + ${skill.id} + ',' + ${skill.worker != null ? skill.worker.id : 0} + ')'"
+							class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 transform hover:scale-105">
+							Book Now</button>
+
 					</div>
 				</div>
 			</div>
@@ -148,24 +158,28 @@
 		</div>
 	</div>
 
+
 	<!-- Scripts -->
 	<script>
 		function openBookingModal(skillId, workerId) {
+			// Debugging: log the skillId and workerId to confirm if they're correct
+			console.log('Opening modal for Skill ID:', skillId, 'Worker ID:',
+					workerId);
+
+			// Set the hidden input values for the modal form
 			document.getElementById("modalSkillId").value = skillId;
 			document.getElementById("modalWorkerId").value = workerId;
+
+			// Show the booking modal
 			document.getElementById("bookingModal").classList.remove("hidden");
 		}
 
 		function closeBookingModal() {
+			// Hide the booking modal
 			document.getElementById("bookingModal").classList.add("hidden");
 		}
-
-		document.getElementById('menu-btn').addEventListener('click',
-				function() {
-					const menu = document.getElementById('menu');
-					menu.classList.toggle('hidden');
-				});
 	</script>
+
 
 	<script th:src="@{/js/menuToggle.js}"></script>
 	<script th:src="@{/cursorParticles.js}"></script>

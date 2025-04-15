@@ -63,17 +63,8 @@
 <body class="flex flex-col items-center justify-center min-h-screen text-white px-4 sm:px-6">
 
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 w-full bg-gray-900 shadow-md p-4 z-50 animate-slideIn">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center">
-            <h1 class="text-white text-2xl font-bold mb-2 sm:mb-0">Skill Sharing</h1>
-            <ul class="flex flex-wrap justify-center sm:justify-end gap-4 text-white font-medium">
-                <li><a class="hover:text-green-400 transition" th:href="@{/}">Home</a></li>
-                <li><a class="hover:text-green-400 transition" th:href="@{/about}">About</a></li>
-                <li><a class="hover:text-green-400 transition" th:href="@{/auth/register}">Register</a></li>
-                <li><a class="hover:text-green-400 transition" th:href="@{/auth/login}">Login</a></li>
-            </ul>
-        </div>
-    </nav>
+   	<div th:replace="~{fragments/mainnavbar :: navbar}"></div>
+
 
     <!-- Registration Form -->
     <div class="w-full max-w-md mt-28 sm:mt-32 form-container">

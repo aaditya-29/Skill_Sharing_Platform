@@ -3,6 +3,9 @@ package com.example.skillsharing.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "feedback", uniqueConstraints = { @UniqueConstraint(columnNames = { "booking_id", "reviewer_id" })
 // Allow 2 feedback per booking
@@ -18,12 +21,14 @@ public class Feedback {
 	private Booking booking;
 
 	@ManyToOne
-	@JoinColumn(name = "reviewer_id", nullable = false)
-	private User reviewer; // The person giving feedback
+	@JoinColumn(name = "reviewer_id", nullable = false, foreignKey = @ForeignKey(name = "fk_reviewer"))
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private User reviewer;
 
 	@ManyToOne
-	@JoinColumn(name = "reviewee_id", nullable = false)
-	private User reviewee; // The person receiving feedback
+	@JoinColumn(name = "reviewee_id", nullable = false, foreignKey = @ForeignKey(name = "fk_reviewee"))
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private User reviewee;
 
 	@Column(nullable = false)
 	private int rating;

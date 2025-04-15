@@ -61,18 +61,13 @@ public class UserService {
 		return ratings.isEmpty() ? 0.0 : ratings.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
 	}
 
-	public String saveProfilePicture(MultipartFile file, Long userId) throws IOException {
-		String directory = "uploads/profile_pictures/";
-		String fileName = userId + "_" + file.getOriginalFilename();
-		Path path = Paths.get(directory + fileName);
-
-		// ✅ Ensure directory exists
-		Files.createDirectories(path.getParent());
-
-		// ✅ Save file to disk
-		Files.write(path, file.getBytes());
-
-		return "/" + directory + fileName; // ✅ Ensure correct relative URL for web access
+	public void saveProfilePicture(MultipartFile file, Long userId) throws IOException {
+		User user = getUserById(userId); // Get the user object by ID
+		if (user != null) {
+			byte[] profilePictureBytes = file.getBytes(); // Convert uploaded file to byte array
+			user.setProfilePicture(profilePictureBytes); // Set the byte array to the user
+			updateUser(user); // Save the updated user object to the database
+		}
 	}
 
 	public void deleteUser(Long id) {

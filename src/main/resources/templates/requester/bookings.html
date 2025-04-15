@@ -47,97 +47,103 @@
 <body class="flex flex-col items-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 text-white pt-20">
 
     <!-- Navbar -->
-    <div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
     <!-- Page Title -->
     <h2 class="text-2xl md:text-4xl font-bold text-white mt-8 animate-fadeInUp">Your Bookings</h2>
 
     <div class="w-full max-w-6xl mt-4 px-4  space-y-4">
 
         <!-- If Bookings Exist -->
-        <div th:if="${not #lists.isEmpty(bookings)}">
+<div th:if="${not #lists.isEmpty(bookings)}">
 
-            <!-- Responsive Display (Mobile Cards Column-Wise) -->
-            <div th:if="${not #lists.isEmpty(bookings)}" class="md:hidden flex flex-col gap-4 px-2">
-                <div th:each="booking : ${bookings}"
-                    class="bg-gray-800 w-full p-4 rounded-lg shadow-md border border-gray-700 animate-fadeInUp">
-                    <p><span class="font-semibold text-white">Booking ID:</span> <span th:text="${booking.id}"></span>
-                    </p>
-                    <p><span class="font-semibold text-white">Worker:</span> <span
-                            th:text="${booking.worker != null ? booking.worker.name : 'N/A'}"></span></p>
-                    <p><span class="font-semibold text-white">Skill:</span> <span
-                            th:text="${booking.skillListing != null ? booking.skillListing.skillName : 'N/A'}"></span>
-                    </p>
-                    <p><span class="font-semibold text-white">Start Time:</span> <span
-                            th:text="${#temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm')}"></span></p>
-                    <p><span class="font-semibold text-white">End Time:</span> <span
-                            th:text="${#temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></span></p>
-                    <p><span class="font-semibold text-white">Status:</span> <span class="text-green-400 font-semibold"
-                            th:text="${booking.status}"></span></p>
-                    <p><span class="font-semibold text-white">Report:</span>
+    <!-- Responsive Display (Mobile Cards Column-Wise) -->
+    <div th:if="${not #lists.isEmpty(bookings)}" class="md:hidden flex flex-col gap-4 px-2">
+        <div th:each="booking : ${bookings}"
+            class="bg-gray-800 w-full p-4 rounded-lg shadow-md border border-gray-700 animate-fadeInUp">
+            <p><span class="font-semibold text-white">Booking ID:</span> <span th:text="${booking.id}"></span></p>
+            <p><span class="font-semibold text-white">Worker:</span> <span
+                    th:text="${booking.worker != null ? booking.worker.name : 'N/A'}"></span></p>
+            <p><span class="font-semibold text-white">Skill:</span> <span
+                    th:text="${booking.skillListing != null ? booking.skillListing.skillName : 'N/A'}"></span></p>
+            
+            <!-- Start Time: Show "Not Yet Started" if null -->
+            <p><span class="font-semibold text-white">Start Time:</span> 
+                <span th:text="${booking.startTime != null ? #temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm') : 'Not Yet Started'}"></span>
+            </p>
+            
+            <!-- End Time: Show "Not Yet Finished" if null -->
+            <p><span class="font-semibold text-white">End Time:</span> 
+                <span th:text="${booking.endTime != null ? #temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm') : 'Not Yet Finished'}"></span>
+            </p>
+            
+            <p><span class="font-semibold text-white">Status:</span> <span class="text-green-400 font-semibold"
+                    th:text="${booking.status}"></span></p>
+            <p><span class="font-semibold text-white">Report:</span>
+                <span th:if="${inspectionReportMap != null 
+                        and inspectionReportMap[booking.id] != null 
+                        and booking.status != null 
+                        and #strings.toString(booking.status) != 'PENDING' 
+                        and #strings.toString(booking.status) != 'ACCEPTED'}">
+                    <a th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}"
+                        class="text-green-400 hover:text-green-300 transition">View</a>
+                </span>
+                <span th:unless="${inspectionReportMap != null 
+                        and inspectionReportMap[booking.id] != null 
+                        and booking.status != null 
+                        and #strings.toString(booking.status) != 'PENDING' 
+                        and #strings.toString(booking.status) != 'ACCEPTED'}">N/A</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Desktop Table View -->
+    <div class="hidden md:block overflow-x-auto">
+        <table class="w-full text-center border-collapse shadow-lg rounded-lg bg-gray-800 text-sm md:text-base">
+            <thead class="bg-green-600 text-white">
+                <tr>
+                    <th class="p-3">ID</th>
+                    <th class="p-3">Worker</th>
+                    <th class="p-3">Skill</th>
+                    <th class="p-3">Start Time</th>
+                    <th class="p-3">End Time</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3">Report</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-300">
+                <tr th:each="booking : ${bookings}" class="hover:bg-gray-700 transition">
+                    <td class="p-2 border-b" th:text="${booking.id}"></td>
+                    <td class="p-2 border-b" th:text="${booking.worker != null ? booking.worker.name : 'N/A'}"></td>
+                    <td class="p-2 border-b" th:text="${booking.skillListing != null ? booking.skillListing.skillName : 'N/A'}"></td>
+                    
+                    <!-- Start Time: Show "Not Yet Started" if null -->
+                    <td class="p-2 border-b" th:text="${booking.startTime != null ? #temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm') : 'Not Yet Started'}"></td>
+                    
+                    <!-- End Time: Show "Not Yet Finished" if null -->
+                    <td class="p-2 border-b" th:text="${booking.endTime != null ? #temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm') : 'Not Yet Finished'}" ></td>
+                    
+                    <td class="p-2 border-b text-green-400 font-semibold" th:text="${booking.status}"></td>
+                    <td class="p-2 border-b">
                         <span th:if="${inspectionReportMap != null 
-                and inspectionReportMap[booking.id] != null 
-                and booking.status != null 
-                and #strings.toString(booking.status) != 'PENDING' 
-                and #strings.toString(booking.status) != 'ACCEPTED'}">
+                                and inspectionReportMap[booking.id] != null 
+                                and booking.status != null 
+                                and #strings.toString(booking.status) != 'PENDING' 
+                                and #strings.toString(booking.status) != 'ACCEPTED'}">
                             <a th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}"
                                 class="text-green-400 hover:text-green-300 transition">View</a>
                         </span>
                         <span th:unless="${inspectionReportMap != null 
-                and inspectionReportMap[booking.id] != null 
-                and booking.status != null 
-                and #strings.toString(booking.status) != 'PENDING' 
-                and #strings.toString(booking.status) != 'ACCEPTED'}">N/A</span>
-                    </p>
-                </div>
-            </div>
+                                and inspectionReportMap[booking.id] != null 
+                                and booking.status != null 
+                                and #strings.toString(booking.status) != 'PENDING' 
+                                and #strings.toString(booking.status) != 'ACCEPTED'}">N/A</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-
-            <!-- Desktop Table View -->
-            <div class="hidden md:block overflow-x-auto">
-                <table class="w-full text-center border-collapse shadow-lg rounded-lg bg-gray-800 text-sm md:text-base">
-                    <thead class="bg-green-600 text-white">
-                        <tr>
-                            <th class="p-3">ID</th>
-                            <th class="p-3">Worker</th>
-                            <th class="p-3">Skill</th>
-                            <th class="p-3">Start Time</th>
-                            <th class="p-3">End Time</th>
-                            <th class="p-3">Status</th>
-                            <th class="p-3">Report</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-gray-300">
-                        <tr th:each="booking : ${bookings}" class="hover:bg-gray-700 transition">
-                            <td class="p-2 border-b" th:text="${booking.id}"></td>
-                            <td class="p-2 border-b" th:text="${booking.worker != null ? booking.worker.name : 'N/A'}">
-                            </td>
-                            <td class="p-2 border-b"
-                                th:text="${booking.skillListing != null ? booking.skillListing.skillName : 'N/A'}"></td>
-                            <td class="p-2 border-b"
-                                th:text="${#temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm')}"></td>
-                            <td class="p-2 border-b"
-                                th:text="${#temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></td>
-                            <td class="p-2 border-b text-green-400 font-semibold" th:text="${booking.status}"></td>
-                            <td class="p-2 border-b">
-                                <span th:if="${inspectionReportMap != null 
-                                    and inspectionReportMap[booking.id] != null 
-                                    and booking.status != null 
-                                    and #strings.toString(booking.status) != 'PENDING' 
-                                    and #strings.toString(booking.status) != 'ACCEPTED'}">
-                                    <a th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}"
-                                        class="text-green-400 hover:text-green-300 transition">View</a>
-                                </span>
-                                <span th:unless="${inspectionReportMap != null 
-                                    and inspectionReportMap[booking.id] != null 
-                                    and booking.status != null 
-                                    and #strings.toString(booking.status) != 'PENDING' 
-                                    and #strings.toString(booking.status) != 'ACCEPTED'}">N/A</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
         <!-- No Bookings -->
         <div th:if="${#lists.isEmpty(bookings)}" class="text-center text-gray-300 text-lg mt-10">

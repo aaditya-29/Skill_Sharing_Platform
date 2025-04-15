@@ -11,12 +11,13 @@
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
 	<!-- Include the appropriate Navbar based on the user role -->
-	<div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 	<!-- Page Content -->
 	<div
 		class="flex flex-col items-center justify-center flex-grow p-4 mt-15">
-		<h2 class="text-3xl sm:text-4xl font-bold  mt-16 text-white text-center">Available
+		<h2
+			class="text-3xl sm:text-4xl font-bold  mt-16 text-white text-center">Available
 			Workers</h2>
 
 		<div class="worker-list w-full max-w-6xl p-4 sm:p-6 space-y-6 mt-6">
@@ -36,12 +37,13 @@
 						<!-- Worker Info -->
 						<div class="worker-details flex-1 text-center sm:text-left">
 							<h3 class="text-xl font-semibold text-white mb-1">
-								<span th:text="${skill.worker.name ?: 'Unknown Worker'}"></span>
-								<span th:if="${workerRatings[skill.worker.id] > 0}"
-									class="text-yellow-400 ml-2"
-									th:text=" ${workerRatings[skill.worker.id]} + ' ⭐'"></span> <span
-									th:if="${workerRatings[skill.worker.id] == 0}"
-									class="text-gray-400 ml-2">(No ratings)</span>
+								<span th:text="${skill.worker.name ?: 'Unknown Worker'} + ' - '"></span>
+								<span
+									th:if="${workerRatings[skill.worker.id] != null and workerRatings[skill.worker.id] > 0}"
+									class="text-yellow-400"
+									th:text="${workerRatings[skill.worker.id]} + ' ⭐'"></span> <span
+									th:if="${workerRatings[skill.worker.id] == null or workerRatings[skill.worker.id] == 0}"
+									class="text-gray-400">(No ratings)</span>
 							</h3>
 
 							<div

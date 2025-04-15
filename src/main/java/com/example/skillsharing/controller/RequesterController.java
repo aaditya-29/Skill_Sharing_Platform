@@ -28,16 +28,14 @@ public class RequesterController {
 	@GetMapping("/dashboard")
 	public String showRequesterDashboard(Model model) {
 		List<SkillListing> skills = skillListingService.findRandomWorkersWithSkills();
-		
+
 		Map<Long, Double> workerRatings = new HashMap<>();
-
-
-		// Debugging: Check if profilePicUrl is generated correctly
 		for (SkillListing skill : skills) {
 			if (skill.getWorker() != null) {
 				Long workerId = skill.getWorker().getId();
-				Double rating = feedbackService.getAverageRatingForUser(workerId);
-				workerRatings.put(workerId, rating != null ? rating : 0.0);
+				Double avgRating = feedbackService.getAverageRatingForUser(workerId); // <-- Make sure this method
+																						// exists
+				workerRatings.put(workerId, avgRating != null ? avgRating : 0.0);
 			}
 		}
 

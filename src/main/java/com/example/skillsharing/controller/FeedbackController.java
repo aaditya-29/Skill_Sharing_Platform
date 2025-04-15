@@ -4,8 +4,12 @@ import com.example.skillsharing.model.Booking;
 import com.example.skillsharing.model.Feedback;
 import com.example.skillsharing.model.User;
 import com.example.skillsharing.service.BookingService;
+import com.example.skillsharing.service.EmailService;
 import com.example.skillsharing.service.FeedbackService;
 import com.example.skillsharing.service.UserService;
+
+import jakarta.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +35,9 @@ public class FeedbackController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private EmailService emailService;
+
 	@GetMapping("/leave-review")
 	public String showFeedbackPage(Model model) {
 		User currentUser = getCurrentUser();
@@ -54,7 +61,8 @@ public class FeedbackController {
 	}
 
 	@PostMapping("/submit")
-	public String submitFeedback(@RequestParam Long bookingId, @RequestParam int rating, @RequestParam String comment) {
+	public String submitFeedback(@RequestParam Long bookingId, @RequestParam int rating, @RequestParam String comment)
+			throws MessagingException {
 		User currentUser = getCurrentUser();
 		Booking booking = bookingService.getBookingById(bookingId);
 
@@ -82,10 +90,23 @@ public class FeedbackController {
 		boolean isRequester = booking.getRequester().getId().equals(currentUser.getId());
 		User reviewee = isRequester ? booking.getWorker() : booking.getRequester();
 
-		System.out.println("✅ Reviewer: " + currentUser.getName() + ", Reviewee: " + reviewee.getName());
 		feedback.setReviewee(reviewee);
 
 		feedbackService.saveFeedback(feedback);
+
+		// Email Notifications
+		String subject = "You've Received a New Feedback on Taskoria";
+
+		String body = "<h3>Hello " + reviewee.getName() + ",</h3>"
+				+ "<p>You’ve just received a new feedback from <strong>" + currentUser.getName()
+				+ "</strong> regarding your recent booking.</p>" + "<p><strong>Rating:</strong> " + rating + " &#11088;</p>"
+				+ "<p><strong>Comment:</strong> \"" + comment + "\"</p>"
+				+ "<p>We hope this helps you continue to grow and improve on Taskoria.</p>"
+				+ "<p>You can log into your dashboard to view this and other feedback.</p>"
+				+ "<br><p>Keep up the great work!</p>" + "<p>Warm regards,<br><strong>Team Taskoria</strong></p>";
+
+		emailService.sendEmail(reviewee.getEmail(), subject, body);
+
 		return "redirect:/feedback/leave-review?success=feedback_submitted";
 	}
 
@@ -94,14 +115,7 @@ public class FeedbackController {
 	public String viewFeedback(Model model, Principal principal) {
 		User currentUser = userService.findByEmail(principal.getName());
 
-		System.out.println("🔐 Logged-in User ID: " + currentUser.getId() + ", Name: " + currentUser.getName());
-
 		List<Feedback> feedbackList = feedbackService.getFeedbackForUser(currentUser.getId());
-
-		for (Feedback f : feedbackList) {
-			System.out.println(
-					"📝 Feedback: Reviewer=" + f.getReviewer().getName() + ", Reviewee=" + f.getReviewee().getName());
-		}
 
 		model.addAttribute("feedbackList", feedbackList);
 		return "feedback/view-feedback";

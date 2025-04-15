@@ -2,145 +2,66 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<style>
-		/* Global Styles */
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
-
-		body {
-			font-family: Arial, sans-serif;
-			background-color: #f4f7fc;
-			color: #333;
-		}
-
-		/* Navbar Styles */
-		.navbar {
-			background-color: #3498db;
-			padding: 15px 0;
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-			position: fixed;
-			width: 100%;
-			top: 0;
-			left: 0;
-			z-index: 1000;
-		}
-
-		.navbar .container {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 0 20px;
-		}
-
-		.navbar .logo {
-			font-size: 1.8em;
-			font-weight: bold;
-			color: white;
-			text-transform: uppercase;
-		}
-
-		.navbar .nav-links {
-			list-style-type: none;
-			display: flex;
-			gap: 20px;
-		}
-
-		.navbar .nav-links li {
-			display: inline;
-		}
-
-		.navbar .nav-links a {
-			color: white;
-			text-decoration: none;
-			font-size: 1.1em;
-			transition: color 0.3s ease;
-		}
-
-		.navbar .nav-links a:hover {
-			color: #ecf0f1;
-		}
-
-		/* Hamburger Menu */
-		.hamburger {
-			display: none;
-			flex-direction: column;
-			gap: 5px;
-			cursor: pointer;
-		}
-
-		.hamburger div {
-			width: 30px;
-			height: 4px;
-			background-color: white;
-			border-radius: 5px;
-		}
-
-		/* Responsive Design */
-		@media (max-width : 768px) {
-			.navbar .container {
-				flex-direction: column;
-				align-items: center;
-			}
-
-			.navbar .nav-links {
-				flex-direction: column;
-				gap: 15px;
-				margin-top: 15px;
-				display: none;
-				background-color: #3498db;
-				padding: 10px;
-				width: 100%;
-				text-align: center;
-			}
-
-			.navbar .nav-links.active {
-				display: block;
-			}
-
-			.navbar .nav-links a {
-				font-size: 1.2em;
-				display: block;
-				padding: 10px;
-			}
-
-			.hamburger {
-				display: flex;
-			}
-		}
-	</style>
+  <meta charset="UTF-8">
+  <title>Main Navbar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body>
+  <div th:fragment="navbar">
+    <nav class="bg-gray-900 text-white py-3 shadow-md fixed top-0 left-0 right-0 z-50">
+      <div class="w-full px-4 sm:px-6 lg:px-10 flex items-center justify-between">
+        
+        <!-- Logo and Brand -->
+        <div class="flex items-center space-x-3">
+          <div class="h-12 w-12 rounded-full overflow-hidden">
+            <img th:src="@{/images/FinalLogo2.png}" alt="Logo" class="h-full w-full object-cover" />
+          </div>
+          <div class="leading-tight">
+            <p class="text-2xl font-semibold">Taskoria</p>
+            <p class="text-sm text-gray-400 -mt-1">Where Skill Meets Opportunity</p>
+          </div>
+        </div>
 
-	<nav class="navbar" th:fragment="navbar">
-		<div class="container">
-			<h1 class="logo">Skill Sharing</h1>
-			<div class="hamburger" id="hamburger">
-				<div></div>
-				<div></div>
-				<div></div>
-			</div>
-			<ul class="nav-links" id="nav-links">
-				<li><a th:href="@{/}">Home</a></li>
-				<li><a th:href="@{/about}">About</a></li>
-				<li><a th:href="@{/auth/register}">Register</a></li>
-				<li><a th:href="@{/auth/login}">Login</a></li>
-			</ul>
-		</div>
-	</nav>
+        <!-- Desktop Menu -->
+        <ul class="hidden md:flex space-x-6 text-lg">
+          <li><a href="/" class="hover:text-green-400 transition duration-300">Home</a></li>
+          <li><a href="/about" class="hover:text-green-400 transition duration-300">About</a></li>
+          <li><a href="/auth/register" class="hover:text-green-400 transition duration-300">Register</a></li>
+          <li><a href="/auth/login" class="hover:text-green-400 transition duration-300">Login</a></li>
+        </ul>
 
-	<script>
-		document.getElementById('hamburger').addEventListener('click',
-			function () {
-				const navLinks = document.getElementById('nav-links');
-				navLinks.classList.toggle('active');
-			});
-	</script>
-	<!-- Cursor Particles -->
-	<script th:src="@{/cursorParticles.js}"></script>
+        <!-- Mobile Hamburger -->
+        <div class="md:hidden" id="hamburger">
+          <div class="w-6 h-1 bg-white mb-1"></div>
+          <div class="w-6 h-1 bg-white mb-1"></div>
+          <div class="w-6 h-1 bg-white"></div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <ul id="mobile-nav"
+        class="hidden flex-col items-center bg-gray-900 text-white text-lg space-y-4 py-6 px-4 absolute w-full top-16 left-0 shadow-md">
+        <li><a href="/" class="hover:text-green-400 transition duration-300">Home</a></li>
+        <li><a href="/about" class="hover:text-green-400 transition duration-300">About</a></li>
+        <li><a href="/auth/register" class="hover:text-green-400 transition duration-300">Register</a></li>
+        <li><a href="/auth/login" class="hover:text-green-400 transition duration-300">Login</a></li>
+      </ul>
+    </nav>
+
+    <!-- Toggle Script -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const hamburger = document.getElementById("hamburger");
+        const mobileNav = document.getElementById("mobile-nav");
+
+        hamburger.addEventListener("click", function () {
+          mobileNav.classList.toggle("hidden");
+        });
+      });
+    </script>
+  </div>
 </body>
 
 </html>

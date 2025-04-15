@@ -45,13 +45,10 @@
 </head>
 
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen py-10 px-4">
-    <div th:replace="fragments/navbar :: navbar"></div>
+    
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <h2 class="text-4xl font-bold mt-8 text-green-400 mb-6 animate-fadeIn text-center">Update Profile</h2>
-
-    <!-- Include Navbar Based on Role -->
-    <div th:if="${user.role == 'WORKER'}" th:insert="fragments/workerNavbar :: body"></div>
-    <div th:if="${user.role == 'REQUESTER'}" th:insert="fragments/navbar :: body"></div>
 
     <div class="bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-lg animate-fadeIn card-hover">
 

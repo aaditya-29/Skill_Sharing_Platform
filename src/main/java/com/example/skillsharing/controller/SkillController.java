@@ -1,6 +1,8 @@
 package com.example.skillsharing.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,8 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.skillsharing.model.SkillListing;
 import com.example.skillsharing.model.User;
+import com.example.skillsharing.service.EmailService;
+import com.example.skillsharing.service.FeedbackService;
 import com.example.skillsharing.service.SkillListingService;
 import com.example.skillsharing.service.UserService;
+
+import jakarta.mail.MessagingException;
 
 @Controller
 @RequestMapping("/skills")
@@ -28,52 +34,86 @@ public class SkillController {
     @Autowired
     private UserService userService;
 
-    /**
-     * Show form to add a skill
-     */
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private FeedbackService feedbackService; // Use FeedbackService for worker ratings
+
     @GetMapping("/add")
     public String showAddSkillForm(Model model) {
         model.addAttribute("skill", new SkillListing());
         return "skills/add-skill";
     }
 
-    /**
-     * Handle skill addition
-     */
     @PostMapping("/add")
-    public String addSkill(@ModelAttribute SkillListing skill) {
+    public String addSkill(@ModelAttribute SkillListing skill) throws MessagingException {
         String email = getCurrentUserEmail();
         User worker = userService.findByEmail(email);
 
         if (worker != null) {
             skill.setWorker(worker);
             skillListingService.saveSkill(skill);
+
+            // Email Notification
+            String subject = "Your New Skill Has Been Listed on Taskoria";
+            String body = "<h3>Hello " + worker.getName() + ",</h3>"
+                    + "<p>You've successfully listed a new skill on Taskoria.</p>"
+                    + "<h4>🛠️ Skill Details:</h4>"
+                    + "<p><strong>Skill Name:</strong> " + skill.getSkillName() + "</p>"
+                    + "<p><strong>Category:</strong> " + skill.getCategory() + "</p>"
+                    + "<p><strong>Location:</strong> " + skill.getLocation() + "</p>"
+                    + "<p><strong>Price:</strong> ₹" + skill.getPrice() + "</p>"
+                    + "<br><p>Your listing is now visible to requesters searching for skilled professionals like you.</p>"
+                    + "<p>Thank you for contributing to the Taskoria network!</p>"
+                    + "<br><p>Warm regards,<br><strong>Team Taskoria</strong></p>";
+
+            emailService.sendEmail(worker.getEmail(), subject, body);
+
             return "redirect:/worker/dashboard";
         }
         return "error";
     }
 
-    /**
-     * Show all skills listed by a specific worker
-     */
     @GetMapping("/worker/dashboard")
     public String workerDashboard(Model model) {
         String email = getCurrentUserEmail();
         User worker = userService.findByEmail(email);
 
-        model.addAttribute("skills", skillListingService.getSkillsByWorker(worker.getId()));
+        List<SkillListing> skills = skillListingService.getSkillsByWorker(worker.getId());
+        
+        // Create a map to hold ratings for each worker
+        Map<Long, Double> workerRatings = new HashMap<>();
+        for (SkillListing skill : skills) {
+            if (skill.getWorker() != null) {
+                Long workerId = skill.getWorker().getId();
+                Double avgRating = feedbackService.getAverageRatingForUser(workerId); // Fetch ratings using FeedbackService
+                workerRatings.put(workerId, avgRating != null ? avgRating : 0.0);
+            }
+        }
+
+        model.addAttribute("skills", skills);
+        model.addAttribute("workerRatings", workerRatings);
+
         return "worker/dashboard";
     }
 
-    /**
-     * Search for skills by skill name
-     */
     @GetMapping("/search")
     public String searchWorkers(@RequestParam(name = "skill", required = false) String skill, Model model) {
         try {
             if (skill != null && !skill.isEmpty()) {
                 List<SkillListing> skills = skillListingService.searchBySkillOrCategory(skill);
+                
+                // Get ratings for the workers related to these skills
+                Map<Long, Double> workerRatings = new HashMap<>();
+                for (SkillListing skillListing : skills) {
+                    Long workerId = skillListing.getWorker().getId();
+                    Double avgRating = feedbackService.getAverageRatingForUser(workerId); // Fetch ratings
+                    workerRatings.put(workerId, avgRating != null ? avgRating : 0.0);
+                }
+                
                 model.addAttribute("skills", skills);
+                model.addAttribute("workerRatings", workerRatings);
             } else {
                 model.addAttribute("skills", List.of());
             }
@@ -85,19 +125,24 @@ public class SkillController {
         }
     }
 
-    /**
-     * List all skills
-     */
     @GetMapping("/all")
     public String listAllSkills(Model model) {
         List<SkillListing> skills = skillListingService.getAllSkills();
+        
+        // Get ratings for workers associated with these skills
+        Map<Long, Double> workerRatings = new HashMap<>();
+        for (SkillListing skill : skills) {
+            Long workerId = skill.getWorker().getId();
+            Double avgRating = feedbackService.getAverageRatingForUser(workerId); // Fetch ratings
+            workerRatings.put(workerId, avgRating != null ? avgRating : 0.0);
+        }
+
         model.addAttribute("skills", skills);
+        model.addAttribute("workerRatings", workerRatings);
+
         return "skills/skills"; // Maps to skills-list.html
     }
 
-    /**
-     * Helper method to get the logged-in user's email
-     */
     private String getCurrentUserEmail() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return (principal instanceof UserDetails) ? ((UserDetails) principal).getUsername() : principal.toString();

@@ -2,51 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<title>User Profile</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>User Profile</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-.fade-in {
-	opacity: 0;
-	transform: translateY(10px);
-	transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
+	<style>
+		.fade-in {
+			opacity: 0;
+			transform: translateY(10px);
+			transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+		}
 
-.fade-in.visible {
-	opacity: 1;
-	transform: translateY(0);
-}
+		.fade-in.visible {
+			opacity: 1;
+			transform: translateY(0);
+		}
 
-.profile-picture {
-	border-radius: 50%;
-	border: 4px solid #4CAF50;
-	width: 150px;
-	height: 150px;
-	object-fit: cover;
-	transition: box-shadow 0.3s ease;
-}
+		.profile-picture {
+			border-radius: 50%;
+			border: 4px solid #4CAF50;
+			width: 150px;
+			height: 150px;
+			object-fit: cover;
+			transition: box-shadow 0.3s ease;
+		}
 
-.profile-picture:hover {
-	box-shadow: 0 4px 15px rgba(76, 175, 80, 0.5);
-}
+		.profile-picture:hover {
+			box-shadow: 0 4px 15px rgba(76, 175, 80, 0.5);
+		}
 
-.btn-animate {
-	transition: background-color 0.3s ease;
-}
+		.btn-animate {
+			transition: background-color 0.3s ease;
+		}
 
-.btn-animate:hover {
-	background-color: #388E3C;
-}
-</style>
+		.btn-animate:hover {
+			background-color: #388E3C;
+		}
+	</style>
 </head>
 
-<body
-	class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen py-10 px-4">
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen py-10 px-4">
 	<div th:replace="~{fragments/navbar :: navbar}"></div>
 
-	<h2
-		class="text-4xl font-bold mt-12 sm:pt-8 text-green-400 mb-6 text-center fade-in">User
+	<h2 class="text-4xl font-bold mt-12 sm:pt-8 text-green-400 mb-6 text-center fade-in">User
 		Profile</h2>
 
 
@@ -65,18 +63,15 @@
 		<!-- Profile Details -->
 		<div class="flex-grow w-full">
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-				<strong class="text-green-400">Name:</strong> <span
-					th:text="${user.name}" class="text-gray-300"></span> <strong
-					class="text-green-400">Email:</strong> <span
-					th:text="${user.email}" class="text-gray-300"></span> <strong
-					class="text-green-400">Contact:</strong> <span
+				<strong class="text-green-400">Name:</strong> <span th:text="${user.name}" class="text-gray-300"></span>
+				<strong class="text-green-400">Email:</strong> <span th:text="${user.email}"
+					class="text-gray-300"></span> <strong class="text-green-400">Contact:</strong> <span
 					th:text="${user.contactNumber}" class="text-gray-300"></span> <strong
-					class="text-green-400">Address:</strong> <span
-					th:text="${user.address}" class="text-gray-300"></span> <strong
-					class="text-green-400">Role:</strong> <span th:text="${user.role}"
-					class="text-gray-300"></span> <strong class="text-yellow-400">Rating:</strong>
-				<span class="text-gray-300 flex items-center"> <span
-					th:text="${averageRating}"></span> ⭐
+					class="text-green-400">Address:</strong> <span th:text="${user.address}"
+					class="text-gray-300"></span> <strong class="text-green-400">Role:</strong> <span
+					th:text="${user.role}" class="text-gray-300"></span> <strong
+					class="text-yellow-400">Rating:</strong>
+				<span class="text-gray-300 flex items-center"> <span th:text="${averageRating}"></span> ⭐
 				</span>
 			</div>
 
@@ -90,12 +85,12 @@
 	</div>
 
 	<script>
-        // Minimal scroll-based fade-in
-        document.addEventListener("DOMContentLoaded", () => {
-            const fadeEls = document.querySelectorAll(".fade-in");
-            fadeEls.forEach(el => el.classList.add("visible"));
-        });
-    </script>
+		// Minimal scroll-based fade-in
+		document.addEventListener("DOMContentLoaded", () => {
+			const fadeEls = document.querySelectorAll(".fade-in");
+			fadeEls.forEach(el => el.classList.add("visible"));
+		});
+	</script>
 	<script th:src="@{/js/menuToggle.js}"></script>
 
 	<script src="/cursorParticles.js"></script>

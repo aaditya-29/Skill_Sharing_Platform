@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Email Verification - Taskoria</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background: linear-gradient(to right, #1f2937, #111827);
+			color: #ffffff;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			min-height: 100vh;
+		}
+
+		.container {
+			background-color: rgba(31, 41, 55, 0.95);
+			/* Dark gray like bg */
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			padding: 2rem;
+			margin-top: 6rem;
+			border-radius: 12px;
+			box-shadow: 0 0 12px rgba(0, 255, 100, 0.1);
+			width: 92%;
+			max-width: 400px;
+			opacity: 0;
+			animation: fadeInUp 0.8s ease-out forwards;
+		}
+
+		h2 {
+			text-align: center;
+			font-size: 24px;
+			margin-bottom: 20px;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 6px;
+			color: #ccc;
+		}
+
+		input[type="text"],
+		input[type="hidden"] {
+			width: 100%;
+			padding: 10px;
+			background-color: #1f2937;
+			border: 1px solid #374151;
+			border-radius: 6px;
+			color: #fff;
+			margin-bottom: 16px;
+		}
+
+		button {
+			width: 100%;
+			padding: 10px;
+			background-color: #22c55e;
+			color: #fff;
+			border: none;
+			border-radius: 6px;
+			font-weight: bold;
+			cursor: pointer;
+			transition: background-color 0.3s ease, transform 0.2s ease;
+		}
+
+		button:hover {
+			background-color: #16a34a;
+			transform: scale(1.03);
+		}
+
+		button:disabled {
+			background-color: #555;
+			cursor: not-allowed;
+		}
+
+		.message {
+			text-align: center;
+			font-size: 14px;
+			margin-top: 10px;
+		}
+
+		.error {
+			color: #f87171;
+		}
+
+		.success {
+			color: #4ade80;
+		}
+
+		.resend-section {
+			margin-top: 10px;
+			text-align: center;
+			font-size: 14px;
+		}
+
+		@keyframes fadeInUp {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@media (max-width: 500px) {
+			.container {
+				padding: 1.5rem;
+				margin-top: 4rem;
+			}
+
+			h2 {
+				font-size: 20px;
+			}
+
+			button {
+				font-size: 15px;
+			}
+		}
+	</style>
+
+	<script>
+		let countdown = 60;
+
+		window.onload = function () {
+			const countdownEl = document.getElementById("countdown");
+			const resendBtn = document.getElementById("resendBtn");
+
+			const timer = setInterval(() => {
+				if (countdown <= 0) {
+					clearInterval(timer);
+					resendBtn.disabled = false;
+					countdownEl.style.display = "none";
+				} else {
+					countdownEl.innerText = "Resend OTP in " + countdown + "s";
+				}
+				countdown--;
+			}, 1000);
+		};
+	</script>
+</head>
+
+<body>
+
+	<!-- Navbar -->
+	<div th:replace="~{fragments/mainnavbar :: navbar}"></div>
+
+	<!-- OTP Verification Container -->
+	<div class="container">
+		<h2>Email Verification</h2>
+
+		<form th:action="@{/auth/verify-otp}" method="post">
+			<input type="hidden" name="email" th:value="${email}" />
+			<label for="otp">Enter OTP:</label>
+			<input type="text" name="otp" id="otp" maxlength="6" required />
+			<button type="submit">Verify</button>
+
+			<div th:if="${error}" class="message error" th:text="${error}"></div>
+			<div th:if="${message}" class="message success" th:text="${message}"></div>
+		</form>
+
+		<div class="resend-section">
+			<div id="countdown">Resend OTP in 60s</div>
+
+			<form th:action="@{/auth/resend-otp}" method="post">
+				<input type="hidden" name="email" th:value="${email}" />
+				<button type="submit" id="resendBtn" disabled>Resend OTP</button>
+			</form>
+		</div>
+	</div>
+	<script th:src="@{/js/mainMenuToggle.js}"></script>
+	<script th:src="@{/cursorParticles.js}"></script>
+</body>
+
+</html>

@@ -64,6 +64,11 @@
             <artifactId>jakarta.mail-api</artifactId>
         </dependency>
         
+        <dependency>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		</dependency>
+
 
         <!-- Spring Data REST -->
         <dependency>

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,6 +39,38 @@ public class User {
 	@Lob
 	@Column(columnDefinition = "LONGBLOB")
 	private byte[] profilePicture; // Store image as a BLOB
+
+	// OTP verification
+	private String otp;
+	private LocalDateTime otpGeneratedTime;
+	@Column(nullable = false)
+	private boolean enabled = false; // Only true after OTP verification
+
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
+	public LocalDateTime getOtpGeneratedTime() {
+		return otpGeneratedTime;
+	}
+
+	public void setOtpGeneratedTime(LocalDateTime otpGeneratedTime) {
+		this.otpGeneratedTime = otpGeneratedTime;
+	}
+
+	public void setEnabled(boolean enabled) {
+		System.out.println("Calling set enabled , enabled = " + enabled); // 🔥 Must say false
+
+		this.enabled = enabled;
+	}
+
+	public boolean getEnabled() {
+		return enabled;
+	}
 
 	// Default constructor
 	public User() {
@@ -145,6 +178,6 @@ public class User {
 	}
 
 	public boolean isEnabled() {
-		return true;
+		return enabled;
 	}
 }

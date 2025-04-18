@@ -33,6 +33,8 @@ public class UserService {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 		}
 		userRepository.save(user);
+		userRepository.flush(); // This forces the database to sync and updates the cache
+
 	}
 
 	public User findByEmail(String email) {

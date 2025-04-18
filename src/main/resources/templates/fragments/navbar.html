@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-<meta charset="UTF-8">
-<title>Navbar</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="UTF-8">
+	<title>Navbar</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 </head>
 
@@ -16,10 +15,8 @@
 	<div th:fragment="navbar">
 
 		<!-- UNIVERSAL NAVBAR TEMPLATE FOR ALL ROLES -->
-		<div
-			sec:authorize="hasAnyRole('ROLE_WORKER', 'ROLE_REQUESTER', 'ROLE_ADMIN')">
-			<nav
-				class="w-full bg-gray-900 text-white shadow-md fixed top-0 left-0 z-50">
+		<div sec:authorize="hasAnyRole('ROLE_WORKER', 'ROLE_REQUESTER', 'ROLE_ADMIN')">
+			<nav class="w-full bg-gray-900 text-white shadow-md fixed top-0 left-0 z-50">
 				<div class="max-w-7xl mx-auto px-4">
 					<div class="flex justify-between items-center h-16">
 
@@ -40,15 +37,13 @@
 
 						<!-- Mobile Menu Toggle Button -->
 						<div class="md:hidden">
-							<button id="mobile-menu-toggle"
-								class="focus:outline-none text-3xl">&#9776;</button>
+							<button id="mobile-menu-toggle" class="focus:outline-none text-3xl">&#9776;</button>
 						</div>
 
 						<!-- Menu Items (Desktop) -->
 						<div class="hidden md:flex space-x-6 items-center">
 							<!-- Worker Role Items -->
-							<div sec:authorize="hasRole('ROLE_WORKER')"
-								class="flex space-x-6">
+							<div sec:authorize="hasRole('ROLE_WORKER')" class="flex space-x-6">
 								<a href="/worker/dashboard" class="hover:text-green-400">Home</a>
 								<a href="/skills/add" class="hover:text-green-400">Add Skill</a>
 								<a href="/worker/bookings" class="hover:text-green-400">Requests</a>
@@ -57,14 +52,12 @@
 							</div>
 
 							<!-- Requester Role Items -->
-							<div sec:authorize="hasRole('ROLE_REQUESTER')"
-								class="flex space-x-6">
+							<div sec:authorize="hasRole('ROLE_REQUESTER')" class="flex space-x-6">
 								<a href="/requester/dashboard" class="hover:text-green-400">Home</a>
 								<a href="/skills/search" class="hover:text-green-400">Search
 									Skills</a> <a href="/skills/all" class="hover:text-green-400">All
-									Skills</a> <a href="/requester/bookings"
-									class="hover:text-green-400">Bookings</a> <a
-									href="/feedback/leave-review" class="hover:text-green-400">Review</a>
+									Skills</a> <a href="/requester/bookings" class="hover:text-green-400">Bookings</a>
+								<a href="/feedback/leave-review" class="hover:text-green-400">Review</a>
 								<a href="/profile" class="hover:text-green-400">Profile</a>
 							</div>
 
@@ -77,13 +70,10 @@
 
 							<!-- Profile Icon Dropdown -->
 							<div class="relative">
-								<button id="profile-menu-toggle"
-									class="flex items-center focus:outline-none">
-									<div
-										class="w-10 h-10 rounded-full overflow-hidden border-2 border-white">
+								<button id="profile-menu-toggle" class="flex items-center focus:outline-none">
+									<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white">
 
-										<img src="/images/default.jpg" th:src="@{/profile/image}"
-											alt="Profile"
+										<img src="/images/default.jpg" th:src="@{/profile/image}" alt="Profile"
 											class="w-10 h-10 object-cover rounded-full border-green-400"
 											onerror="this.onerror=null; this.src='/images/default.jpg';">
 									</div>
@@ -108,33 +98,29 @@
 				</div>
 
 				<!-- Mobile Menu (Hidden by default) -->
-				<div id="mobile-menu"
-					class="hidden md:hidden flex-col bg-gray-800 px-6 py-4 space-y-3 text-left">
-					<div sec:authorize="hasRole('ROLE_WORKER')"
-						class="flex flex-col space-y-3">
+				<div id="mobile-menu" class="hidden md:hidden flex-col bg-gray-800 px-6 py-4 space-y-3 text-left">
+					<div sec:authorize="hasRole('ROLE_WORKER')" class="flex flex-col space-y-3">
 						<a href="/worker/dashboard" class="hover:text-green-400">Home</a>
-						<a href="/skills/add" class="hover:text-green-400">Add Skill</a> <a
-							href="/worker/bookings" class="hover:text-green-400">Requests</a>
+						<a href="/skills/add" class="hover:text-green-400">Add Skill</a> <a href="/worker/bookings"
+							class="hover:text-green-400">Requests</a>
 						<a href="/feedback/leave-review" class="hover:text-green-400">Review</a>
-						<a href="/profile" class="hover:text-green-400">Profile</a> <a
-							href="/auth/logout" class="hover:text-red-400">Logout</a>
+						<a href="/profile" class="hover:text-green-400">Profile</a> <a href="/auth/logout"
+							class="hover:text-red-400">Logout</a>
 					</div>
 
-					<div sec:authorize="hasRole('ROLE_REQUESTER')"
-						class="flex flex-col space-y-3">
+					<div sec:authorize="hasRole('ROLE_REQUESTER')" class="flex flex-col space-y-3">
 						<a href="/requester/dashboard" class="hover:text-green-400">Home</a>
 						<a href="/skills/search" class="hover:text-green-400">Search
 							Skills</a> <a href="/skills/all" class="hover:text-green-400">All
 							Skills</a> <a href="/requester/bookings" class="hover:text-green-400">Bookings</a>
 						<a href="/feedback/leave-review" class="hover:text-green-400">Review</a>
-						<a href="/profile" class="hover:text-green-400">Profile</a> <a
-							href="/auth/logout" class="hover:text-red-400">Logout</a>
+						<a href="/profile" class="hover:text-green-400">Profile</a> <a href="/auth/logout"
+							class="hover:text-red-400">Logout</a>
 					</div>
 
-					<div sec:authorize="hasRole('ROLE_ADMIN')"
-						class="flex flex-col space-y-3">
-						<a href="/dashboard/admin" class="hover:text-green-400">Home</a> <a
-							href="/admin/users" class="hover:text-green-400">Manage Users</a>
+					<div sec:authorize="hasRole('ROLE_ADMIN')" class="flex flex-col space-y-3">
+						<a href="/dashboard/admin" class="hover:text-green-400">Home</a> <a href="/admin/users"
+							class="hover:text-green-400">Manage Users</a>
 						<a href="/auth/logout" class="hover:text-red-400">Logout</a>
 					</div>
 				</div>

@@ -2,45 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<title>Search Workers</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<script>
-	tailwind.config = {
-		theme : {
-			extend : {
-				animation : {
-					fade : 'fadeIn 0.3s ease-out',
-					slideUp : 'slideUp 0.3s ease-out'
-				},
-				keyframes : {
-					fadeIn : {
-						'0%' : {
-							opacity : 0
-						},
-						'100%' : {
-							opacity : 1
-						}
+	<title>Search Workers</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					animation: {
+						fade: 'fadeIn 0.3s ease-out',
+						slideUp: 'slideUp 0.3s ease-out'
 					},
-					slideUp : {
-						'0%' : {
-							transform : 'translateY(20px)',
-							opacity : 0
+					keyframes: {
+						fadeIn: {
+							'0%': {
+								opacity: 0
+							},
+							'100%': {
+								opacity: 1
+							}
 						},
-						'100%' : {
-							transform : 'translateY(0)',
-							opacity : 1
+						slideUp: {
+							'0%': {
+								transform: 'translateY(20px)',
+								opacity: 0
+							},
+							'100%': {
+								transform: 'translateY(0)',
+								opacity: 1
+							}
 						}
 					}
 				}
 			}
 		}
-	}
-</script>
+	</script>
 </head>
 
-<body
-	class="bg-gray-900 text-white min-h-screen flex flex-col items-center px-4 py-6">
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center px-4 py-6">
 
 	<!-- Navbar -->
 	<div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -52,8 +51,7 @@
 	<!-- Search Form -->
 	<form th:action="@{/skills/search}" method="get"
 		class="flex flex-col sm:flex-row items-stretch sm:items-center w-full max-w-md sm:max-w-xl gap-3 sm:gap-4 mb-6">
-		<input type="text" name="skill"
-			placeholder="Enter skill (e.g., plumber)" required
+		<input type="text" name="skill" placeholder="Enter skill (e.g., plumber)" required
 			class="px-3 py-2 rounded-md w-full text-black text-sm sm:text-base" />
 		<button type="submit"
 			class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md text-white font-semibold text-sm sm:text-base transition-all duration-200">Search</button>
@@ -65,34 +63,28 @@
 			<div th:each="skill : ${skills}"
 				class="bg-gray-800 rounded-lg p-4 sm:p-6 mt-4 shadow-md transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 flex flex-col sm:flex-row gap-6">
 				<!-- Profile Picture -->
-				<img
-					th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}"
+				<img th:src="${skill?.worker?.profilePicture != null ? skill.worker.profilePicUrl : '/images/default.jpg'}"
 					alt="Profile Picture"
 					class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-green-500 flex-shrink-0">
 
 				<!-- Worker Details -->
-				<div
-					class="flex-1 flex flex-col sm:flex-row sm:items-center justify-between w-full gap-4">
+				<div class="flex-1 flex flex-col sm:flex-row sm:items-center justify-between w-full gap-4">
 					<!-- Info -->
 					<div class="text-sm sm:text-base text-center sm:text-left">
 						<h3 class="text-xl font-semibold text-white mb-1">
-							<span
-								th:text="${skill.worker != null ? skill.worker.name : 'Unknown Worker'}"></span>
+							<span th:text="${skill.worker != null ? skill.worker.name : 'Unknown Worker'}"></span>
 
 							<!-- Check if rating is available and display it -->
 							<span
 								th:if="${workerRatings != null and workerRatings[skill.worker != null ? skill.worker.id : 0] != null}"
-								class="text-yellow-400 ml-2"
-								th:text="${workerRatings[skill.worker.id]} + ' ⭐'"></span>
+								class="text-yellow-400 ml-2" th:text="${workerRatings[skill.worker.id]} + ' ⭐'"></span>
 
 							<!-- If no rating available, show "(No ratings)" -->
-							<span
-								th:if="${workerRatings == null or workerRatings[skill.worker.id] == null}"
+							<span th:if="${workerRatings == null or workerRatings[skill.worker.id] == null}"
 								class="text-gray-400 ml-2">(No ratings)</span>
 						</h3>
 
-						<div
-							class="grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-gray-300">
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-gray-300">
 							<p>
 								<strong>Contact:</strong> <span
 									th:text="${skill.worker != null ? skill.worker.contactNumber : 'N/A'}"></span>
@@ -130,8 +122,7 @@
 		</div>
 
 		<!-- No results -->
-		<div th:if="${skills == null or skills.size() == 0}"
-			class="text-center text-gray-400 text-base mt-6">
+		<div th:if="${skills == null or skills.size() == 0}" class="text-center text-gray-400 text-base mt-6">
 			<p>No workers available at the moment. Please check back later!</p>
 		</div>
 	</div>
@@ -145,8 +136,8 @@
 			<p class="mb-4 sm:mb-6">Are you sure you want to book this
 				worker?</p>
 			<form id="bookingForm" th:action="@{/bookings/create}" method="post">
-				<input type="hidden" id="modalSkillId" name="skillId" /> <input
-					type="hidden" id="modalWorkerId" name="workerId" />
+				<input type="hidden" id="modalSkillId" name="skillId" /> <input type="hidden" id="modalWorkerId"
+					name="workerId" />
 				<div class="flex flex-col sm:flex-row justify-between gap-3">
 					<button type="button" onclick="closeBookingModal()"
 						class="w-full sm:w-1/2 px-3 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition">Cancel</button>
@@ -164,7 +155,7 @@
 		function openBookingModal(skillId, workerId) {
 			// Debugging: log the skillId and workerId to confirm if they're correct
 			console.log('Opening modal for Skill ID:', skillId, 'Worker ID:',
-					workerId);
+				workerId);
 
 			// Set the hidden input values for the modal form
 			document.getElementById("modalSkillId").value = skillId;

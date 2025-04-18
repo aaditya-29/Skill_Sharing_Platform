@@ -9,12 +9,17 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping()
@@ -42,12 +47,14 @@ public class AuthController {
 	@GetMapping("/auth/register")
 	public String showRegistrationForm(Model model) {
 		model.addAttribute("user", new User());
+
 		return "user/register";
 	}
 
 	@PostMapping("/auth/register")
 	public String registerUser(@ModelAttribute User user, Model model) throws MessagingException {
 		boolean hasErrors = false;
+		System.out.println("Before  before saving, enabled = " + user.isEnabled()); // 🔥 Must say false
 
 		// Validate Name
 		if (user.getName() == null || user.getName().trim().isEmpty()) {
@@ -85,30 +92,32 @@ public class AuthController {
 			hasErrors = true;
 		}
 
-		// If there are errors, return to the registration page
 		if (hasErrors) {
 			model.addAttribute("user", user);
 			return "user/register";
 		}
 
-		// Set default rating for workers
 		if (user.getRole() == Role.WORKER) {
 			user.setRating(0.0);
 		}
 
-		// Save user
-		userService.saveUser(user);
-		// Send welcome email to the newly registered user
-		String subject = "Welcome to Taskoria – Your Account Has Been Created!";
-		String body = "<h3>Hello " + user.getName() + ",</h3>"
-				+ "<p>Welcome to <strong>Taskoria</strong>! Your account has been successfully created and you're all set to get started.</p>"
-				+ "<p>Whether you're here to hire skilled professionals or offer your expertise, Taskoria is designed to make the process smooth and efficient.</p>"
-				+ "<p>If you did not register this account, please contact our support team immediately.</p>" + "<br>"
-				+ "<p>We're excited to have you on board!</p>" + "<p>Regards,<br><strong>Team Taskoria</strong></p>";
+		String otp = String.format("%06d", new Random().nextInt(999999));
+		user.setOtp(otp);
+		user.setOtpGeneratedTime(LocalDateTime.now());
 
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setEnabled(false);
+		System.out.println("Before saving, enabled = " + user.isEnabled()); // 🔥 Must say false
+		userService.saveUser(user);
+
+		// Send OTP email
+		String subject = "Verify Your Email - Taskoria";
+		String body = "<h3>Hello " + user.getName() + ",</h3>"
+				+ "<p>Your OTP for verifying your Taskoria account is: <strong>" + otp + "</strong></p>"
+				+ "<p>This OTP is valid for 5 minutes.</p>" + "<p>Regards,<br><strong>Team Taskoria</strong></p>";
 		emailService.sendEmail(user.getEmail(), subject, body);
 
-		return "redirect:/auth/login";
+		return "redirect:/auth/verify-otp?email=" + user.getEmail();
 	}
 
 	@GetMapping("/auth/login")
@@ -117,17 +126,31 @@ public class AuthController {
 		return "user/login";
 	}
 
-	@PostMapping("/auth/login")
-	public String loginUser(@ModelAttribute User user, Model model) {
-		User dbUser = userService.findByEmail(user.getEmail());
-
-		if (dbUser == null || !passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-			model.addAttribute("error", "Invalid email or password.");
-			return "user/login";
-		}
-
-		return "redirect:/dashboard"; // Change as per your app's main page
-	}
+//	@PostMapping("/auth/login")
+//	public String loginUser(@ModelAttribute User user, Model model) {
+//		try {
+//			User dbUser = userService.findByEmail(user.getEmail());
+//			if (dbUser == null || !passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
+//				model.addAttribute("error", "Invalid email or password.");
+//				System.out.println("**********Test invalid passs***********");
+//				return "user/login";
+//			}
+//			if (!dbUser.isEnabled()) {
+//				model.addAttribute("error", "Email not verified. Please check your inbox.");
+//				System.out.println("**********Test invalid enabled***********");
+//
+//				return "user/login";
+//			}
+//		} catch (DisabledException e) {
+//			model.addAttribute("error", e.getMessage());
+//			return "user/login";
+//		}
+//		
+//		System.out.println("**********Test  redirecttt***********");
+//
+//		
+//		return "redirect:/dashboard";
+//	}
 
 	@GetMapping("/auth/logout")
 	public String logoutUser(HttpSession session) {
@@ -179,4 +202,59 @@ public class AuthController {
 		return "redirect:/profile";
 
 	}
+
+	@GetMapping("/auth/verify-otp")
+	public String showOtpForm(@RequestParam String email, Model model) {
+		model.addAttribute("email", email);
+		return "user/verify_otp";
+	}
+
+	@PostMapping("/auth/verify-otp")
+	public String verifyOtp(@RequestParam String email, @RequestParam String otp, Model model) {
+		User user = userService.findByEmail(email);
+		if (user == null) {
+			model.addAttribute("error", "User not found.");
+			return "user/verify_otp";
+		}
+
+		if (user.getOtp().equals(otp) && user.getOtpGeneratedTime().isAfter(LocalDateTime.now().minusMinutes(5))) {
+			user.setEnabled(true);
+			System.out.println("Testttttttttttttt");
+			user.setOtp(null);
+			user.setOtpGeneratedTime(null);
+			userService.saveUser(user);
+			return "redirect:/auth/login?verified";
+		} else {
+			model.addAttribute("error", "Invalid or expired OTP.");
+			model.addAttribute("email", email);
+			return "user/verify_otp";
+		}
+	}
+
+	@PostMapping("/auth/resend-otp")
+	public String resendOtp(@RequestParam String email, RedirectAttributes redirectAttributes)
+			throws MessagingException {
+		User user = userService.findByEmail(email);
+
+		if (user == null) {
+			redirectAttributes.addFlashAttribute("error", "User not found.");
+			return "redirect:/auth/verify-otp?email=" + email;
+		}
+
+		String otp = String.format("%06d", new Random().nextInt(999999));
+		user.setOtp(otp);
+		user.setOtpGeneratedTime(LocalDateTime.now());
+		userService.saveUser(user);
+
+		// Send OTP again
+		String subject = "Resend OTP - Taskoria";
+		String body = "<h3>Hello " + user.getName() + ",</h3>" + "<p>Your new OTP is: <strong>" + otp + "</strong></p>"
+				+ "<p>This OTP is valid for 5 minutes.</p>" + "<p>Regards,<br><strong>Team Taskoria</strong></p>";
+
+		emailService.sendEmail(user.getEmail(), subject, body);
+
+		redirectAttributes.addFlashAttribute("message", "OTP resent successfully.");
+		return "redirect:/auth/verify-otp?email=" + email;
+	}
+
 }

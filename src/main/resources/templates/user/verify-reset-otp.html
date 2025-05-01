@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Verify OTP - Kamiyapp</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center mb-6">Verify OTP</h2>
+
+        <p class="text-sm text-gray-600 mb-4 text-center">
+            Enter the 6-digit OTP sent to your email.
+        </p>
+
+        <form th:action="@{/auth/verify-reset-otp}" method="post" class="space-y-4">
+
+            <input type="hidden" name="email" th:value="${email}" />
+
+            <div>
+                <label for="otp" class="block text-sm font-medium text-gray-700">OTP</label>
+                <input type="text" id="otp" name="otp" required maxlength="6"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+
+            <div>
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-200">
+                    Verify OTP
+                </button>
+            </div>
+
+            <!-- Error message -->
+            <p th:if="${error}" th:text="${error}" class="text-red-500 text-sm text-center"></p>
+        </form>
+
+        <div class="text-center mt-4">
+            <a th:href="@{/auth/forgot-password}" class="text-blue-600 text-sm hover:underline">Back to Forgot
+                Password</a>
+        </div>
+    </div>
+
+    <!-- Cursor Particles -->
+    <script th:src="@{js/cursorParticles.js}"></script>
+
+</body>
+
+</html>

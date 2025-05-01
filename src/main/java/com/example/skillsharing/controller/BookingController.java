@@ -148,23 +148,23 @@ public class BookingController {
 
 //		Email Notification
 
-		String requesterSubject = "Your Booking Request Has Been Successfully Created – Taskoria";
-		String workerSubject = "You've Received a New Booking Request – Taskoria";
+		String requesterSubject = "Your Booking Request Has Been Successfully Created – Kamiyapp";
+		String workerSubject = "You've Received a New Booking Request – Kamiyapp";
 
 		String requesterBody = "<h3>Hello " + requester.getName() + ",</h3>"
 				+ "<p>Your booking request for the service <strong>" + skillListing.getSkillName()
-				+ "</strong> has been successfully created on Taskoria.</p>" + "<p>The worker <strong>"
+				+ "</strong> has been successfully created on Kamiyapp.</p>" + "<p>The worker <strong>"
 				+ worker.getName() + "</strong> will review and respond to your request shortly.</p>"
 				+ "<p>You can track the status of your booking from your dashboard.</p>" + "<br>"
-				+ "<p>Thank you for choosing Taskoria!</p>" + "<p>Warm regards,<br><strong>Team Taskoria</strong></p>";
+				+ "<p>Thank you for choosing Kamiyapp!</p>" + "<p>Warm regards,<br><strong>Team Kamiyapp</strong></p>";
 
 		String workerBody = "<h3>Hello " + worker.getName() + ",</h3>"
 				+ "<p>You have received a new booking request for the service <strong>" + skillListing.getSkillName()
 				+ "</strong>.</p>" + "<p><strong>Requester:</strong> " + requester.getName() + "<br>"
 				+ "<strong>Contact:</strong> " + requester.getEmail() + "</p>"
-				+ "<p>Please log in to your Taskoria dashboard to accept or reject the booking.</p>" + "<br>"
-				+ "<p>Thanks for being a part of Taskoria!</p>"
-				+ "<p>Kind regards,<br><strong>Team Taskoria</strong></p>";
+				+ "<p>Please log in to your Kamiyapp dashboard to accept or reject the booking.</p>" + "<br>"
+				+ "<p>Thanks for being a part of Kamiyapp!</p>"
+				+ "<p>Kind regards,<br><strong>Team Kamiyapp</strong></p>";
 
 		emailService.sendEmail(requester.getEmail(), requesterSubject, requesterBody);
 		emailService.sendEmail(worker.getEmail(), workerSubject, workerBody);
@@ -193,23 +193,23 @@ public class BookingController {
 				// Prepare Email
 				User requester = booking.getRequester();
 				User worker = booking.getWorker();
-				String subjectRequester = "Your Taskoria Booking Status Has Been Updated";
+				String subjectRequester = "Your Kamiyapp Booking Status Has Been Updated";
 				String subjectWorker = "A Booking Assigned to You Has Been Updated";
 
 				String bodyRequester = "<h3>Hello " + requester.getName() + ",</h3>"
 						+ "<p>The status of your booking with <strong>" + worker.getName()
 						+ "</strong> for the service <strong>" + booking.getSkillListing().getSkillName()
 						+ "</strong> has been updated to <strong>" + status + "</strong>.</p>"
-						+ "<p>You can view all the booking details and progress on your Taskoria dashboard.</p>"
-						+ "<br><p>Thank you for choosing Taskoria!</p>"
-						+ "<p>Warm regards,<br><strong>Team Taskoria</strong></p>";
+						+ "<p>You can view all the booking details and progress on your Kamiyapp dashboard.</p>"
+						+ "<br><p>Thank you for choosing Kamiyapp!</p>"
+						+ "<p>Warm regards,<br><strong>Team Kamiyapp</strong></p>";
 
 				String bodyWorker = "<h3>Hello " + worker.getName() + ",</h3>"
 						+ "<p>The status of your assigned booking with <strong>" + requester.getName()
 						+ "</strong> for the service <strong>" + booking.getSkillListing().getSkillName()
 						+ "</strong> has been updated to <strong>" + status + "</strong>.</p>"
-						+ "<p>Please check your Taskoria dashboard for further actions.</p>"
-						+ "<br><p>Kind regards,<br><strong>Team Taskoria</strong></p>";
+						+ "<p>Please check your Kamiyapp dashboard for further actions.</p>"
+						+ "<br><p>Kind regards,<br><strong>Team Kamiyapp</strong></p>";
 
 				// Schedule email sending after 10 seconds
 				scheduler.schedule(() -> {

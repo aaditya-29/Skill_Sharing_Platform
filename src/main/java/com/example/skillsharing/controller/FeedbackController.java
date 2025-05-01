@@ -95,15 +95,15 @@ public class FeedbackController {
 		feedbackService.saveFeedback(feedback);
 
 		// Email Notifications
-		String subject = "You've Received a New Feedback on Taskoria";
+		String subject = "You've Received a New Feedback on Kamiyapp";
 
 		String body = "<h3>Hello " + reviewee.getName() + ",</h3>"
 				+ "<p>You’ve just received a new feedback from <strong>" + currentUser.getName()
 				+ "</strong> regarding your recent booking.</p>" + "<p><strong>Rating:</strong> " + rating + " &#11088;</p>"
 				+ "<p><strong>Comment:</strong> \"" + comment + "\"</p>"
-				+ "<p>We hope this helps you continue to grow and improve on Taskoria.</p>"
+				+ "<p>We hope this helps you continue to grow and improve on Kamiyapp.</p>"
 				+ "<p>You can log into your dashboard to view this and other feedback.</p>"
-				+ "<br><p>Keep up the great work!</p>" + "<p>Warm regards,<br><strong>Team Taskoria</strong></p>";
+				+ "<br><p>Keep up the great work!</p>" + "<p>Warm regards,<br><strong>Team Kamiyapp</strong></p>";
 
 		emailService.sendEmail(reviewee.getEmail(), subject, body);
 

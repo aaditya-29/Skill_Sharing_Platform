@@ -56,17 +56,17 @@ public class SkillController {
             skillListingService.saveSkill(skill);
 
             // Email Notification
-            String subject = "Your New Skill Has Been Listed on Taskoria";
+            String subject = "Your New Skill Has Been Listed on Kamiyapp";
             String body = "<h3>Hello " + worker.getName() + ",</h3>"
-                    + "<p>You've successfully listed a new skill on Taskoria.</p>"
+                    + "<p>You've successfully listed a new skill on Kamiyapp.</p>"
                     + "<h4>🛠️ Skill Details:</h4>"
                     + "<p><strong>Skill Name:</strong> " + skill.getSkillName() + "</p>"
                     + "<p><strong>Category:</strong> " + skill.getCategory() + "</p>"
                     + "<p><strong>Location:</strong> " + skill.getLocation() + "</p>"
                     + "<p><strong>Price:</strong> ₹" + skill.getPrice() + "</p>"
                     + "<br><p>Your listing is now visible to requesters searching for skilled professionals like you.</p>"
-                    + "<p>Thank you for contributing to the Taskoria network!</p>"
-                    + "<br><p>Warm regards,<br><strong>Team Taskoria</strong></p>";
+                    + "<p>Thank you for contributing to the Kamiyapp network!</p>"
+                    + "<br><p>Warm regards,<br><strong>Team Kamiyapp</strong></p>";
 
             emailService.sendEmail(worker.getEmail(), subject, body);
 

@@ -67,27 +67,7 @@
         <p>&copy; 2025 Skill Sharing Platform | All rights reserved.</p>
     </footer>
 
-    <!-- JavaScript for Mobile Menu -->
-    <script>
-        document.getElementById('menu-toggle').addEventListener(
-            'click',
-            function () {
-                document.getElementById('mobile-menu').classList
-                    .toggle('hidden');
-            });
 
-        window.addEventListener('scroll',
-            function () {
-                const scrollText = document.getElementById('scroll-text');
-                if (window.scrollY > 100) { // Adjust scroll threshold
-                    scrollText.classList.add('opacity-0',
-                        'pointer-events-none');
-                } else {
-                    scrollText.classList.remove('opacity-0',
-                        'pointer-events-none');
-                }
-            });
-    </script>
 
     <!-- Animations -->
     <style>

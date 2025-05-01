@@ -1,6 +1,6 @@
-# Taskoria – Skill Sharing Platform
+# Kamiyapp – Skill Sharing Platform
 
-Taskoria is a full-fledged web platform that connects skilled workers (like plumbers, electricians, mechanics) with users (requesters) who need on-demand services. The platform streamlines booking, inspection reporting, work tracking, feedback, and more — tailored to ensure a seamless workflow between service providers and clients.
+Kamiyapp is a full-fledged web platform that connects skilled workers (like plumbers, electricians, mechanics) with users (requesters) who need on-demand services. The platform streamlines booking, inspection reporting, work tracking, feedback, and more — tailored to ensure a seamless workflow between service providers and clients.
 
 ## 🚀 Features
 

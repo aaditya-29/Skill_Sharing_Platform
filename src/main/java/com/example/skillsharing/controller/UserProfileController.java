@@ -99,17 +99,17 @@ public class UserProfileController {
 
 			userService.updateUser(user);
 
-			String subject = "Your Taskoria Profile Has Been Updated";
+			String subject = "Your Kamiyapp Profile Has Been Updated";
 
 			String body = "<h3>Hello " + user.getName() + ",</h3>"
-					+ "<p>This is a confirmation that your profile information on <strong>Taskoria</strong> has been successfully updated.</p>"
-					+ "<h4>🧾 Updated Details:</h4>" + "<p><strong>Name:</strong> " + user.getName() + "</p>"
+					+ "<p>This is a confirmation that your profile information on <strong>Kamiyapp</strong> has been successfully updated.</p>"
+					+ "<h4> Updated Details:</h4>" + "<p><strong>Name:</strong> " + user.getName() + "</p>"
 					+ "<p><strong>Contact:</strong> " + user.getContactNumber() + "</p>"
 					+ "<p><strong>Address:</strong> " + user.getAddress() + "</p>"
 					+ "<p><strong>Profile Picture:</strong> " + (profileImage.isEmpty() ? "No Change" : "Updated")
-					+ "</p>" + "<br><p>If you didn’t make this update, please contact support immediately.</p>"
-					+ "<p>Thanks for being part of Taskoria!</p>"
-					+ "<br><p>Regards,<br><strong>Team Taskoria</strong></p>";
+					+ "</p>" + "<br><p>If you didn't make this update, please contact support immediately.</p>"
+					+ "<p>Thanks for being part of Kamiyapp!</p>"
+					+ "<br><p>Regards,<br><strong>Team Kamiyapp</strong></p>";
 
 			emailService.sendEmail(user.getEmail(), subject, body);
 		}

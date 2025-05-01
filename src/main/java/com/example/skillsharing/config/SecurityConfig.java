@@ -24,7 +24,7 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf().and().authorizeHttpRequests(auth -> auth.requestMatchers("/", "/auth/**", "/images/**", "/about")
+		http.csrf().and().authorizeHttpRequests(auth -> auth.requestMatchers("/", "/auth/**","/js/**", "/images/**", "/about")
 				.permitAll().requestMatchers(HttpMethod.POST, "/auth/verify-otp", "/auth/resend-otp").permitAll()
 				.requestMatchers("/dashboard/worker").hasRole("WORKER").requestMatchers("/dashboard/requester")
 				.hasRole("REQUESTER").requestMatchers("/profile/**").authenticated().anyRequest().authenticated())
@@ -37,7 +37,7 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	// 👇 Register your CustomUserDetailsService here
+	//  Register your CustomUserDetailsService here
 	@Bean
 	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
 		return http.getSharedObject(AuthenticationManagerBuilder.class).userDetailsService(customUserDetailsService)

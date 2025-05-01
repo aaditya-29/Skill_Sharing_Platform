@@ -81,7 +81,7 @@ public class InspectionController {
 		User requester = booking.getRequester();
 		User worker = booking.getWorker();
 
-		String subject = "Inspection Report Submitted for Your Taskoria Booking";
+		String subject = "Inspection Report Submitted for Your Kamiyapp Booking";
 
 		String body = "<h3>Hello " + requester.getName() + ",</h3>"
 				+ "<p>We wanted to inform you that your assigned worker <strong>" + worker.getName()
@@ -91,8 +91,8 @@ public class InspectionController {
 				+ report.getRequiredWork() + "</p>" + "<p><strong>Estimated Cost:</strong> Rs."
 				+ report.getEstimatedCost() + "</p>" + "<p><strong>Inspection Time:</strong> "
 				+ report.getInspectionTime().toString().replace("T", " ") + "</p>"
-				+ "<br><p>Please log in to Taskoria to proceed with the work based on this inspection report.</p>"
-				+ "<p>Thank you for using Taskoria!</p>" + "<br><p>Warm regards,<br><strong>Team Taskoria</strong></p>";
+				+ "<br><p>Please log in to Kamiyapp to proceed with the work based on this inspection report.</p>"
+				+ "<p>Thank you for using Kamiyapp!</p>" + "<br><p>Warm regards,<br><strong>Team Kamiyapp</strong></p>";
 
 		emailService.sendEmail(requester.getEmail(), subject, body);
 

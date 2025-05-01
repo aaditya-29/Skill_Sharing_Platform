@@ -41,6 +41,12 @@
             background-color: #388E3C;
             transform: scale(1.05);
         }
+
+        .error-message {
+            color: #ff0000;
+            font-size: 14px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -53,7 +59,7 @@
     <div class="bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-lg animate-fadeIn card-hover">
 
         <!-- Profile Update Form -->
-        <form th:action="@{/profile/update}" method="post" enctype="multipart/form-data"
+        <form th:action="@{/profile/update}" method="post" enctype="multipart/form-data" id="updateProfileForm"
             class="flex flex-col gap-4 sm:gap-5">
 
             <div>
@@ -76,8 +82,9 @@
 
             <div>
                 <label class="text-green-400 font-semibold block mb-1" for="profileImage">Profile Picture:</label>
-                <input type="file" name="profileImage" accept="image/*"
+                <input type="file" name="profileImage" accept="image/*" id="profileImage"
                     class="w-full p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-green-400">
+                <div id="error-message" class="error-message"></div>
             </div>
 
             <button type="submit"
@@ -91,10 +98,39 @@
             Cancel
         </a>
     </div>
+
     <script th:src="@{/js/menuToggle.js}"></script>
 
     <!-- Cursor Particle Effect -->
     <script src="/cursorParticles.js"></script>
+
+    <script>
+        document.getElementById("updateProfileForm").addEventListener("submit", function (event) {
+            const fileInput = document.getElementById("profileImage");
+            const errorMessage = document.getElementById("error-message");
+
+            const file = fileInput.files[0];
+
+            if (file) {
+                // Check file size (should not exceed 1MB)
+                if (file.size > 1 * 1024 * 1024) {
+                    errorMessage.textContent = "File size should not exceed 1MB.";
+                    event.preventDefault(); // Prevent form submission
+                    return false;
+                }
+
+                // Check file type (should be image)
+                const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+                if (!allowedTypes.includes(file.type)) {
+                    errorMessage.textContent = "Please select a valid image file (JPG, JPEG, PNG).";
+                    event.preventDefault(); // Prevent form submission
+                    return false;
+                }
+
+                errorMessage.textContent = ""; // Clear any previous error messages
+            }
+        });
+    </script>
 </body>
 
 </html>

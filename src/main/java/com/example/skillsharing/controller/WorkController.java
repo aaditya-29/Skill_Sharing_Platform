@@ -19,48 +19,103 @@ public class WorkController {
 
 	@GetMapping("/work/start/{bookingId}")
 	public String startWork(@PathVariable Long bookingId, RedirectAttributes redirectAttributes) {
-	    Booking booking = bookingService.getBookingById(bookingId);
+		Booking booking = bookingService.getBookingById(bookingId);
 
-	    if (booking == null) {
-	        redirectAttributes.addFlashAttribute("error", "Booking not found.");
-	        return "redirect:/worker/bookings";
-	    }
+		if (booking == null) {
+			redirectAttributes.addFlashAttribute("error", "Booking not found.");
+			return "redirect:/worker/bookings";
+		}
 
-	    if (booking.getStatus() == BookingStatus.IN_PROGRESS) {
-	        redirectAttributes.addFlashAttribute("error", "Work has already started.");
-	        return "redirect:/worker/bookings";
-	    }
+		if (booking.getStatus() == BookingStatus.IN_PROGRESS) {
+			redirectAttributes.addFlashAttribute("error", "Work has already started.");
+			return "redirect:/worker/bookings";
+		}
 
-	    booking.setStartTime(LocalDateTime.now());
-	    booking.setStatus(BookingStatus.IN_PROGRESS);
+		booking.setStartTime(LocalDateTime.now());
+		booking.setStatus(BookingStatus.IN_PROGRESS);
 
-	    bookingService.saveBooking(booking);
+		bookingService.saveBooking(booking);
 
-	    redirectAttributes.addFlashAttribute("success", "Work started successfully.");
-	    return "redirect:/worker/bookings";
+		redirectAttributes.addFlashAttribute("success", "Work started successfully.");
+		return "redirect:/worker/bookings";
 	}
 
 	@GetMapping("/work/finish/{bookingId}")
 	public String finishWork(@PathVariable Long bookingId, RedirectAttributes redirectAttributes) {
-	    Booking booking = bookingService.getBookingById(bookingId);
+		Booking booking = bookingService.getBookingById(bookingId);
+		System.out.println("WORK FINISH CALLED for bookingId: " + bookingId);
 
-	    if (booking == null) {
-	        redirectAttributes.addFlashAttribute("error", "Booking not found.");
-	        return "redirect:/worker/bookings";
-	    }
+		if (booking == null) {
+			redirectAttributes.addFlashAttribute("error", "Booking not found.");
+			return "redirect:/worker/bookings";
+		}
 
-	    if (booking.getStatus() == BookingStatus.COMPLETED) {
-	        redirectAttributes.addFlashAttribute("error", "Work has already been completed.");
-	        return "redirect:/worker/bookings";
-	    }
+		if (!(booking.getStatus() == BookingStatus.IN_PROGRESS
+				|| booking.getStatus() == BookingStatus.WAITING_FOR_WORKER)) {
+			System.out.println("WORK FINISH CALLED for bookingId inside check: " + bookingId);
 
-	    booking.setEndTime(LocalDateTime.now());
-	    booking.setStatus(BookingStatus.COMPLETED);
+			redirectAttributes.addFlashAttribute("error", "You can't complete work that hasn't started.");
+			return "redirect:/worker/bookings";
+		}
 
-	    bookingService.saveBooking(booking);
+		if (booking.isWorkerCompleted()) {
+			redirectAttributes.addFlashAttribute("error", "You’ve already marked work as completed.");
+			return "redirect:/worker/bookings";
+		}
 
-	    redirectAttributes.addFlashAttribute("success", "Work completed successfully.");
-	    return "redirect:/worker/bookings";
+		booking.setWorkerCompleted(true);
+		System.out.println("WORK FINISH CALLED for bookingId after setting : " + bookingId);
+		if (booking.isRequesterCompleted()) {
+			booking.setStatus(BookingStatus.COMPLETED);
+			booking.setEndTime(LocalDateTime.now());
+		} else {
+			booking.setStatus(BookingStatus.WAITING_FOR_REQUESTER); // ✅ NEW: status update
+		}
+
+		bookingService.saveBooking(booking);
+
+		redirectAttributes.addFlashAttribute("success",
+				booking.isRequesterCompleted() ? "Booking completed successfully."
+						: "You’ve marked the booking as completed. Waiting for requester to confirm.");
+
+		return "redirect:/worker/bookings";
+	}
+
+	@GetMapping("/requester/complete/{bookingId}")
+	public String requesterComplete(@PathVariable Long bookingId, RedirectAttributes redirectAttributes) {
+		Booking booking = bookingService.getBookingById(bookingId);
+
+		if (booking == null) {
+			redirectAttributes.addFlashAttribute("error", "Booking not found.");
+			return "redirect:/requester/bookings";
+		}
+
+		if (!(booking.getStatus() == BookingStatus.IN_PROGRESS
+				|| booking.getStatus() == BookingStatus.WAITING_FOR_REQUESTER)) {
+			redirectAttributes.addFlashAttribute("error", "Booking cannot be marked complete at this stage.");
+			return "redirect:/requester/bookings";
+		}
+
+		if (booking.isRequesterCompleted()) {
+			redirectAttributes.addFlashAttribute("error", "You’ve already marked this booking as completed.");
+			return "redirect:/requester/bookings";
+		}
+
+		booking.setRequesterCompleted(true);
+
+		if (booking.isWorkerCompleted()) {
+			booking.setStatus(BookingStatus.COMPLETED);
+			booking.setEndTime(LocalDateTime.now());
+		} else {
+			booking.setStatus(BookingStatus.WAITING_FOR_WORKER);
+		}
+
+		bookingService.saveBooking(booking);
+
+		redirectAttributes.addFlashAttribute("success", booking.isWorkerCompleted() ? "Booking completed successfully."
+				: "You’ve marked the booking as completed. Waiting for worker to confirm.");
+
+		return "redirect:/requester/bookings";
 	}
 
 }

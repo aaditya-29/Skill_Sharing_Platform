@@ -3,9 +3,12 @@ package com.example.skillsharing.model;
 public enum BookingStatus {
     PENDING,
     ACCEPTED,
-    CANCELLED,
-    REJECTED,
     INSPECTION_DONE,
     IN_PROGRESS,
-    COMPLETED
+    COMPLETED,
+    WAITING_FOR_WORKER,
+    WAITING_FOR_REQUESTER,
+    CANCELLED_BY_REQUESTER,
+    CANCELLED_BY_WORKER
+
 }

@@ -1,6 +1,7 @@
 package com.example.skillsharing.service;
 
 import com.example.skillsharing.model.Booking;
+import com.example.skillsharing.model.BookingStatus;
 import com.example.skillsharing.model.User;
 import com.example.skillsharing.repository.BookingRepository;
 import com.example.skillsharing.repository.UserRepository;
@@ -80,13 +81,19 @@ public class BookingService {
 	public List<Booking> getBookingsWithReportsByWorker(Long workerId) {
 		return bookingRepository.findByWorkerIdWithInspectionReport(workerId);
 	}
+
 	public List<Booking> findByRequester(User requester) {
-	    return bookingRepository.findByRequester(requester);
+		return bookingRepository.findByRequester(requester);
 	}
 
 	public List<Booking> findByWorker(User worker) {
-	    return bookingRepository.findByWorker(worker);
+		return bookingRepository.findByWorker(worker);
 	}
 
+	public boolean hasActiveBooking(Long workerId) {
+		List<Booking> active = bookingRepository.findByWorkerIdAndStatusIn(workerId,
+				List.of(BookingStatus.ACCEPTED, BookingStatus.IN_PROGRESS, BookingStatus.INSPECTION_DONE));
+		return !active.isEmpty();
+	}
 
 }

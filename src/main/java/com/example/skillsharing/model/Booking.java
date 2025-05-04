@@ -29,22 +29,48 @@ public class Booking {
 
 	private LocalDateTime startTime; // ✅ Time when worker starts work
 	private LocalDateTime endTime; // ✅ Time when work is completed
+	
+	
+	
+	private LocalDateTime cancellationTime;
+
+
+	@Column(nullable = false)
+	private boolean workerCompleted = false;
+
+	public boolean isWorkerCompleted() {
+		return workerCompleted;
+	}
+
+	public void setWorkerCompleted(boolean workerCompleted) {
+		this.workerCompleted = workerCompleted;
+	}
+
+	public boolean isRequesterCompleted() {
+		return requesterCompleted;
+	}
+
+	public void setRequesterCompleted(boolean requesterCompleted) {
+		this.requesterCompleted = requesterCompleted;
+	}
+
+	public boolean isFullyCompleted() {
+		return this.workerCompleted && this.requesterCompleted;
+	}
+
+	@Column(nullable = false)
+	private boolean requesterCompleted = false;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private BookingStatus status;
-	
-	
-	
-	
+
 	public Booking() {
-	    this.status = BookingStatus.PENDING; // or whatever default you want
+		this.status = BookingStatus.PENDING; 
 	}
 
-
 	// Getters & Setters
-	
-	
+
 	public LocalDateTime getRequestTime() {
 		return requestTime;
 	}
@@ -111,6 +137,14 @@ public class Booking {
 
 	public Long getId() {
 		return id;
+	}
+
+	public LocalDateTime getCancellationTime() {
+		return cancellationTime;
+	}
+
+	public void setCancellationTime(LocalDateTime cancellationTime) {
+		this.cancellationTime = cancellationTime;
 	}
 
 	public void setId(Long id) {

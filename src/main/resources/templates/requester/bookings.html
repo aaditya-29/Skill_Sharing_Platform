@@ -68,14 +68,24 @@
                     <p><span class="font-semibold text-white">Skill:</span> <span
                             th:text="${booking.skillListing != null ? booking.skillListing.skillName : 'N/A'}"></span>
                     </p>
+
+
                     <p><span class="font-semibold text-white">Start Time:</span>
-                        <span
-                            th:text="${booking.startTime != null ? #temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm') : 'Not Yet Started'}"></span>
+                        <span th:if="${booking.startTime != null}"
+                            th:text="${#temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm')}"></span>
+                        <span th:unless="${booking.startTime != null}" class="text-gray-400 italic text-sm">
+                            Not Started
+                        </span>
                     </p>
                     <p><span class="font-semibold text-white">End Time:</span>
-                        <span
-                            th:text="${booking.endTime != null ? #temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm') : 'Not Yet Finished'}"></span>
+                        <span th:if="${booking.endTime != null}"
+                            th:text="${#temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></span>
+                        <span th:unless="${booking.endTime != null}" class="text-gray-400 italic text-sm">
+                            Not Finished
+                        </span>
                     </p>
+
+
                     <p><span class="font-semibold text-white">Status:</span> <span class="text-green-400 font-semibold"
                             th:text="${booking.status}"></span></p>
                     <p><span class="font-semibold text-white">Report:</span>
@@ -83,7 +93,9 @@
                             and inspectionReportMap[booking.id] != null 
                             and booking.status != null 
                             and #strings.toString(booking.status) != 'PENDING' 
-                            and #strings.toString(booking.status) != 'ACCEPTED'}">
+                            and #strings.toString(booking.status) != 'ACCEPTED'
+                            and #strings.toString(booking.status) != 'CANCELLED_BY_WORKER' 
+                            and #strings.toString(booking.status) != 'CANCELLED_BY_REQUESTER'}">
                             <a th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}"
                                 class="text-green-400 hover:text-green-300 transition">View</a>
                         </span>
@@ -91,7 +103,20 @@
                             and inspectionReportMap[booking.id] != null 
                             and booking.status != null 
                             and #strings.toString(booking.status) != 'PENDING' 
-                            and #strings.toString(booking.status) != 'ACCEPTED'}">N/A</span>
+                            and #strings.toString(booking.status) != 'ACCEPTED'
+                            and #strings.toString(booking.status) != 'CANCELLED_BY_WORKER' 
+                            and #strings.toString(booking.status) != 'CANCELLED_BY_REQUESTER'}">N/A</span>
+                    </p>
+                    <!-- Payment Section -->
+                    <p><span class="font-semibold text-white">Payment:</span>
+                        <a th:if="${booking.status.name() == 'COMPLETED' and !booking.paid}"
+                            th:href="@{/requester/payment/{bookingId}(bookingId=${booking.id})}"
+                            class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition text-sm font-medium">
+                            Pay Now
+                        </a>
+                        <span th:if="${booking.paid}" class="text-green-400 font-semibold text-sm">Paid</span>
+                        <span th:if="${booking.status.name() != 'COMPLETED' and !booking.paid}"
+                            class="text-gray-400 italic text-sm">Pending Completion</span>
                     </p>
 
                     <!-- Cancel Button Form -->
@@ -106,6 +131,23 @@
                             Cancel Booking
                         </button>
                     </form>
+
+                    <!-- Mark as Completed Button -->
+                    <form th:if="${(booking.status.name() == 'IN_PROGRESS' or booking.status.name() == 'WAITING_FOR_REQUESTER') 
+                        and !booking.requesterCompleted}"
+                        th:action="@{/requester/complete/{bookingId}(bookingId=${booking.id})}" method="get"
+                        class="mt-3">
+                        <button type="submit"
+                            class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition w-full text-sm font-medium">
+                            Mark as Completed
+                        </button>
+                    </form>
+
+                    <!-- Already Marked as Completed -->
+                    <p th:if="${booking.requesterCompleted}" class="text-green-400 text-sm italic mt-2">
+                        ✔ You Marked as Completed
+                    </p>
+
                 </div>
             </div>
 
@@ -122,10 +164,15 @@
                             <th class="p-3">Status</th>
                             <th class="p-3">Report</th>
                             <th class="p-3">Action</th>
+                            <th class="p-3">Payment</th>
+
                         </tr>
                     </thead>
                     <tbody class="text-gray-300">
                         <tr th:each="booking : ${bookings}" class="hover:bg-gray-700 transition">
+
+
+
                             <td class="p-2 border-b" th:text="${booking.id}"></td>
                             <td class="p-2 border-b" th:text="${booking.worker != null ? booking.worker.name : 'N/A'}">
                             </td>
@@ -208,14 +255,30 @@
                                     class="text-gray-400 text-sm italic">No Action Needed</span>
                             </td>
 
+                            <!-- ✅ NEW: Payment Column -->
+                            <td class="p-2 border-b">
+                                <!-- If booking is completed but not paid -->
+                                <a th:if="${booking.status.name() == 'COMPLETED' and !booking.paid}"
+                                    th:href="@{/requester/payment/{bookingId}(bookingId=${booking.id})}"
+                                    class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-sm font-medium">
+                                    Pay Now
+                                </a>
 
+                                <!-- If paid -->
+                                <span th:if="${booking.paid}" class="text-green-400 font-semibold text-sm">Paid</span>
+
+                                <!-- Not applicable -->
+                                <span th:if="${booking.status.name() != 'COMPLETED' and !booking.paid}"
+                                    class="text-gray-400 italic text-sm">
+                                    Pending Completion
+                                </span>
+                            </td>
 
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
         <!-- No Bookings -->
         <div th:if="${#lists.isEmpty(bookings)}" class="text-center text-gray-300 text-lg mt-10">
             <p>No bookings available.</p>

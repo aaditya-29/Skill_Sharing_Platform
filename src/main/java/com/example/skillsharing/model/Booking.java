@@ -6,156 +6,174 @@ import java.time.LocalDateTime;
 @Entity
 public class Booking {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "worker_id")
-	private User worker;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "worker_id")
+    private User worker;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "requester_id")
-	private User requester;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "requester_id")
+    private User requester;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "skill_id")
-	private SkillListing skillListing;
-	@OneToOne(mappedBy = "booking")
-	private InspectionReport inspectionReport;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "skill_id")
+    private SkillListing skillListing;
+    @OneToOne(mappedBy = "booking")
+    private InspectionReport inspectionReport;
 
-	private LocalDateTime requestTime; // ✅ Time when requester books
-	private LocalDateTime acceptanceTime; // ✅ Time when worker accepts
+    private LocalDateTime requestTime;
+    private LocalDateTime acceptanceTime;
 
-	private LocalDateTime startTime; // ✅ Time when worker starts work
-	private LocalDateTime endTime; // ✅ Time when work is completed
-	
-	
-	
-	private LocalDateTime cancellationTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
+    private LocalDateTime cancellationTime;
 
-	@Column(nullable = false)
-	private boolean workerCompleted = false;
+    @Column(name = "payment_date")
+    private LocalDateTime paymentDate;
 
-	public boolean isWorkerCompleted() {
-		return workerCompleted;
-	}
+    @Column(nullable = false)
+    private boolean requesterCompleted = false;
 
-	public void setWorkerCompleted(boolean workerCompleted) {
-		this.workerCompleted = workerCompleted;
-	}
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BookingStatus status;
 
-	public boolean isRequesterCompleted() {
-		return requesterCompleted;
-	}
+    @Column(nullable = false)
+    private boolean isPaid = false;
 
-	public void setRequesterCompleted(boolean requesterCompleted) {
-		this.requesterCompleted = requesterCompleted;
-	}
+    public Booking() {
+        this.status = BookingStatus.PENDING;
+    }
 
-	public boolean isFullyCompleted() {
-		return this.workerCompleted && this.requesterCompleted;
-	}
+    @Column(nullable = false)
+    private boolean workerCompleted = false;
 
-	@Column(nullable = false)
-	private boolean requesterCompleted = false;
+    // Getters & Setters
+    public boolean isWorkerCompleted() {
+        return workerCompleted;
+    }
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	private BookingStatus status;
+    public void setWorkerCompleted(boolean workerCompleted) {
+        this.workerCompleted = workerCompleted;
+    }
 
-	public Booking() {
-		this.status = BookingStatus.PENDING; 
-	}
+    public boolean isRequesterCompleted() {
+        return requesterCompleted;
+    }
 
-	// Getters & Setters
+    public void setRequesterCompleted(boolean requesterCompleted) {
+        this.requesterCompleted = requesterCompleted;
+    }
 
-	public LocalDateTime getRequestTime() {
-		return requestTime;
-	}
+    public boolean isFullyCompleted() {
+        return this.workerCompleted && this.requesterCompleted;
+    }
 
-	public LocalDateTime getStartTime() {
-		return startTime;
-	}
+    public boolean isPaid() {
+        return isPaid;
+    }
 
-	public void setStartTime(LocalDateTime startTime) {
-		this.startTime = startTime;
-	}
+    public void setPaid(boolean isPaid) {
+        this.isPaid = isPaid;
+    }
 
-	public LocalDateTime getEndTime() {
-		return endTime;
-	}
+    public LocalDateTime getPaymentDate() {
+        return paymentDate;
+    }
 
-	public void setEndTime(LocalDateTime endTime) {
-		this.endTime = endTime;
-	}
+    public void setPaymentDate(LocalDateTime paymentDate) {
+        this.paymentDate = paymentDate;
+    }
 
-	public void setRequestTime(LocalDateTime requestTime) {
-		this.requestTime = requestTime;
-	}
+    public LocalDateTime getRequestTime() {
+        return requestTime;
+    }
 
-	public LocalDateTime getAcceptanceTime() {
-		return acceptanceTime;
-	}
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
 
-	public void setAcceptanceTime(LocalDateTime acceptanceTime) {
-		this.acceptanceTime = acceptanceTime;
-	}
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 
-	public BookingStatus getStatus() {
-		return status;
-	}
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
 
-	public void setStatus(BookingStatus status) {
-		this.status = status;
-	}
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
 
-	public User getWorker() {
-		return worker;
-	}
+    public void setRequestTime(LocalDateTime requestTime) {
+        this.requestTime = requestTime;
+    }
 
-	public void setWorker(User worker) {
-		this.worker = worker;
-	}
+    public LocalDateTime getAcceptanceTime() {
+        return acceptanceTime;
+    }
 
-	public User getRequester() {
-		return requester;
-	}
+    public void setAcceptanceTime(LocalDateTime acceptanceTime) {
+        this.acceptanceTime = acceptanceTime;
+    }
 
-	public void setRequester(User requester) {
-		this.requester = requester;
-	}
+    public BookingStatus getStatus() {
+        return status;
+    }
 
-	public InspectionReport getInspectionReport() {
-		return inspectionReport;
-	}
+    public void setStatus(BookingStatus status) {
+        this.status = status;
+    }
 
-	public void setInspectionReport(InspectionReport inspectionReport) {
-		this.inspectionReport = inspectionReport;
-	}
+    public User getWorker() {
+        return worker;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public void setWorker(User worker) {
+        this.worker = worker;
+    }
 
-	public LocalDateTime getCancellationTime() {
-		return cancellationTime;
-	}
+    public User getRequester() {
+        return requester;
+    }
 
-	public void setCancellationTime(LocalDateTime cancellationTime) {
-		this.cancellationTime = cancellationTime;
-	}
+    public void setRequester(User requester) {
+        this.requester = requester;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public InspectionReport getInspectionReport() {
+        return inspectionReport;
+    }
 
-	public SkillListing getSkillListing() {
-		return skillListing;
-	}
+    public void setInspectionReport(InspectionReport inspectionReport) {
+        this.inspectionReport = inspectionReport;
+    }
 
-	public void setSkillListing(SkillListing skillListing) {
-		this.skillListing = skillListing;
-	}
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getCancellationTime() {
+        return cancellationTime;
+    }
+
+    public void setCancellationTime(LocalDateTime cancellationTime) {
+        this.cancellationTime = cancellationTime;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public SkillListing getSkillListing() {
+        return skillListing;
+    }
+
+    public void setSkillListing(SkillListing skillListing) {
+        this.skillListing = skillListing;
+    }
 }

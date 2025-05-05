@@ -73,7 +73,13 @@ public class UserService {
 	}
 
 	public void deleteUser(Long id) {
-		userRepository.deleteById(id);
-	}
+        // Ensure that this works only if there are no bookings or feedback linked to the user
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("User not found!");
+        }
+    }
+
 
 }

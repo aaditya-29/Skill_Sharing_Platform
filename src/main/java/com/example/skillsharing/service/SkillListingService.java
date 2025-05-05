@@ -48,4 +48,13 @@ public class SkillListingService {
 		Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "id"));
 		return skillListingRepository.findAll(pageable).getContent();
 	}
+	public void deleteSkill(Long id) {
+        // Handle the case when there are bookings that depend on this skill
+        if (skillListingRepository.existsById(id)) {
+            skillListingRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("Skill not found!");
+        }
+    }
+
 }

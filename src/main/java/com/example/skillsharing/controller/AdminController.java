@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -49,9 +50,13 @@ public class AdminController {
         model.addAttribute("completedBookings", completedBookings);
         model.addAttribute("inProgressBookings", inProgressBookings);
 
+        model.addAttribute("newUser", new User());
+        model.addAttribute("newSkill", new SkillListing());
+
         return "admin/dashboard";
     }
 
+    // ======= USER MANAGEMENT =======
     @PostMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         try {
@@ -62,6 +67,7 @@ public class AdminController {
         }
     }
 
+    // ======= BOOKING MANAGEMENT =======
     @PostMapping("/booking/delete/{id}")
     public String deleteBooking(@PathVariable Long id) {
         try {
@@ -85,6 +91,28 @@ public class AdminController {
             return "redirect:/admin/dashboard?error=BookingNotFound";
         } catch (IllegalArgumentException e) {
             return "redirect:/admin/dashboard?error=InvalidStatus";
+        }
+    }
+
+    // ======= SKILL MANAGEMENT =======
+    @PostMapping("/skill/delete/{id}")
+    public String deleteSkill(@PathVariable Long id) {
+        try {
+            skillListingService.deleteSkill(id);
+            return "redirect:/admin/dashboard?skillDeleted=true";
+        } catch (Exception e) {
+            return "redirect:/admin/dashboard?error=FailedToDeleteSkill";
+        }
+    }
+
+    // ======= FEEDBACK MANAGEMENT =======
+    @PostMapping("/feedback/delete/{id}")
+    public String deleteFeedback(@PathVariable Long id) {
+        try {
+            feedbackService.deleteFeedback(id);
+            return "redirect:/admin/dashboard?feedbackDeleted=true";
+        } catch (Exception e) {
+            return "redirect:/admin/dashboard?error=FailedToDeleteFeedback";
         }
     }
 }

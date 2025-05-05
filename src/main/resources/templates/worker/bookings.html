@@ -75,6 +75,7 @@
 							<th class="p-3">Status</th>
 							<th class="p-3">Inspection</th>
 							<th class="p-3">Action</th>
+							<th class="p-3">Payment</th>
 						</tr>
 					</thead>
 					<tbody class="text-gray-300">
@@ -194,6 +195,25 @@
 								</div>
 
 							</td>
+
+							<td>
+								<!-- If paid -->
+								<span th:if="${booking.paid}" class="text-green-400 font-semibold text-sm">Paid</span>
+
+								<!-- Pending Completion -->
+								<span
+									th:if="${!booking.paid and (booking.status.name() == 'PENDING' or booking.status.name() == 'ACCEPTED' or booking.status.name() == 'WAITING_FOR_REQUESTER' or booking.status.name() == 'WAITING_FOR_WORKER' or booking.status.name() == 'COMPLETED')}"
+									class="text-gray-400 italic text-sm">
+									Pending Completion
+								</span>
+
+								<!-- Not Applicable -->
+								<span
+									th:if="${booking.status.name() != 'PENDING' and booking.status.name() != 'ACCEPTED' and booking.status.name() != 'WAITING_FOR_REQUESTER' and booking.status.name() != 'WAITING_FOR_WORKER' and booking.status.name() != 'COMPLETED' and !booking.paid}"
+									class="text-gray-400 italic text-sm">
+									Not Applicable
+								</span>
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -212,14 +232,23 @@
 					class="text-yellow-400 text-sm ml-1"> <span th:text="${booking.requester.rating}"></span>⭐
 				</span>
 			</p>
+			<p>
+				<span class="font-semibold">Start:</span>
+				<span th:if="${booking.startTime != null}"
+					th:text="${#temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm')}"></span>
+				<span th:unless="${booking.startTime != null}" class="text-gray-400 italic text-sm">
+					Not Started
+				</span>
+			</p>
+
 
 			<p>
-				<span class="font-semibold">Start:</span> <span
-					th:text="${booking.startTime != null ? #temporals.format(booking.startTime, 'yyyy-MM-dd HH:mm') : 'Not Started'}"></span>
-			</p>
-			<p>
-				<span class="font-semibold">End:</span> <span
-					th:text="${booking.endTime != null ? #temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm') : 'Not Finished'}"></span>
+				<span class="font-semibold">End:</span>
+				<span th:if="${booking.endTime != null}"
+					th:text="${#temporals.format(booking.endTime, 'yyyy-MM-dd HH:mm')}"></span>
+				<span th:unless="${booking.endTime != null}" class="text-gray-400 italic text-sm">
+					Not Finished
+				</span>
 			</p>
 			<p>
 				<span class="font-semibold text-green-400">Status:</span> <span
@@ -229,10 +258,25 @@
 				<span class="font-semibold">Inspection:</span> <a
 					th:if="${booking.status != null and booking.inspectionReport != null and booking.status.name() != 'PENDING' and booking.status.name() != 'ACCEPTED'}"
 					th:href="@{/inspection/view/{bookingId}(bookingId=${booking.id})}"
-					class="text-green-400 hover:text-green-300">View</a> <span
+					class="text-green-400 hover:text-green-300 underline">View</a> <span
 					th:unless="${booking.status != null and booking.inspectionReport != null and booking.status.name() != 'PENDING' and booking.status.name() != 'ACCEPTED'}"
 					class="text-gray-400 italic text-sm">Report Not Available</span>
 			</p>
+			<p>
+				<span class="font-semibold">Payment:</span>
+				<span th:if="${booking.paid}" class="text-green-400 font-semibold text-sm">Paid</span>
+				<span
+					th:if="${!booking.paid and (booking.status.name() == 'PENDING' or booking.status.name() == 'ACCEPTED' or booking.status.name() == 'WAITING_FOR_REQUESTER' or booking.status.name() == 'WAITING_FOR_WORKER' or booking.status.name() == 'COMPLETED')}"
+					class="text-gray-400 italic text-sm">
+					Pending Completion
+				</span>
+				<span
+					th:if="${booking.status.name() != 'PENDING' and booking.status.name() != 'ACCEPTED' and booking.status.name() != 'WAITING_FOR_REQUESTER' and booking.status.name() != 'WAITING_FOR_WORKER' and booking.status.name() != 'COMPLETED' and !booking.paid}"
+					class="text-gray-400 italic text-sm">
+					Not Applicable
+				</span>
+			</p>
+
 			<div class="flex flex-col gap-2 w-full">
 				<!-- Accept + Cancel (Pending) -->
 				<div th:if="${booking.status != null and booking.status.name() == 'PENDING'}" class="flex gap-2">
@@ -240,15 +284,16 @@
 						<input type="hidden" name="bookingId" th:value="${booking.id}" />
 						<input type="hidden" name="status" value="ACCEPTED" />
 						<button type="submit"
-							class="w-full px-4 py-2 bg-yellow-500 text-white rounded text-sm font-medium transition text-center hover:bg-yellow-600">
+							class="w-full px-4 py-2 bg-green-500 text-white rounded text-sm font-medium transition text-center hover:bg-green-600 shadow-md">
 							Accept</button>
 					</form>
 
-					<form th:action="@{/bookings/update-status}" method="post" class="w-1/2">
+					<form th:action="@{/bookings/update-status}" method="post" class="w-1/2"
+						onsubmit="return confirm('Are you sure you want to cancel this booking?');">
 						<input type="hidden" name="bookingId" th:value="${booking.id}" />
 						<input type="hidden" name="status" value="CANCELLED_BY_WORKER" />
 						<button type="submit"
-							class="w-full px-4 py-2 bg-red-500 text-white rounded text-sm font-medium transition text-center hover:bg-red-600">
+							class="w-full px-4 py-2 bg-red-500 text-white rounded text-sm font-medium transition text-center hover:bg-red-600 shadow-md">
 							Cancel</button>
 					</form>
 				</div>
@@ -256,7 +301,7 @@
 				<!-- Submit Inspection -->
 				<a th:if="${booking.status != null and booking.status.name() == 'ACCEPTED'}"
 					th:href="@{/inspection/submit/{bookingId}(bookingId=${booking.id})}"
-					class="w-full px-4 py-2 bg-blue-500 text-white rounded text-sm font-medium transition text-center hover:bg-blue-600 block">
+					class="w-full px-4 py-2 bg-blue-500 text-white rounded text-sm font-medium transition text-center hover:bg-blue-600 shadow-md block">
 					Submit Inspection</a>
 
 				<!-- Cancel (Accepted) -->
@@ -265,7 +310,7 @@
 					<input type="hidden" name="bookingId" th:value="${booking.id}" />
 					<input type="hidden" name="status" value="CANCELLED_BY_WORKER" />
 					<button type="submit"
-						class="w-full px-4 py-2 bg-red-500 text-white rounded text-sm font-medium transition text-center hover:bg-red-600">
+						class="w-full px-4 py-2 bg-red-500 text-white rounded text-sm font-medium transition text-center hover:bg-red-600 shadow-md">
 						Cancel</button>
 				</form>
 
@@ -275,33 +320,35 @@
 					<input type="hidden" name="bookingId" th:value="${booking.id}" />
 					<input type="hidden" name="status" value="IN_PROGRESS" />
 					<button type="submit"
-						class="w-full px-4 py-2 bg-blue-500 text-white rounded text-sm font-medium transition text-center hover:bg-blue-600">
+						class="w-full px-4 py-2 bg-blue-500 text-white rounded text-sm font-medium transition text-center hover:bg-blue-600 shadow-md">
 						Start</button>
 				</form>
 
-				<!-- Finish -->
-				<form th:if="${booking.status != null and booking.status.name() == 'IN_PROGRESS'}"
-					th:action="@{/bookings/update-status}" method="post" class="w-full">
-					<input type="hidden" name="bookingId" th:value="${booking.id}" />
-					<input type="hidden" name="status" value="COMPLETED" />
+				<!-- Mark as Completed -->
+				<form th:if="${(booking.status.name() == 'IN_PROGRESS' or booking.status.name() == 'WAITING_FOR_WORKER') 
+				   and !booking.workerCompleted}" th:action="@{/work/finish/{bookingId}(bookingId=${booking.id})}" method="get"
+					class="w-full">
 					<button type="submit"
-						class="w-full px-4 py-2 bg-green-500 text-white rounded text-sm font-medium transition text-center hover:bg-green-600">
-						Finish</button>
+						class="w-full px-4 py-2 bg-green-600 text-white rounded text-sm font-medium transition text-center hover:bg-green-700 shadow-md">
+						Mark as Completed
+					</button>
 				</form>
+
+				<!-- Already marked message -->
+				<span th:if="${booking.workerCompleted}" class="text-green-400 text-sm italic w-full">
+					✔ You Marked as Completed
+				</span>
 
 				<!-- No Action -->
 				<span
-					th:if="${booking.status == null or (booking.status.name() != 'PENDING' and booking.status.name() != 'ACCEPTED' and booking.status.name() != 'INSPECTION_DONE' and booking.status.name() != 'IN_PROGRESS')}"
+					th:if="${booking.status == null or (booking.status.name() != 'PENDING' and booking.status.name() != 'ACCEPTED' and booking.status.name() != 'INSPECTION_DONE' and booking.status.name() != 'IN_PROGRESS' and booking.status.name() != 'WAITING_FOR_REQUESTER') and !booking.workerCompleted and booking.status.name() != 'COMPLETED' and booking.status.name() != 'WAITING_FOR_WORKER'}"
 					class="w-full text-gray-400 italic text-sm text-center">
 					No Action Needed</span>
 			</div>
-
 		</div>
 	</div>
 
 	<script th:src="@{/js/menuToggle.js}"></script>
-
-
 	<script th:src="@{/cursorParticles.js}"></script>
 </body>
 

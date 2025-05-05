@@ -1,5 +1,7 @@
 package com.example.skillsharing.model;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -17,6 +19,10 @@ public class SkillListing {
     @ManyToOne
     @JoinColumn(name = "worker_id")
     private User worker;
+
+    @OneToMany(mappedBy = "skillListing", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Booking> bookings;
+
 
     // Getters and Setters
     public Long getId() {

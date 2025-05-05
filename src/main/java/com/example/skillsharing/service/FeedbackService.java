@@ -55,5 +55,15 @@ public class FeedbackService {
 	public List<Feedback> getReceivedFeedbackForUser(Long userId) {
 		return feedbackRepository.findByRevieweeId(userId);
 	}
+    public void deleteFeedback(Long id) {
+        // Ensure the feedback exists before deletion
+        if (feedbackRepository.existsById(id)) {
+            feedbackRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("Feedback not found!");
+        }
+    }
+
+
 
 }

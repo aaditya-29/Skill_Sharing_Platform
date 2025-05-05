@@ -1,8 +1,13 @@
 package com.example.skillsharing.controller;
 
 import com.example.skillsharing.model.Booking;
+import org.springframework.ui.Model; // ✅ Correct
+
 import com.example.skillsharing.model.BookingStatus;
 import com.example.skillsharing.service.BookingService;
+
+//import ch.qos.logback.core.model.Model;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 public class WorkController {
@@ -116,6 +123,23 @@ public class WorkController {
 				: "You’ve marked the booking as completed. Waiting for worker to confirm.");
 
 		return "redirect:/requester/bookings";
+	}
+
+	@GetMapping("/requester/payment/{bookingId}")
+	public String showPaymentPage(@PathVariable Long bookingId, Model model) {
+		Booking booking = bookingService.getBookingById(bookingId);
+
+		if (booking != null && booking.getStatus() == BookingStatus.COMPLETED && !booking.isPaid()) {
+			Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+				booking.setPaid(true);
+				booking.setPaymentDate(LocalDateTime.now());
+				bookingService.saveBooking(booking);
+				System.out.println("Payment auto-marked for booking: " + bookingId);
+			}, 10, TimeUnit.SECONDS); 
+		}
+		
+		model.addAttribute("booking", booking);
+		return "payment-qr"; 
 	}
 
 }

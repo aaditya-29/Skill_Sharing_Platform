@@ -24,10 +24,12 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf().and().authorizeHttpRequests(auth -> auth.requestMatchers("/", "/auth/**","/js/**", "/images/**", "/about")
-				.permitAll().requestMatchers(HttpMethod.POST, "/auth/verify-otp", "/auth/resend-otp").permitAll()
-				.requestMatchers("/dashboard/worker").hasRole("WORKER").requestMatchers("/dashboard/requester")
-				.hasRole("REQUESTER").requestMatchers("/profile/**").authenticated().anyRequest().authenticated())
+		http.csrf().and()
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/", "/auth/**", "/js/**", "/images/**", "/about")
+						.permitAll().requestMatchers(HttpMethod.POST, "/auth/verify-otp", "/auth/resend-otp")
+						.permitAll().requestMatchers("/dashboard/worker").hasRole("WORKER")
+						.requestMatchers("/dashboard/requester", "/requester/payment/**").hasRole("REQUESTER")
+						.requestMatchers("/profile/**").authenticated().anyRequest().authenticated())
 				.formLogin(form -> form.loginPage("/auth/login").loginProcessingUrl("/auth/login")
 						.usernameParameter("email").passwordParameter("password").defaultSuccessUrl("/dashboard", true)
 						.failureUrl("/auth/login?error=true").permitAll())
@@ -37,18 +39,18 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	//  Register your CustomUserDetailsService here
+	// Register your CustomUserDetailsService here
 	@Bean
 	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
 		return http.getSharedObject(AuthenticationManagerBuilder.class).userDetailsService(customUserDetailsService)
 				.passwordEncoder(passwordEncoder()) // you already use passwordEncoder in registration
 				.and().build();
 	}
-
-	@Bean
-	public UserDetailsService userDetailsService() {
-		return new CustomUserDetailsService(); // or make it a @Service and use @Autowired
-	}
+//
+//	@Bean
+//	public UserDetailsService userDetailsService() {
+//		return new CustomUserDetailsService(); 
+//	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

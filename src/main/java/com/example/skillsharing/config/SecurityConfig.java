@@ -1,6 +1,7 @@
 package com.example.skillsharing.config;
 
 import org.springframework.context.annotation.Bean;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,18 +40,13 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	// Register your CustomUserDetailsService here
 	@Bean
 	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
 		return http.getSharedObject(AuthenticationManagerBuilder.class).userDetailsService(customUserDetailsService)
 				.passwordEncoder(passwordEncoder()) // you already use passwordEncoder in registration
 				.and().build();
 	}
-//
-//	@Bean
-//	public UserDetailsService userDetailsService() {
-//		return new CustomUserDetailsService(); 
-//	}
+
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

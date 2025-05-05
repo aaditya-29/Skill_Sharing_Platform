@@ -10,12 +10,12 @@
 
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
-	<!-- Include the appropriate Navbar based on the user role -->
 	<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 	<!-- Page Content -->
 	<div
 		class="flex flex-col items-center justify-center flex-grow p-4 mt-15">
+
 		<h2
 			class="text-3xl sm:text-4xl font-bold  mt-16 text-white text-center">Available
 			Workers</h2>
@@ -43,7 +43,7 @@
 									class="text-yellow-400"
 									th:text="${workerRatings[skill.worker.id]} + ' ⭐'"></span> <span
 									th:if="${workerRatings[skill.worker.id] == null or workerRatings[skill.worker.id] == 0}"
-									class="text-gray-400">(No ratings)</span>
+									class="text-gray-400">(New)</span>
 							</h3>
 
 							<div

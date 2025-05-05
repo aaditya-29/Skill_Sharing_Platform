@@ -60,12 +60,7 @@
 								<a href="/profile" class="hover:text-green-400">Profile</a>
 							</div>
 
-							<!-- Admin Role Items -->
-							<div sec:authorize="hasRole('ROLE_ADMIN')" class="flex space-x-6">
-								<a href="/dashboard/admin" class="hover:text-green-400">Home</a>
-								<a href="/admin/users" class="hover:text-green-400">Manage
-									Users</a>
-							</div>
+
 
 							<!-- Profile Icon Dropdown -->
 							<div class="relative">
@@ -83,6 +78,7 @@
 								<!-- Profile Dropdown Menu with Same Background as Navbar -->
 								<div id="profile-menu"
 									class="absolute right-0 mt-2 w-48 bg-gray-900 text-white rounded-lg shadow-lg py-2 z-50 hidden">
+
 
 									<a href="/updatePassword"
 										class="block px-4 py-2 text-green-300 hover:text-green-400 hover:bg-gray-800 transition duration-150 ease-in-out">Change
@@ -117,11 +113,7 @@
 							class="hover:text-red-400">Logout</a>
 					</div>
 
-					<div sec:authorize="hasRole('ROLE_ADMIN')" class="flex flex-col space-y-3">
-						<a href="/dashboard/admin" class="hover:text-green-400">Home</a> <a href="/admin/users"
-							class="hover:text-green-400">Manage Users</a>
-						<a href="/auth/logout" class="hover:text-red-400">Logout</a>
-					</div>
+
 				</div>
 			</nav>
 		</div>

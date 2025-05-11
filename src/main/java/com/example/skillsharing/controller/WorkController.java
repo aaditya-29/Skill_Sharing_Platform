@@ -5,10 +5,15 @@ import org.springframework.ui.Model; // ✅ Correct
 
 import com.example.skillsharing.model.BookingStatus;
 import com.example.skillsharing.service.BookingService;
+import com.example.skillsharing.service.EmailService;
+
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 
 //import ch.qos.logback.core.model.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +28,8 @@ public class WorkController {
 
 	@Autowired
 	private BookingService bookingService;
+	@Autowired
+	private EmailService emailService;
 
 	@GetMapping("/work/start/{bookingId}")
 	public String startWork(@PathVariable Long bookingId, RedirectAttributes redirectAttributes) {
@@ -59,8 +66,6 @@ public class WorkController {
 
 		if (!(booking.getStatus() == BookingStatus.IN_PROGRESS
 				|| booking.getStatus() == BookingStatus.WAITING_FOR_WORKER)) {
-			System.out.println("WORK FINISH CALLED for bookingId inside check: " + bookingId);
-
 			redirectAttributes.addFlashAttribute("error", "You can't complete work that hasn't started.");
 			return "redirect:/worker/bookings";
 		}
@@ -71,12 +76,35 @@ public class WorkController {
 		}
 
 		booking.setWorkerCompleted(true);
-		System.out.println("WORK FINISH CALLED for bookingId after setting : " + bookingId);
 		if (booking.isRequesterCompleted()) {
 			booking.setStatus(BookingStatus.COMPLETED);
 			booking.setEndTime(LocalDateTime.now());
+
+			org.springframework.security.core.Authentication authentication = SecurityContextHolder.getContext()
+					.getAuthentication();
+			String email = "";
+
+			if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+				UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+				email = userDetails.getUsername(); 
+			}
+
+			String subject = "We’d love your feedback on your recent experience!";
+			String feedbackFormLink = "https://forms.cloud.microsoft/r/fysDh26HKJ";
+
+			String message = "Hello,\n\n"
+				    + "Thank you for using Kamiyapp for your recent service (Booking ID: #" + booking.getId() + ").\n\n"
+				    + "We are constantly striving to improve our platform, and your feedback would mean a lot to us.\n\n"
+				    + "Please take a moment to fill out our short feedback form:\n\n"
+				    + feedbackFormLink + "\n\n"
+				    + "Your input will help us enhance our services and better meet your needs.\n\n"
+				    + "Best regards,\n"
+				    + "The Kamiyapp Team\n\n"
+				    + "Booking ID: #" + booking.getId() + "\n"
+				    + "Feedback Form Link: " + feedbackFormLink;
+			emailService.sendEmail(email, subject, message);
 		} else {
-			booking.setStatus(BookingStatus.WAITING_FOR_REQUESTER); // ✅ NEW: status update
+			booking.setStatus(BookingStatus.WAITING_FOR_REQUESTER); 
 		}
 
 		bookingService.saveBooking(booking);
@@ -113,6 +141,30 @@ public class WorkController {
 		if (booking.isWorkerCompleted()) {
 			booking.setStatus(BookingStatus.COMPLETED);
 			booking.setEndTime(LocalDateTime.now());
+
+			org.springframework.security.core.Authentication authentication = SecurityContextHolder.getContext()
+					.getAuthentication();
+			String email = "";
+
+			if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+				UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+				email = userDetails.getUsername(); 
+			}
+
+			String subject = "We’d love your feedback on your recent experience!";
+			String feedbackFormLink = "https://forms.cloud.microsoft/r/fysDh26HKJ";
+
+			String message = "Hello,\n\n"
+				    + "Thank you for using Kamiyapp for your recent service (Booking ID: #" + booking.getId() + ").\n\n"
+				    + "We are constantly striving to improve our platform, and your feedback would mean a lot to us.\n\n"
+				    + "Please take a moment to fill out our short feedback form:\n\n"
+				    + feedbackFormLink + "\n\n"
+				    + "Your input will help us enhance our services and better meet your needs.\n\n"
+				    + "Best regards,\n"
+				    + "The Kamiyapp Team\n\n"
+				    + "Booking ID: #" + booking.getId() + "\n"
+				    + "Feedback Form Link: " + feedbackFormLink;
+			emailService.sendEmail(email, subject, message);
 		} else {
 			booking.setStatus(BookingStatus.WAITING_FOR_WORKER);
 		}
@@ -135,11 +187,11 @@ public class WorkController {
 				booking.setPaymentDate(LocalDateTime.now());
 				bookingService.saveBooking(booking);
 				System.out.println("Payment auto-marked for booking: " + bookingId);
-			}, 10, TimeUnit.SECONDS); 
+			}, 30, TimeUnit.SECONDS);
 		}
-		
+
 		model.addAttribute("booking", booking);
-		return "payment-qr"; 
+		return "payment-qr";
 	}
 
 }
